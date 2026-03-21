@@ -58,10 +58,12 @@ Cada documento responde uma pergunta. Nada supérfluo.
 - Cada funcionalidade do pacote aparece pelo menos uma vez. Responde: "como uso o recurso X?"
 - Comentários no `.tex` explicam o que cada bloco demonstra.
 
-### Não criar
+### Não criar (por pacote/classe individual)
 
-- Arquivo de documentação separado (`.md` ou `.pdf`) — o código comentado e o exemplo são a documentação.
+- Arquivo de documentação separado (`.md` ou `.pdf`) por pacote — o código comentado e o exemplo de teste são a documentação de cada módulo.
 - README com instruções redundantes ao que o exemplo já mostra.
+
+**Exceção:** o guia do usuário do projeto (`templates/guia-usuario/`) é um documento único que cobre o projeto inteiro e funciona simultaneamente como manual e exemplo compilável.
 
 ---
 

@@ -252,11 +252,11 @@
         rectangle
         ([xshift=\g__abnt_lomb_largura_dim/2] centro |- current~page.south);
 
-      % Autor (seção 3.a) — parte superior
+      % Autor (seção 3.a) — parte superior, margem superior 2 cm (seção 4)
       \tl_if_empty:NF \g__abnt_lomb_autor_tl
         {
           \node[text~width=\g__abnt_lomb_largura_dim-4mm, align=center]
-            at ([yshift=-3cm] centro |- current~page.north)
+            at ([yshift=-2cm] centro |- current~page.north)
             {\normalsize\tl_use:N \g__abnt_lomb_autor_tl};
         }
 

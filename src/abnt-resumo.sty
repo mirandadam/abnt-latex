@@ -80,11 +80,13 @@
     \bool_if:NTF \g__abnt_res_has_chapter_bool
       { \chapter*{#1} }
       { \section*{#1} }
-    % Texto do resumo — parágrafo único (seção 4.1.2)
+    % Texto do resumo — parágrafo único, espaçamento simples (seção 4.1.2)
+    \singlespacing
     \noindent #2
     % Palavras-chave (seção 4.1.7)
-    \par\vspace{12pt}
+    \par\vspace{18pt}
     \noindent\textbf{#3:}~#4.
+    \onehalfspacing  % restaurar espaçamento do documento
     \clearpage
   }
 

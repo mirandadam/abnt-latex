@@ -123,7 +123,20 @@
   }
 
 % =============================================================================
-% 5. COMANDO \imprimirreferencias
+% 5. ESPAÇAMENTO SIMPLES NA LISTA DE REFERÊNCIAS (seção 6.3)
+%    NBR 6023:2025 exige espaçamento simples nas referências.
+%    O biblatex-abnt não força isso automaticamente.
+% =============================================================================
+
+\AtBeginDocument{
+  \cs_if_exist:NT \renewcommand
+    {
+      \renewcommand*{\bibsetup}{\singlespacing}
+    }
+}
+
+% =============================================================================
+% 6. COMANDO \imprimirreferencias
 %    Wrapper para \printbibliography com heading customizado.
 % =============================================================================
 

@@ -13,6 +13,7 @@
 %   setspace  — espaçamento entre linhas
 %   fancyhdr  — paginação customizada
 %   babel     — idioma português brasileiro
+%   hyperref  — links internos e metadados PDF
 %
 % Rastreabilidade às normas:
 %   NBR 14724:2024 seção 5.1  → papel A4, fonte 12pt, margens 3/2/3/2 cm
@@ -125,8 +126,31 @@
 \RequirePackage[brazil]{babel}
 
 % =============================================================================
-% 9. METADADOS DO DOCUMENTO
-%    Variáveis e comandos públicos comuns a todas as classes ABNT.
+% 9. HYPERREF — links internos e metadados PDF
+%
+%    O hyperref é carregado no final do preâmbulo (via \AddToHook) para
+%    evitar conflitos de ordem com pacotes do usuário.
+%
+%    Padrão: hidelinks (links funcionais sem indicação visual).
+%    As normas ABNT não especificam tratamento de links (são normas
+%    para documentos impressos), portanto a classe adota aparência limpa.
+%
+%    Para reativar indicação visual, use \hypersetup no preâmbulo:
+%      \hypersetup{colorlinks, allcolors=blue}     % texto colorido
+%      \hypersetup{allbordercolors=blue}            % bordas coloridas
+% =============================================================================
+\AddToHook{begindocument/before}{
+  \RequirePackage{hyperref}
+  \hypersetup{
+    hidelinks,
+    unicode,
+    pdfproducer = {LaTeX~com~abnt.cls},
+  }
+}
+
+% =============================================================================
+% 10. METADADOS DO DOCUMENTO
+%     Variáveis e comandos públicos comuns a todas as classes ABNT.
 % =============================================================================
 \tl_new:N \g__abnt_titulo_tl
 \tl_new:N \g__abnt_subtitulo_tl
@@ -164,7 +188,7 @@
   { \tl_gset:Nn \g__abnt_area_tl {#1} }
 
 % =============================================================================
-% 10. CAPA (NBR 14724 seção 4.1.1 / NBR 15287 seção 4.1.1)
+% 11. CAPA (NBR 14724 seção 4.1.1 / NBR 15287 seção 4.1.1)
 %     Ordem dos elementos:
 %       a) nome da instituição (opcional)
 %       b) nome do autor
@@ -205,7 +229,7 @@
 }
 
 % =============================================================================
-% 11. FOLHA DE ROSTO (NBR 14724 seção 4.2.1.1.1 / NBR 15287 seção 4.2.1.1)
+% 12. FOLHA DE ROSTO (NBR 14724 seção 4.2.1.1.1 / NBR 15287 seção 4.2.1.1)
 %     Ordem dos elementos:
 %       a) nome do autor
 %       b) título e subtítulo
@@ -268,7 +292,7 @@
 }
 
 % =============================================================================
-% 12. PAGINAÇÃO PRÉ-TEXTUAL / TEXTUAL (NBR 14724 seção 5.3)
+% 13. PAGINAÇÃO PRÉ-TEXTUAL / TEXTUAL (NBR 14724 seção 5.3)
 %     Pré-textuais: contadas mas não numeradas.
 %     Textuais: numeração em arábico a partir da primeira página.
 %     \pagenumbering{arabic} inicia a contagem em 1.
@@ -282,7 +306,14 @@
   \pagestyle{fancy}
 }
 
-\AtBeginDocument{\pretextual}
+\AtBeginDocument{
+  \pretextual
+  % Propagar metadados para o PDF (requer hyperref já carregado)
+  \tl_if_empty:NF \g__abnt_titulo_tl
+    { \hypersetup{ pdftitle = {\tl_use:N \g__abnt_titulo_tl} } }
+  \tl_if_empty:NF \g__abnt_autor_tl
+    { \hypersetup{ pdfauthor = {\tl_use:N \g__abnt_autor_tl} } }
+}
 
 % =============================================================================
 % FIM DO ARQUIVO

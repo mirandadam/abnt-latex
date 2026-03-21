@@ -6,18 +6,18 @@ __pycache__/
 /tectonic*
 
 # Intermediários LaTeX gerados na compilação dos testes
-tests/*.idx
-tests/*.ist
-tests/*.toc
-tests/*.aux
-tests/*.log
-tests/*.bbl
-tests/*.out
-tests/*.fls
-tests/*.xml
-tests/*.blg
-tests/*.bcf
-tests/*.fdb_latexmk
+tests/**/*.idx
+tests/**/*.ist
+tests/**/*.toc
+tests/**/*.aux
+tests/**/*.log
+tests/**/*.bbl
+tests/**/*.out
+tests/**/*.fls
+tests/**/*.xml
+tests/**/*.blg
+tests/**/*.bcf
+tests/**/*.fdb_latexmk
 
 # Temporário - não ignorar depois que a base de código estabilizar um pouco
-tests/*.pdf
+tests/**/*.pdf

@@ -132,10 +132,7 @@
 % =============================================================================
 \NewDocumentCommand{\imprimiragradecimentos}{ +m }{
   \cleardoublepage
-  \begin{center}
-    \bfseries AGRADECIMENTOS
-  \end{center}
-  \vspace{1cm}
+  \chapter*{AGRADECIMENTOS}
   #1
   \clearpage
 }

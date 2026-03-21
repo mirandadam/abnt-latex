@@ -246,12 +246,12 @@
 % =============================================================================
 
 \NewDocumentCommand{\ibgeChamada}{ m }{
-  \tl_if_eq:NnTF \g__ibge_tab_chamada_fmt_tl { colchetes }
-    { \textsuperscript{[#1]} }
+  \tl_if_eq:NnTF \g__ibge_tab_chamada_fmt_tl { exponencial }
+    { \textsuperscript{#1} }
     {
-      \tl_if_eq:NnTF \g__ibge_tab_chamada_fmt_tl { exponencial }
-        { \textsuperscript{#1} }
-        { \textsuperscript{(#1)} }  % parênteses (padrão)
+      \tl_if_eq:NnTF \g__ibge_tab_chamada_fmt_tl { colchetes }
+        { [#1] }
+        { (#1) }  % parênteses (padrão)
     }
 }
 
