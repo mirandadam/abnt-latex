@@ -3,14 +3,318 @@
 % Índice — ABNT NBR 6034:2004
 %
 % Licença: LPPL 1.3c
-% Versão:  0.1.0 (stub)
+% Versão:  1.0.0
+%
+% Dependências:
+%   imakeidx  — geração e processamento de índices (múltiplos índices, automático)
+%
+% Rastreabilidade à norma:
+%   Seção 3.7    → \seename redefinido para "ver"
+%   Seção 3.7.2  → \alsoname redefinido para "ver também"
+%   Seção 6.4    → título configurável via opção 'titulo'
+%   Seção 6.5    → cabeçalhos de grupo em negrito no estilo .ist
+%   Seção 6.7    → recuo progressivo para subcabeçalhos no estilo .ist
+%   Seção 6.10   → \indiceVer (remissiva "ver")
+%   Seção 6.11   → \indiceVerTambem (remissiva "ver também")
+%   Seção 6.12a  → delim_r "-" (intervalo de páginas com hífen)
+%   Seção 6.12b  → delim_n ", " (páginas não consecutivas com vírgula)
+%
+% Limitações documentadas:
+%   Seção 6.8    → marca "(continuação)" em quebra de página não implementada
+%   Seção 6.5    → letras iniciais no running header não implementadas
+%   Acentos      → strip automático cobre apenas português brasileiro
 % =============================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesExplPackage{abnt-indice}{2025/03/21}{0.1.0}
-  {Índice~\textemdash~NBR~6034:2004}
+\ProvidesExplPackage{abnt-indice}{2025/03/21}{1.0.0}
+  {Índice~conforme~ABNT~NBR~6034:2004}
 
-% TODO: Implementar formatação de índice conforme NBR 6034:2004.
+\RequirePackage{l3keys2e}
+
+% =============================================================================
+% 1. OPÇÕES DO PACOTE
+% =============================================================================
+
+\bool_new:N \g__abnt_idx_xindy_bool
+
+\keys_define:nn { abnt-indice }
+  {
+    titulo .tl_gset:N = \g__abnt_idx_titulo_tl,
+    titulo .initial:n = { ÍNDICE },
+    processador .choice:,
+    processador / makeindex .code:n =
+      { \bool_gset_false:N \g__abnt_idx_xindy_bool },
+    processador / xindy .code:n =
+      { \bool_gset_true:N \g__abnt_idx_xindy_bool },
+    processador .initial:n = makeindex,
+  }
+
+\ProcessKeysOptions { abnt-indice }
+
+% =============================================================================
+% 2. GERAÇÃO DO ESTILO .ist (seções 6.5, 6.7, 6.12)
+%
+%    Escrito em tempo de carregamento do pacote para que o arquivo
+%    exista quando imakeidx chamar makeindex em \AtEndDocument.
+% =============================================================================
+
+\iow_new:N \g__abnt_ist_iow
+\iow_open:Nn \g__abnt_ist_iow { abnt-indice.ist }
+
+% Cabeçalhos de grupo — seção 6.5
+% makeindex .ist: \\ = literal backslash, \n = newline
+\iow_now:Nx \g__abnt_ist_iow { headings_flag~ 1 }
+\iow_now:Nx \g__abnt_ist_iow
+  { heading_prefix~
+    " \iow_char:N \\ \iow_char:N \\ textbf \iow_char:N \{ " }
+\iow_now:Nx \g__abnt_ist_iow
+  { heading_suffix~
+    " \iow_char:N \}
+      \iow_char:N \\ \iow_char:N \\ nopagebreak
+      \iow_char:N \\ n " }
+\iow_now:Nx \g__abnt_ist_iow { symhead_positive~ "Simbolos" }
+\iow_now:Nx \g__abnt_ist_iow { numhead_positive~ "Numericos" }
+
+% Separadores — seção 6.12
+\iow_now:Nx \g__abnt_ist_iow { delim_0~ ", \iow_char:N \~ " }
+\iow_now:Nx \g__abnt_ist_iow { delim_1~ ", \iow_char:N \~ " }
+\iow_now:Nx \g__abnt_ist_iow { delim_2~ ", \iow_char:N \~ " }
+\iow_now:Nx \g__abnt_ist_iow { delim_n~ ", \iow_char:N \~ " }
+% Seção 6.12a: "ligados por hífen" — usar hífen, não en-dash
+\iow_now:Nx \g__abnt_ist_iow { delim_r~ "-" }
+
+% Recuo progressivo — seção 6.7
+\iow_now:Nx \g__abnt_ist_iow
+  { indent_space~
+    " \iow_char:N \\ \iow_char:N \\ hspace
+      \iow_char:N \{ 1.5em \iow_char:N \} " }
+\iow_now:Nx \g__abnt_ist_iow { indent_length~ 0 }
+
+% Espaçamento entre grupos
+\iow_now:Nx \g__abnt_ist_iow
+  { group_skip~
+    " \iow_char:N \\ n
+      \iow_char:N \\ \iow_char:N \\ indexspace
+      \iow_char:N \\ n " }
+
+\iow_close:N \g__abnt_ist_iow
+
+% =============================================================================
+% 3. CARREGAMENTO DO imakeidx
+% =============================================================================
+
+\bool_if:NTF \g__abnt_idx_xindy_bool
+  {
+    \RequirePackage[xindy]{imakeidx}
+    \makeindex[
+      title  = { \tl_use:N \g__abnt_idx_titulo_tl },
+      options = { -L~portuguese~-C~utf8 },
+    ]
+  }
+  {
+    \RequirePackage{imakeidx}
+    \makeindex[
+      title   = { \tl_use:N \g__abnt_idx_titulo_tl },
+      options = { -s~abnt-indice.ist },
+    ]
+  }
+
+% =============================================================================
+% 4. CORREÇÃO DAS REMISSIVAS (seções 3.7, 3.7.2)
+%
+%    babel/brazilian define \seename = "veja" e \alsoname = "veja também".
+%    A NBR 6034:2004 exige "ver" e "ver também".
+% =============================================================================
+
+\AtBeginDocument{
+  \renewcommand{\seename}{ver}
+  \renewcommand{\alsoname}{ver~também}
+}
+
+% =============================================================================
+% 5. STRIP AUTOMÁTICO DE ACENTOS PARA SORT KEYS
+%
+%    Quando o processador é makeindex, \index{água} vira internamente
+%    \index{agua@água}. Se o usuário já forneceu @ explícito, não interfere.
+%
+%    Algoritmo:
+%      1. Separar parte de formatação (após |)
+%      2. Separar subentradas (por !)
+%      3. Para cada subentrada sem @, gerar sort key sem acentos
+%      4. Remontar o argumento
+% =============================================================================
+
+% --- Mapeamento de acentos do português brasileiro ---
+
+\tl_new:N \l__abnt_idx_work_tl
+
+\cs_new_protected:Nn \__abnt_strip_accents:N
+  {
+    \tl_replace_all:Nnn #1 { á } { a }
+    \tl_replace_all:Nnn #1 { à } { a }
+    \tl_replace_all:Nnn #1 { â } { a }
+    \tl_replace_all:Nnn #1 { ã } { a }
+    \tl_replace_all:Nnn #1 { é } { e }
+    \tl_replace_all:Nnn #1 { ê } { e }
+    \tl_replace_all:Nnn #1 { í } { i }
+    \tl_replace_all:Nnn #1 { ó } { o }
+    \tl_replace_all:Nnn #1 { ô } { o }
+    \tl_replace_all:Nnn #1 { õ } { o }
+    \tl_replace_all:Nnn #1 { ú } { u }
+    \tl_replace_all:Nnn #1 { ü } { u }
+    \tl_replace_all:Nnn #1 { ç } { c }
+    \tl_replace_all:Nnn #1 { Á } { A }
+    \tl_replace_all:Nnn #1 { À } { A }
+    \tl_replace_all:Nnn #1 { Â } { A }
+    \tl_replace_all:Nnn #1 { Ã } { A }
+    \tl_replace_all:Nnn #1 { É } { E }
+    \tl_replace_all:Nnn #1 { Ê } { E }
+    \tl_replace_all:Nnn #1 { Í } { I }
+    \tl_replace_all:Nnn #1 { Ó } { O }
+    \tl_replace_all:Nnn #1 { Ô } { O }
+    \tl_replace_all:Nnn #1 { Õ } { O }
+    \tl_replace_all:Nnn #1 { Ú } { U }
+    \tl_replace_all:Nnn #1 { Ü } { U }
+    \tl_replace_all:Nnn #1 { Ç } { C }
+  }
+
+% --- Processamento de uma subentrada individual ---
+% Se não contém @, gera sortkey@original. Senão, mantém como está.
+
+\tl_new:N \l__abnt_idx_sortkey_tl
+
+\cs_new_protected:Nn \__abnt_process_subentry:N
+  {
+    \tl_if_in:NnTF #1 { @ }
+      {
+        % Já tem sort key explícito — não interferir
+      }
+      {
+        % Gerar sort key sem acentos
+        \tl_set_eq:NN \l__abnt_idx_sortkey_tl #1
+        \__abnt_strip_accents:N \l__abnt_idx_sortkey_tl
+        % Só adicionar @ se a sort key difere do original
+        \tl_if_eq:NNTF \l__abnt_idx_sortkey_tl #1
+          { }
+          {
+            \tl_set:Nx #1
+              { \tl_use:N \l__abnt_idx_sortkey_tl @ \tl_use:N #1 }
+          }
+      }
+  }
+
+% --- Processamento do argumento completo do \index ---
+
+\seq_new:N \l__abnt_idx_parts_seq
+\seq_new:N \l__abnt_idx_subentries_seq
+\tl_new:N \l__abnt_idx_entry_tl
+\tl_new:N \l__abnt_idx_format_tl
+\tl_new:N \l__abnt_idx_sub_tl
+\tl_new:N \l__abnt_idx_result_tl
+\bool_new:N \l__abnt_idx_first_bool
+
+\cs_new_protected:Nn \__abnt_auto_sortkeys:N
+  {
+    % Separar parte de formatação (após |)
+    \tl_set_eq:NN \l__abnt_idx_entry_tl #1
+    \tl_clear:N \l__abnt_idx_format_tl
+
+    \tl_if_in:NnT \l__abnt_idx_entry_tl { | }
+      {
+        \seq_set_split:NnV \l__abnt_idx_parts_seq { | } \l__abnt_idx_entry_tl
+        \seq_pop_left:NN \l__abnt_idx_parts_seq \l__abnt_idx_entry_tl
+        \seq_pop_left:NN \l__abnt_idx_parts_seq \l__abnt_idx_format_tl
+      }
+
+    % Separar subentradas (por !)
+    \seq_set_split:NnV \l__abnt_idx_subentries_seq { ! } \l__abnt_idx_entry_tl
+
+    % Processar cada subentrada
+    \tl_clear:N \l__abnt_idx_result_tl
+    \bool_set_true:N \l__abnt_idx_first_bool
+
+    \seq_map_inline:Nn \l__abnt_idx_subentries_seq
+      {
+        \tl_set:Nn \l__abnt_idx_sub_tl { ##1 }
+        \__abnt_process_subentry:N \l__abnt_idx_sub_tl
+
+        \bool_if:NTF \l__abnt_idx_first_bool
+          {
+            \tl_set_eq:NN \l__abnt_idx_result_tl \l__abnt_idx_sub_tl
+            \bool_set_false:N \l__abnt_idx_first_bool
+          }
+          {
+            \tl_put_right:Nn \l__abnt_idx_result_tl { ! }
+            \tl_put_right:NV \l__abnt_idx_result_tl \l__abnt_idx_sub_tl
+          }
+      }
+
+    % Recolocar parte de formatação
+    \tl_if_empty:NF \l__abnt_idx_format_tl
+      {
+        \tl_put_right:Nn \l__abnt_idx_result_tl { | }
+        \tl_put_right:NV \l__abnt_idx_result_tl \l__abnt_idx_format_tl
+      }
+
+    \tl_set_eq:NN #1 \l__abnt_idx_result_tl
+  }
+
+% --- Redefinição do \index para aplicar strip automático ---
+%     Apenas quando usando makeindex (com xindy, a ordenação é nativa).
+
+\bool_if:NF \g__abnt_idx_xindy_bool
+  {
+    \AtBeginDocument
+      {
+        \cs_set_eq:NN \__abnt_orig_index:w \index
+        \RenewDocumentCommand{\index}{ o m }
+          {
+            \group_begin:
+            \tl_set:Nn \l__abnt_idx_work_tl { #2 }
+            \__abnt_auto_sortkeys:N \l__abnt_idx_work_tl
+            \IfNoValueTF { #1 }
+              {
+                \exp_args:NV \__abnt_orig_index:w \l__abnt_idx_work_tl
+              }
+              {
+                \__abnt_orig_index:w [ #1 ]
+                  { \tl_use:N \l__abnt_idx_work_tl }
+              }
+            \group_end:
+          }
+      }
+  }
+
+% =============================================================================
+% 6. COMANDOS PÚBLICOS
+% =============================================================================
+
+% --- \imprimirindice — seções 5, 6.4 ---
+% Imprime o índice. Aceita argumento opcional para índices nomeados.
+
+\NewDocumentCommand{\imprimirindice}{ o }
+  {
+    \clearpage
+    \IfNoValueTF { #1 }
+      { \printindex }
+      { \printindex [ #1 ] }
+  }
+
+% --- \indiceVer — seção 6.10 (remissiva "ver") ---
+% Uso: \indiceVer{ONU}{Organização das Nações Unidas}
+
+\NewDocumentCommand{\indiceVer}{ m m }
+  {
+    \index{ #1 |see{ #2 }}
+  }
+
+% --- \indiceVerTambem — seção 6.11 (remissiva "ver também") ---
+% Uso: \indiceVerTambem{férias}{licença}
+
+\NewDocumentCommand{\indiceVerTambem}{ m m }
+  {
+    \index{ #1 |seealso{ #2 }}
+  }
 
 % =============================================================================
 % FIM DO ARQUIVO

@@ -3,31 +3,44 @@
 % Classe base para documentos acadêmicos conforme normas ABNT
 %
 % Licença: LPPL 1.3c
-% Versão:  0.1.0
+% Versão:  0.2.0
 %
-% Esta classe fornece a configuração comum a todos os documentos ABNT:
-%   - Detecção de engine (XeLaTeX / pdfLaTeX)
-%   - Papel A4, fonte 12pt, espaçamento 1,5
-%   - Margens padrão (sobrescrevíveis pela classe filha)
-%   - Paginação básica
+% Dependências:
+%   report    — classe base (fornece \chapter)
+%   fontspec  — fontes OpenType (XeLaTeX / LuaLaTeX)
+%   fontenc   — codificação T1 (pdfLaTeX)
+%   geometry  — margens
+%   setspace  — espaçamento entre linhas
+%   fancyhdr  — paginação customizada
+%   babel     — idioma português brasileiro
+%
+% Rastreabilidade às normas:
+%   NBR 14724:2024 seção 5.1  → papel A4, fonte 12pt, margens 3/2/3/2 cm
+%   NBR 14724:2024 seção 5.2  → espaçamento 1,5 entre linhas
+%   NBR 14724:2024 seção 5.3  → paginação em arábico, canto superior direito
+%   NBR 14724:2024 seção 4.1.1 / NBR 15287:2025 seção 4.1.1  → capa
+%   NBR 14724:2024 seção 4.2.1.1 / NBR 15287:2025 seção 4.2.1.1 → folha de rosto
+%
+% Nota: recuo de parágrafo de 1,25 cm é convenção herdada do abnTeX2.
+%   As normas NBR 14724 e NBR 15287 não especificam valor explícito.
 % =============================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesExplClass{abnt}{2025/03/21}{0.1.0}
+\ProvidesExplClass{abnt}{2025/03/21}{0.2.0}
   {Classe~base~para~documentos~ABNT}
 
-% -----------------------------------------------------------------------------
+% =============================================================================
 % 1. CLASSE BASE E OPÇÕES
-% -----------------------------------------------------------------------------
-% Herda de article. Força a4paper e 12pt.
-% Opções do usuário são repassadas.
-\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+% =============================================================================
+% Herda de report. Força a4paper e 12pt (NBR 14724 seção 5.1).
+% report fornece \chapter, necessário para documentos acadêmicos ABNT.
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{report}}
 \ProcessOptions\relax
-\LoadClass[a4paper, 12pt]{article}
+\LoadClass[a4paper, 12pt]{report}
 
-% -----------------------------------------------------------------------------
+% =============================================================================
 % 2. DETECÇÃO DE ENGINE
-% -----------------------------------------------------------------------------
+% =============================================================================
 \sys_if_engine_xetex:TF
   {
     \RequirePackage{fontspec}
@@ -44,13 +57,10 @@
       }
   }
 
-% -----------------------------------------------------------------------------
-% 3. FONTE
-% -----------------------------------------------------------------------------
-% Padrão: Times New Roman (ou equivalente disponível no engine).
-% Em pdfLaTeX usa o pacote 'times' (TeX Gyre Termes).
-% Em XeLaTeX/LuaLaTeX tenta carregar Times New Roman do sistema.
-
+% =============================================================================
+% 3. FONTE (NBR 14724 seção 5.1 — "fonte tamanho 12")
+% =============================================================================
+% Padrão: TeX Gyre Termes (equivalente livre do Times New Roman).
 \sys_if_engine_xetex:TF
   {
     \setmainfont{TeX~Gyre~Termes}
@@ -65,12 +75,10 @@
       }
   }
 
-% -----------------------------------------------------------------------------
-% 4. MARGENS
-% -----------------------------------------------------------------------------
-% Padrão ABNT para anverso: 3cm esq/sup, 2cm dir/inf
-% A classe filha pode sobrescrever esses valores antes de \begin{document}.
-
+% =============================================================================
+% 4. MARGENS (NBR 14724 seção 5.1 / NBR 15287 seção 5.1)
+%    Anverso: esquerda e superior 3 cm, direita e inferior 2 cm.
+% =============================================================================
 \RequirePackage{geometry}
 \geometry{
   a4paper,
@@ -80,56 +88,201 @@
   right    = 2cm,
 }
 
-% Comando para classes filhas configurarem margens de verso (impressão frente e verso)
-\NewDocumentCommand{\abntSetVerso}{}{
-  \geometry{
-    twoside,
-    top      = 3cm,
-    bottom   = 2cm,
-    inner    = 3cm,
-    outer    = 2cm,
-  }
-}
-
-% -----------------------------------------------------------------------------
-% 5. ESPAÇAMENTO
-% -----------------------------------------------------------------------------
-% Espaçamento 1,5 conforme exigido pelas normas ABNT.
+% =============================================================================
+% 5. ESPAÇAMENTO (NBR 14724 seção 5.2 / NBR 15287 seção 5.2)
+%    "espaçamento 1,5 entre as linhas"
+% =============================================================================
 \RequirePackage{setspace}
 \onehalfspacing
 
-% -----------------------------------------------------------------------------
-% 6. PAGINAÇÃO
-% -----------------------------------------------------------------------------
-% Páginas numeradas em arábico, no canto superior direito.
-% A classe filha pode ajustar conforme a norma específica (ex.: pré-textuais
-% contadas mas não numeradas).
-
+% =============================================================================
+% 6. PAGINAÇÃO (NBR 14724 seção 5.3 / NBR 15287 seção 5.3)
+%    Arábicos, canto superior direito da folha.
+% =============================================================================
 \RequirePackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[R]{\thepage}
 \renewcommand{\headrulewidth}{0pt}
 
-% Redefine plain para páginas de abertura de capítulo
+% Páginas de abertura de capítulo usam estilo 'plain'
 \fancypagestyle{plain}{
   \fancyhf{}
   \fancyhead[R]{\thepage}
   \renewcommand{\headrulewidth}{0pt}
 }
 
-% -----------------------------------------------------------------------------
+% =============================================================================
 % 7. PARÁGRAFOS
-% -----------------------------------------------------------------------------
-% Recuo de parágrafo e sem espaço extra entre parágrafos.
+%    Recuo de 1,25 cm é convenção do abnTeX2 (não especificado nas normas).
+% =============================================================================
 \setlength{\parindent}{1.25cm}
 \setlength{\parskip}{0pt}
 
-% -----------------------------------------------------------------------------
+% =============================================================================
 % 8. IDIOMA
-% -----------------------------------------------------------------------------
-% Carrega babel com português brasileiro como padrão.
+% =============================================================================
 \RequirePackage[brazil]{babel}
+
+% =============================================================================
+% 9. METADADOS DO DOCUMENTO
+%    Variáveis e comandos públicos comuns a todas as classes ABNT.
+% =============================================================================
+\tl_new:N \g__abnt_titulo_tl
+\tl_new:N \g__abnt_subtitulo_tl
+\tl_new:N \g__abnt_autor_tl
+\tl_new:N \g__abnt_orientador_tl
+\tl_new:N \g__abnt_coorientador_tl
+\tl_new:N \g__abnt_instituicao_tl
+\tl_new:N \g__abnt_local_tl
+\tl_new:N \g__abnt_ano_tl
+\tl_new:N \g__abnt_natureza_tl
+\tl_new:N \g__abnt_programa_tl
+\tl_new:N \g__abnt_area_tl
+
+\NewDocumentCommand{\titulo}{ m }
+  { \tl_gset:Nn \g__abnt_titulo_tl {#1} }
+\NewDocumentCommand{\subtitulo}{ m }
+  { \tl_gset:Nn \g__abnt_subtitulo_tl {#1} }
+\NewDocumentCommand{\autor}{ m }
+  { \tl_gset:Nn \g__abnt_autor_tl {#1} }
+\NewDocumentCommand{\orientador}{ m }
+  { \tl_gset:Nn \g__abnt_orientador_tl {#1} }
+\NewDocumentCommand{\coorientador}{ m }
+  { \tl_gset:Nn \g__abnt_coorientador_tl {#1} }
+\NewDocumentCommand{\instituicao}{ m }
+  { \tl_gset:Nn \g__abnt_instituicao_tl {#1} }
+\NewDocumentCommand{\local}{ m }
+  { \tl_gset:Nn \g__abnt_local_tl {#1} }
+\NewDocumentCommand{\ano}{ m }
+  { \tl_gset:Nn \g__abnt_ano_tl {#1} }
+\NewDocumentCommand{\natureza}{ m }
+  { \tl_gset:Nn \g__abnt_natureza_tl {#1} }
+\NewDocumentCommand{\programa}{ m }
+  { \tl_gset:Nn \g__abnt_programa_tl {#1} }
+\NewDocumentCommand{\area}{ m }
+  { \tl_gset:Nn \g__abnt_area_tl {#1} }
+
+% =============================================================================
+% 10. CAPA (NBR 14724 seção 4.1.1 / NBR 15287 seção 4.1.1)
+%     Ordem dos elementos:
+%       a) nome da instituição (opcional)
+%       b) nome do autor
+%       c) título (negrito, maiúsculas)
+%       d) subtítulo (se houver, sem negrito, precedido de dois pontos)
+%       e) local (cidade)
+%       f) ano de depósito/entrega
+% =============================================================================
+\NewDocumentCommand{\imprimircapa}{}{
+  \begin{titlepage}
+    \centering
+    \onehalfspacing
+
+    \tl_if_empty:NF \g__abnt_instituicao_tl
+      {
+        \MakeUppercase{\tl_use:N \g__abnt_instituicao_tl}
+        \par\vspace{1cm}
+      }
+
+    \MakeUppercase{\tl_use:N \g__abnt_autor_tl}
+    \par\vfill
+
+    {
+      \bfseries
+      \MakeUppercase{\tl_use:N \g__abnt_titulo_tl}
+      \tl_if_empty:NF \g__abnt_subtitulo_tl
+        {
+          \textnormal{:~\tl_use:N \g__abnt_subtitulo_tl}
+        }
+    }
+    \par\vfill
+
+    \tl_use:N \g__abnt_local_tl
+    \par
+    \tl_use:N \g__abnt_ano_tl
+
+  \end{titlepage}
+}
+
+% =============================================================================
+% 11. FOLHA DE ROSTO (NBR 14724 seção 4.2.1.1.1 / NBR 15287 seção 4.2.1.1)
+%     Ordem dos elementos:
+%       a) nome do autor
+%       b) título e subtítulo
+%       c) natureza do trabalho (recuado à direita — NBR 14724 seção 5.2)
+%       d) orientador e coorientador
+%       e) local (cidade)
+%       f) ano de depósito/entrega
+% =============================================================================
+\NewDocumentCommand{\imprimirfolhaderosto}{}{
+  \begin{titlepage}
+    \centering
+    \onehalfspacing
+
+    \MakeUppercase{\tl_use:N \g__abnt_autor_tl}
+    \par\vfill
+
+    {
+      \bfseries
+      \MakeUppercase{\tl_use:N \g__abnt_titulo_tl}
+      \tl_if_empty:NF \g__abnt_subtitulo_tl
+        {
+          \textnormal{:~\tl_use:N \g__abnt_subtitulo_tl}
+        }
+    }
+    \par\vspace{2cm}
+
+    % Natureza do trabalho — alinhada do meio da mancha até a margem direita
+    \begin{flushright}
+      \begin{minipage}{0.5\textwidth}
+        \singlespacing\small
+        \tl_use:N \g__abnt_natureza_tl
+
+        \tl_if_empty:NF \g__abnt_programa_tl
+          {
+            \par \tl_use:N \g__abnt_programa_tl
+          }
+
+        \tl_if_empty:NF \g__abnt_area_tl
+          {
+            \par Área~de~concentração:~\tl_use:N \g__abnt_area_tl
+          }
+
+        \par\vspace{0.5cm}
+        Orientador:~\tl_use:N \g__abnt_orientador_tl
+
+        \tl_if_empty:NF \g__abnt_coorientador_tl
+          {
+            \par Coorientador:~\tl_use:N \g__abnt_coorientador_tl
+          }
+      \end{minipage}
+    \end{flushright}
+
+    \vfill
+
+    \tl_use:N \g__abnt_local_tl
+    \par
+    \tl_use:N \g__abnt_ano_tl
+
+  \end{titlepage}
+}
+
+% =============================================================================
+% 12. PAGINAÇÃO PRÉ-TEXTUAL / TEXTUAL (NBR 14724 seção 5.3)
+%     Pré-textuais: contadas mas não numeradas.
+%     Textuais: numeração em arábico a partir da primeira página.
+%     \pagenumbering{arabic} inicia a contagem em 1.
+% =============================================================================
+\NewDocumentCommand{\pretextual}{}{
+  \pagestyle{empty}
+  \pagenumbering{arabic}
+}
+
+\NewDocumentCommand{\textual}{}{
+  \pagestyle{fancy}
+}
+
+\AtBeginDocument{\pretextual}
 
 % =============================================================================
 % FIM DO ARQUIVO

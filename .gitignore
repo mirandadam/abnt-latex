@@ -2,5 +2,16 @@
 __pycache__/
 *.pyc
 .claude/
-normas/*.pdf
-/*.pdf
+/normas/
+/tectonic*
+
+# Intermediários LaTeX gerados na compilação dos testes
+tests/*.idx
+tests/*.ind
+tests/*.ilg
+tests/*.ist
+tests/*.aux
+tests/*.log
+
+# Temporário - não ignorar depois que a base de código estabilizar um pouco
+tests/*.pdf

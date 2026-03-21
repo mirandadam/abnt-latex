@@ -1,0 +1,151 @@
+% =============================================================================
+% test-abnt-indice.tex
+% Documento de teste para o pacote abnt-indice.sty
+%
+% Demonstra todos os recursos do pacote conforme NBR 6034:2004.
+% Cada bloco de texto indica qual requisito da norma está sendo exercitado.
+%
+% Compilação:
+%   Requer shell-escape para que imakeidx chame makeindex automaticamente.
+%   Com tectonic:
+%     tectonic -Z shell-escape -Z search-path=src tests/test-abnt-indice.tex
+%   Com latexmk:
+%     latexmk -pdf -shell-escape -auxdir=tests -outdir=tests tests/test-abnt-indice.tex
+% =============================================================================
+
+\documentclass[a4paper, 12pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage[titulo={ÍNDICE DE ASSUNTOS}]{abnt-indice}
+
+\begin{document}
+
+% =====================================================================
+% CAPÍTULO 1 — Entradas com acentos e subcabeçalhos
+% Exercita: ordenação de acentos (checklist 1), subcabeçalhos (2),
+%           cabeçalhos de grupo (8)
+% =====================================================================
+\chapter{Fundamentos da educação}
+
+A educação\index{educação} no Brasil passou por diversas transformações ao longo
+dos séculos. Desde o período colonial, quando as primeiras escolas\index{escola}
+foram estabelecidas pelos jesuítas, até as reformas contemporâneas, o sistema
+educacional reflete as tensões sociais e políticas do país.
+
+O ensino superior\index{educação!ensino superior} expandiu-se significativamente
+a partir da década de 1960, com a criação de novas universidades\index{universidade}
+públicas e privadas. Já o ensino fundamental\index{educação!ensino fundamental}
+passou por reformas que ampliaram sua duração de oito para nove anos.
+
+A alfabetização\index{alfabetização} é um dos desafios históricos. Diversas
+metodologias\index{metodologia} de ensino foram experimentadas, incluindo o método
+Paulo Freire\index{Freire, Paulo}, que propõe uma pedagogia\index{pedagogia} baseada
+na conscientização do educando.
+
+As áreas\index{área de conhecimento} de conhecimento foram organizadas pela CAPES em
+grandes áreas: Ciências Exatas\index{área de conhecimento!Ciências Exatas},
+Ciências Humanas\index{área de conhecimento!Ciências Humanas} e
+Ciências Biológicas\index{área de conhecimento!Ciências Biológicas}, entre outras.
+
+% =====================================================================
+% CAPÍTULO 2 — Remissivas "ver" e "ver também", qualificadores
+% Exercita: remissiva "ver" (3), remissiva "ver também" (4),
+%           qualificador entre parênteses (7)
+% =====================================================================
+\chapter{Políticas públicas}
+
+As políticas\index{política educacional} educacionais no Brasil são definidas pelo
+Ministério da Educação\index{MEC|see{Ministério da Educação}} (MEC). O
+Ministério da Educação\index{Ministério da Educação} atua em conjunto com o Conselho
+Nacional de Educação\index{Conselho Nacional de Educação} na formulação de diretrizes.
+
+A avaliação\index{avaliação} institucional tornou-se obrigatória com a criação do
+SINAES\index{SINAES|see{Sistema Nacional de Avaliação}}. O
+Sistema Nacional de Avaliação\index{Sistema Nacional de Avaliação} foi instituído
+pela Lei 10.861/2004.
+
+% Remissiva "ver também" — seção 6.11
+\indiceVerTambem{avaliação}{qualidade do ensino}
+
+O Plano Nacional de Educação\index{Plano Nacional de Educação} (PNE) estabelece metas
+decenais para a educação. As metas incluem a universalização\index{universalização}
+do ensino fundamental e a ampliação do acesso ao ensino superior.
+
+% Qualificador entre parênteses — seção 6.9.2
+Pedro II\index{Pedro II (Imperador)} foi responsável pela criação do Colégio
+Pedro II\index{Pedro II (Colégio)}, uma das instituições de ensino mais tradicionais
+do país, que ainda funciona na cidade do Rio de Janeiro\index{Rio de Janeiro}.
+
+A formação\index{formação de professores} de professores é regulamentada pela
+Lei de Diretrizes e Bases\index{Lei de Diretrizes e Bases} da Educação Nacional
+(LDB\index{LDB|see{Lei de Diretrizes e Bases}}).
+
+% =====================================================================
+% CAPÍTULO 3 — Intervalo de páginas e formatação
+% Exercita: páginas consecutivas com hífen (5),
+%           páginas não consecutivas com vírgula (6),
+%           formatação de página em negrito (9)
+% =====================================================================
+\chapter{Metodologias de pesquisa em educação}
+
+A pesquisa\index{pesquisa educacional} em educação utiliza tanto métodos
+quantitativos\index{metodologia!quantitativa} quanto
+qualitativos\index{metodologia!qualitativa}. Os estudos
+etnográficos\index{etnografia|textbf} constituem uma das abordagens mais
+utilizadas na pesquisa educacional brasileira. A etnografia permite ao
+pesquisador compreender as práticas educativas no contexto em que ocorrem.
+
+% Mesmo termo em páginas consecutivas para gerar intervalo — seção 6.12a
+A análise\index{currículo|(} do currículo é tema central nas pesquisas sobre
+educação. O currículo escolar define os conteúdos e as competências a serem
+desenvolvidas pelos estudantes.
+
+\newpage
+
+As reformas curriculares acompanham as mudanças nas demandas sociais. A Base
+Nacional Comum Curricular\index{BNCC|see{currículo}} (BNCC) é o documento mais
+recente que orienta a organização do currículo\index{currículo|)} nas escolas
+brasileiras.
+
+A inclusão\index{inclusão} escolar é outro tema de pesquisa relevante. As
+políticas de inclusão visam garantir o acesso de estudantes com
+deficiência\index{deficiência} ao ensino regular.
+
+% =====================================================================
+% CAPÍTULO 4 — Mais entradas para variedade de grupos alfabéticos
+% Exercita: cabeçalhos de grupo (8), título descritivo (10)
+% =====================================================================
+\chapter{Perspectivas contemporâneas}
+
+A tecnologia\index{tecnologia educacional} tem transformado as práticas pedagógicas.
+O uso de plataformas\index{plataforma digital} digitais ampliou o acesso à
+educação a distância\index{educação!a distância}, especialmente durante o período
+de isolamento\index{isolamento social} social.
+
+A qualidade do ensino\index{qualidade do ensino} é medida por indicadores como o
+IDEB\index{IDEB|see{qualidade do ensino}} (Índice de Desenvolvimento da Educação
+Básica). Os resultados\index{resultados educacionais} mostram desigualdades
+regionais significativas.
+
+A gestão\index{gestão escolar} escolar democrática é um princípio estabelecido pela
+Constituição\index{Constituição Federal} de 1988. Os conselhos
+escolares\index{conselho escolar} representam um dos mecanismos de participação da
+comunidade nas decisões da escola.
+
+A valorização\index{valorização docente} dos profissionais da educação inclui
+questões de remuneração\index{remuneração}, formação continuada\index{formação de
+professores} e condições de trabalho. O Piso Salarial Nacional\index{Piso Salarial
+Nacional} foi estabelecido pela Lei 11.738/2008.
+
+% Referência não consecutiva — seção 6.12b
+% "universidade" aparece no cap. 1 (p.1) e aqui (p.4+), gerando vírgula
+As universidades\index{universidade} desempenham papel fundamental na produção de
+conhecimento e na formação de pesquisadores\index{pesquisador}.
+
+% =====================================================================
+% ÍNDICE
+% =====================================================================
+
+\imprimirindice
+
+\end{document}

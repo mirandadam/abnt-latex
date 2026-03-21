@@ -4,9 +4,17 @@ Implementação independente de classes e pacotes LaTeX para produção de docum
 
 ## Status
 
-Em desenvolvimento inicial. O primeiro documento contemplado é o **Projeto de Pesquisa** (ABNT NBR 15287:2025).
+Em desenvolvimento inicial. Os dois primeiros tipos de documento contemplados são:
 
-O repositório contém atualmente apenas um esboço inicial do pacote `ibge-tabular.sty` (v0.1.0), que demonstra a arquitetura planejada mas não constitui uma implementação completa.
+- **Trabalho acadêmico** (ABNT NBR 14724:2024) — teses, dissertações, TCCs e similares
+- **Projeto de pesquisa** (ABNT NBR 15287:2025)
+
+O primeiro pacote completo é o `abnt-indice.sty` (NBR 6034:2004). O repositório contém também esqueletos das classes e um esboço do pacote `ibge-tabelas.sty` (v0.1.0). Os demais pacotes são stubs.
+
+### Ainda não implementado
+
+- Folha de aprovação (NBR 14724 seção 4.2.1.3)
+- Resumos em língua vernácula e estrangeira (NBR 14724 seções 4.2.1.7–4.2.1.8, depende da NBR 6028)
 
 ## Motivação
 
@@ -22,8 +30,8 @@ Este projeto não é uma crítica ao abnTeX2, que cumpriu e ainda cumpre papel i
 
 O projeto segue a separação canônica do LaTeX entre **classes** (`.cls`) e **pacotes** (`.sty`):
 
-- Uma **classe** por tipo de documento (ex.: `abnt-projeto-pesquisa.cls`), responsável pela estrutura completa: margens, capa, folha de rosto, sumário, paginação
-- **Pacotes** modulares e independentes de classe (ex.: `ibge-tabelas.sty`), que podem ser usados em qualquer documento que precise daquela funcionalidade específica
+- Uma **classe** por tipo de documento, responsável pela estrutura completa: margens, capa, folha de rosto, sumário, paginação
+- **Pacotes** modulares e independentes de classe, que podem ser usados em qualquer documento que precise daquela funcionalidade específica
 
 Toda a lógica programática interna é implementada em **`expl3`**, a camada moderna do LaTeX3, com sintaxe legível e separação clara entre interface pública e implementação.
 
@@ -31,21 +39,25 @@ Toda a lógica programática interna é implementada em **`expl3`**, a camada mo
 
 ```
 latex-abnt/
-├── src/                          # Código-fonte LaTeX
-│   ├── abnt.cls                  # Classe base (comum a todos os documentos ABNT)
-│   ├── abnt-projeto-pesquisa.cls # Classe: Projeto de Pesquisa (NBR 15287:2025)
-│   ├── ibge-tabelas.sty          # Pacote: tabelas (IBGE 1993)
-│   ├── abnt-refs.sty             # Pacote: referências (NBR 6023)
-│   ├── abnt-citacoes.sty         # Pacote: citações (NBR 10520)
-│   ├── abnt-sumario.sty          # Pacote: sumário (NBR 6027)
-│   ├── abnt-numeracao.sty        # Pacote: numeração progressiva (NBR 6024)
-│   ├── abnt-indice.sty           # Pacote: índice (NBR 6034)
-│   └── abnt-lombada.sty          # Pacote: lombada (NBR 12225)
-├── templates/                    # Documentos de exemplo
+├── src/                               # Código-fonte LaTeX
+│   ├── abnt.cls                       # Classe base (comum a todos os documentos ABNT)
+│   ├── abnt-trabalho-academico.cls    # Classe: Trabalho Acadêmico (NBR 14724:2024)
+│   ├── abnt-projeto-pesquisa.cls      # Classe: Projeto de Pesquisa (NBR 15287:2025)
+│   ├── ibge-tabelas.sty              # Pacote: tabelas (IBGE 1993)
+│   ├── abnt-refs.sty                  # Pacote: referências (NBR 6023)
+│   ├── abnt-citacoes.sty              # Pacote: citações (NBR 10520)
+│   ├── abnt-sumario.sty               # Pacote: sumário (NBR 6027)
+│   ├── abnt-numeracao.sty             # Pacote: numeração progressiva (NBR 6024)
+│   ├── abnt-indice.sty                # Pacote: índice (NBR 6034)
+│   └── abnt-lombada.sty               # Pacote: lombada (NBR 12225)
+├── templates/                         # Documentos de exemplo
+│   ├── trabalho-academico/
+│   │   ├── main.tex
+│   │   └── refs.bib
 │   └── projeto-pesquisa/
 │       ├── main.tex
 │       └── refs.bib
-└── tests/                        # Testes visuais por norma
+└── tests/                             # Testes visuais por norma
     └── (um .tex mínimo por pacote/classe)
 ```
 
@@ -60,6 +72,7 @@ O projeto suporta **XeLaTeX** e **pdfLaTeX**. Toda a validação e certificaçã
 | Pacote | Função |
 |---|---|
 | `expl3` | Lógica interna de todos os módulos |
+| `imakeidx` | Geração e processamento de índices |
 | `tabularray` | Estrutura e estilo de tabelas (nativo em `expl3`) |
 | `siunitx` | Formatação de dados numéricos e unidades de medida |
 | `biblatex` + `biblatex-abnt` | Citações e referências (não reimplementado aqui) |
@@ -73,21 +86,46 @@ Este projeto **não reimplementa** estilos de citação e referência bibliográ
 
 ### Em implementação
 
+- **ABNT NBR 14724:2024** — Trabalhos acadêmicos (teses, dissertações, TCCs)
 - **ABNT NBR 15287:2025** — Projeto de pesquisa
 
-### Referências normativas da NBR 15287:2025
+### Relação entre as normas
 
-As normas abaixo são listadas na seção 2 da NBR 15287:2025 como **referências normativas** — ou seja, constituem requisitos obrigatórios, não meramente informativos, para quem implementa aquela norma.
+As duas normas compartilham a mesma estrutura geral (parte externa + parte interna com elementos pré-textuais, textuais e pós-textuais) e referenciam o mesmo conjunto de normas auxiliares, com uma diferença:
 
-- ABNT NBR 6023:2025 — Referências
-- ABNT NBR 6024:2012 — Numeração progressiva das seções
-- ABNT NBR 6027:2012 — Sumário
-- ABNT NBR 6034:2004 — Índice
-- ABNT NBR 10520:2023 — Citações em documentos
-- ABNT NBR 12225:2023 — Lombada
-- **IBGE — Normas de Apresentação Tabular (3ª ed., 1993)** — esboço inicial no pacote `ibge-tabular.sty`
+| Aspecto | NBR 14724 (Trabalho acadêmico) | NBR 15287 (Projeto de pesquisa) |
+|---|---|---|
+| Capa | Obrigatória | Opcional |
+| Folha de rosto | Obrigatória | Obrigatória |
+| Folha de aprovação | Obrigatória | — |
+| Errata | Opcional | — |
+| Dedicatória | Opcional | — |
+| Agradecimentos | Opcional | — |
+| Epígrafe | Opcional | — |
+| Resumo (vernácula) | Obrigatório | — |
+| Resumo (estrangeira) | Obrigatório | — |
+| Listas (ilustrações, tabelas, siglas, símbolos) | Opcionais | Opcionais |
+| Sumário | Obrigatório | Obrigatório |
+| Referências | Obrigatórias | Obrigatórias |
+| Glossário, apêndice, anexo, índice | Opcionais | Opcionais |
 
-A norma IBGE é referência normativa da NBR 15287 com o mesmo status das demais: a seção 5.9 da NBR 15287:2025 determina que tabelas devem ser "padronizadas conforme as normas de apresentação tabular do Instituto Brasileiro de Geografia e Estatística (IBGE)". A distinção relevante é de origem institucional (IBGE, não ABNT) e de escopo de implementação: o pacote `ibge-tabular.sty` é um esboço inicial (v0.1.0) que demonstra a arquitetura planejada — moldura, sinais convencionais, séries temporais, classes de frequência e rodapé — mas ainda não constitui uma implementação completa da norma. O pacote poderá ser usado em qualquer documento que precise dessas convenções, independentemente da NBR 15287.
+A NBR 14724 é a norma mais completa e exigente; a NBR 15287 é um subconjunto estrutural com elementos pré-textuais reduzidos. A arquitetura do projeto reflete isso: `abnt-trabalho-academico.cls` implementa o conjunto completo, e `abnt-projeto-pesquisa.cls` reutiliza o que for aplicável.
+
+### Referências normativas comuns
+
+Ambas as normas referenciam o seguinte conjunto (requisitos obrigatórios, não meramente informativos):
+
+- ABNT NBR 6023 — Referências
+- ABNT NBR 6024 — Numeração progressiva das seções
+- ABNT NBR 6027 — Sumário
+- ABNT NBR 6034 — Índice
+- ABNT NBR 10520 — Citações em documentos
+- ABNT NBR 12225 — Lombada
+- IBGE — Normas de Apresentação Tabular (3ª ed., 1993)
+
+A NBR 14724 adiciona:
+
+- ABNT NBR 6028 — Resumo, resenha e recensão
 
 ## Licença
 
