@@ -1,25 +1,8 @@
 # Tarefas pendentes
 
-- Criar documentação para usuários da classe. Aproveitar para fazer utilizando o padrão ABNT.
 - Adicionar critérios estritos para adotar dependências. Cada dependência deve ser avaliada com cuidado para verificar se há alternativa viável sem dependências, e quando não houver, se aquela é realmente a melhor alternativa.
 - Checar se os nomes/comands/tags LaTeX são claros para o usuário e fazem o que se espera. Talvez criar também tags com todos os nomes sugestivos para deixar claro a aderência às normas.
-- Criar algo na documentação como um "checklist", para verificar o que o LaTeX não é capaz de fazer mas a norma exige. Tal checklist tem que ter informação suficiente para ser utilizável por humanos e IAs.
-- Criar template genérico UnB com layout baseado na FGA, parametrizável para qualquer faculdade/departamento/programa. Usar fontes oficiais UnB Pro/Office via fontspec.
 - Auditar o código deste projeto por divergências em relação ao UnBTeX (CTAN, v1.5.7) e outros templates da UnB, para verificar se as diferenças são problemas de aderência à ABNT/NBR ou simplesmente diferenças de estilo.
-- Incluir na documentação do template UnB as orientações específicas dos programas, com links diretos e explicação das divergências em relação à ABNT:
-  - **BCE (Biblioteca Central):** treinamentos sobre ABNT, sem guia de formatação próprio.
-    - https://bce.unb.br/normas-bibliograficas/
-  - **PPGCS (Ciências da Saúde, 2023):** fonte Arial ou Times 12pt, número de página em tamanho 11pt, referências separadas por 1,5 (em vez de linha em branco), reconhecimento obrigatório à CAPES (Portaria 206/2018), dedicatória/epígrafe sem título.
-    - https://ppgcs.unb.br/images/NORMAS/Anexo_10395964_1_Normas_redacao_teses_dissertacao_Out_05_2023_aprovadapdf.pdf
-  - **Geotecnia/FT:** margens uniformes de 25mm (diverge da ABNT 3/2/3/2 cm), pré-textuais em romanos, subseções até terceiro nível apenas, limite de páginas (200 mestrado, 400 doutorado).
-    - https://www.geotecnia.unb.br/images/docs/norma_para_redao_de_dissertaes_e_teses.pdf
-  - **CIC (Ciência da Computação):** logo UnB no topo de capa e folha de rosto, hierarquia Universidade > Instituto > Departamento, margens diferentes para versão impressa vs digital.
-    - https://github.com/UnB-CIC/Monografia
-  - **FGA (Gama):** template com imagem de fundo na capa, curso como metadado, template mantido por Prof. Edson Alves.
-    - https://github.com/fga-unb/template-latex-tcc
-  - **FT (Faculdade de Tecnologia):** template LaTeX próprio.
-    - https://github.com/manoelcampos/ft-unb-latex-template
-  - **UnBTeX (CTAN):** template abrangente para qualquer programa, baseado em abnTeX2, com suporte a múltiplos autores, contracapa e dimensionamento automático de título.
-    - https://ctan.org/pkg/unbtex
-- Investigar o que a norma diz sobre os links padrão do LaTeX. O retângulo vermelho ou verde é muito escandaloso.
-- Incluir na documentação a obrigatoriedade da ficha catalográfica segundo NBR 14724:2024 §4.2.1.1.2, que este projeto não contempla, e incluir instruções sobre como criá-la.
+- Auditar o projeto por completeza, inclusive no checklist da documentação do usuário
+- Adicionar ao README.md instruções para realizar a compilação em ambiente Ubunto com TexLive e no Overleaf.
+- Já que não implementamos a parte de referências bibliográficas (usamos a biblioteca `biblatex-abnt`), deveríamos ter um checklist de bibliografia também para conseguir auditar a bibliografia dos PDFs com IA.

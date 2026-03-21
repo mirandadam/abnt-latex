@@ -1,0 +1,132 @@
+% =============================================================================
+% abnt-quadros.sty
+% Quadros — ABNT NBR 14724:2024 seções 5.9, 5.10
+%
+% Licença: LPPL 1.3c
+% Versão:  1.0.0
+%
+% Dependências:
+%   tabularray  — estrutura e estilo dos quadros (expl3-nativo)
+%   caption     — formatação do título no topo
+%   ibge-tabelas — reutiliza comandos de rodapé (\abntFonte, etc.)
+%   l3keys2e    — processamento de opções
+%
+% Rastreabilidade à norma:
+%   NBR 14724:2024 seção 5.9   → quadros: bordas fechadas em todos os lados
+%   NBR 14724:2024 seção 5.10  → numeração independente das tabelas
+%   NBR 14724:2024 seção 5.8   → título no topo: "Quadro N — Título"
+%   NBR 14724:2024 seção 5.10  → fonte obrigatória abaixo do quadro
+%
+% Diferença entre tabela e quadro:
+%   Tabela (IBGE): dados numéricos/estatísticos, sem bordas verticais laterais
+%   Quadro (NBR 14724): informações textuais/qualitativas, bordas em todos os lados
+% =============================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesExplPackage{abnt-quadros}{2025/03/21}{1.0.0}
+  {Quadros~\textemdash~NBR~14724:2024}
+
+\RequirePackage{l3keys2e}
+
+% =============================================================================
+% 1. OPÇÕES DO PACOTE
+% =============================================================================
+
+\bool_new:N \g__abnt_qdr_subordinar_bool
+\bool_gset_false:N \g__abnt_qdr_subordinar_bool
+
+\keys_define:nn { abnt-quadros }
+  {
+    subordinar .bool_gset:N = \g__abnt_qdr_subordinar_bool,
+    subordinar .default:n   = true,
+    subordinar .initial:n   = false,
+  }
+
+\ProcessKeysOptions { abnt-quadros }
+
+% =============================================================================
+% 2. DEPENDÊNCIAS
+% =============================================================================
+
+\RequirePackage{tabularray}
+\RequirePackage{caption}
+\RequirePackage{ibge-tabelas}  % reutiliza \abntFonte, \abntNota, \abntNotaEsp
+
+% =============================================================================
+% 3. NUMERAÇÃO E TÍTULO (seções 5.8, 5.10)
+%    "Quadro 1 — Título" no topo do quadro.
+%    Numeração independente das tabelas.
+% =============================================================================
+
+\ExplSyntaxOff
+% Declarar novo tipo de float "quadrofloat" para não conflitar com table
+\DeclareCaptionType{quadrofloat}[Quadro][Lista de quadros]
+\captionsetup[quadrofloat]{
+  position    = top,
+  labelsep    = endash,            % "Quadro 1 — "
+  justification = raggedright,
+  singlelinecheck = false,
+  skip        = 6pt,
+}
+\ExplSyntaxOn
+
+% Subordinação a capítulos (seção 5.10)
+\bool_if:NT \g__abnt_qdr_subordinar_bool
+  {
+    \cs_if_exist:NT \chapter
+      {
+        \ExplSyntaxOff
+        \counterwithin{quadrofloat}{chapter}
+        \ExplSyntaxOn
+      }
+  }
+
+% =============================================================================
+% 4. AMBIENTE quadroabnt (seção 5.9)
+%    Ambiente interno tabularray com bordas em todos os lados.
+% =============================================================================
+
+\NewTblrEnviron{quadroabnt}
+
+\SetTblrInner[quadroabnt]{
+  hline{1}    = {0.8pt},  % traço superior
+  hline{2}    = {0.4pt},  % traço do cabeçalho
+  hline{Z}    = {0.8pt},  % traço inferior
+  hline{3-Y}  = {0.2pt},  % traços internos entre linhas de dados
+  vline{1,Z}  = {0.4pt},  % bordas verticais laterais
+  rowsep      = 2pt,
+  colsep      = 6pt,
+}
+
+% =============================================================================
+% 5. MENSAGEM DE WARNING
+% =============================================================================
+
+\msg_new:nnn { abnt-quadros } { fonte-ausente }
+  {
+    A~fonte~é~obrigatória~no~rodapé~do~quadro~(NBR~14724~seção~5.8).~
+    Use~\abntFonte\{texto\}~dentro~do~ambiente~quadro.
+  }
+
+% =============================================================================
+% 6. AMBIENTE quadro (wrapper: float + título + quadro + rodapé)
+%    Integra numeração, título (caption) e rodapé como unidade coesa.
+%    Argumento obrigatório: título do quadro.
+%    Reutiliza \__ibge_imprimir_rodape: de ibge-tabelas.sty para
+%    imprimir Fonte/Nota/Notas específicas.
+% =============================================================================
+
+\NewDocumentEnvironment{quadro}{ m }{
+  \begin{quadrofloat}[htbp]
+    \caption{#1}
+}{
+    % Emitir warning específico para quadros se fonte ausente
+    \tl_if_empty:NT \l__ibge_fonte_tl
+      { \msg_warning:nn { abnt-quadros } { fonte-ausente } }
+    \__ibge_imprimir_rodape:
+  \end{quadrofloat}
+}
+
+% =============================================================================
+% FIM DO ARQUIVO
+% =============================================================================

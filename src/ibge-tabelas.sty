@@ -3,7 +3,7 @@
 % Normas de Apresentação Tabular — IBGE, 3ª ed., 1993
 %
 % Licença: LPPL 1.3c
-% Versão:  1.0.0
+% Versão:  1.1.0
 %
 % Dependências:
 %   tabularray  — estrutura e estilo das tabelas (expl3-nativo)
@@ -24,7 +24,8 @@
 %   Seção 4.10    → fonte obrigatória no rodapé
 %   Seção 4.11    → nota geral após a fonte
 %   Seção 4.12    → notas específicas em ordem de chamada
-%   Seção 5       → apresentação de tempo (séries, safra)
+%   Seção 5       → apresentação de tempo (séries consecutivas e não consecutivas)
+%   Seção 5.4     → safra: não implementado (notação com 2 dígitos é ambígua)
 %   Seção 6       → classes de frequência
 %   Seção 7       → nota de arredondamento
 %
@@ -37,7 +38,7 @@
 % =============================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesExplPackage{ibge-tabelas}{2025/03/21}{1.0.0}
+\ProvidesExplPackage{ibge-tabelas}{2025/03/21}{1.1.0}
   {Normas~de~Apresentação~Tabular~\textemdash~IBGE~1993}
 
 \RequirePackage{l3keys2e}
@@ -120,18 +121,18 @@
 \msg_new:nnn { ibge-tabelas } { fonte-ausente }
   {
     A~fonte~é~obrigatória~no~rodapé~da~tabela~(IBGE~seção~4.10).~
-    Use~\ibgeFonte\{texto\}~dentro~do~ambiente~tabela.
+    Use~\abntFonte\{texto\}~dentro~do~ambiente~tabela.
   }
 
 % =============================================================================
-% 6. AMBIENTE tabelaibge (seções 4.3.1, 4.3.3, 4.5)
+% 6. AMBIENTE tabelaabnt (seções 4.3.1, 4.3.3, 4.5)
 %    Ambiente interno tabularray com estilo IBGE.
 %    Três traços horizontais, sem verticais nas bordas.
 % =============================================================================
 
-\NewTblrEnviron{tabelaibge}
+\NewTblrEnviron{tabelaabnt}
 
-\SetTblrInner[tabelaibge]{
+\SetTblrInner[tabelaabnt]{
   hline{1}    = {0.8pt},  % traço superior (seção 4.3.1)
   hline{2}    = {0.4pt},  % traço do cabeçalho (seção 4.3.1)
   hline{Z}    = {0.8pt},  % traço inferior (seção 4.3.1)
@@ -145,21 +146,21 @@
 % =============================================================================
 
 % Sinal (a): dado igual a zero, não resultante de arredondamento
-\NewDocumentCommand{\ibgeSinalZero}{}{\textemdash}
+\NewDocumentCommand{\abntSinalZero}{}{\textemdash}
 
 % Sinal (b): não se aplica dado numérico
-\NewDocumentCommand{\ibgeSinalNA}{}{..}
+\NewDocumentCommand{\abntSinalNA}{}{..}
 
 % Sinal (c): dado numérico não disponível
-\NewDocumentCommand{\ibgeSinalND}{}{...}
+\NewDocumentCommand{\abntSinalND}{}{...}
 
 % Sinal (d): dado omitido para evitar individualização
-\NewDocumentCommand{\ibgeSinalOmitido}{}{\textit{x}}
+\NewDocumentCommand{\abntSinalOmitido}{}{\textit{x}}
 
 % Sinais (e) e (f): zeros resultantes de arredondamento
 % Argumento estrela = valor originalmente negativo (f)
 % Argumento opcional = número de casas decimais (padrão: 0)
-\NewDocumentCommand{\ibgeSinalArrZero}{ s O{0} }{
+\NewDocumentCommand{\abntSinalArrZero}{ s O{0} }{
   \IfBooleanTF{#1}
     { \__ibge_sinal_arr_neg:n {#2} }
     { \__ibge_sinal_arr_pos:n {#2} }
@@ -189,7 +190,7 @@
 
 % Comando público: define a fonte (obrigatória — seção 4.10)
 % Versão estrela (*) para "Fontes:" (plural — seção 4.10.1)
-\NewDocumentCommand{\ibgeFonte}{ s m }{
+\NewDocumentCommand{\abntFonte}{ s m }{
   \IfBooleanTF{#1}
     { \tl_set:Nn \l__ibge_fonte_tl { \textbf{Fontes:}~#2 } }
     { \tl_set:Nn \l__ibge_fonte_tl { \textbf{Fonte:}~#2 } }
@@ -197,14 +198,14 @@
 
 % Comando público: define a nota geral (seção 4.11)
 % Versão estrela (*) para "Notas:" (plural — seção 4.11.1)
-\NewDocumentCommand{\ibgeNota}{ s m }{
+\NewDocumentCommand{\abntNota}{ s m }{
   \IfBooleanTF{#1}
     { \tl_set:Nn \l__ibge_nota_tl { \textbf{Notas:}~#2 } }
     { \tl_set:Nn \l__ibge_nota_tl { \textbf{Nota:}~#2 } }
 }
 
 % Comando público: adiciona uma nota específica (seção 4.12)
-\NewDocumentCommand{\ibgeNotaEsp}{ m m }{
+\NewDocumentCommand{\abntNotaEsp}{ m m }{
   \seq_put_right:Nn \l__ibge_notas_esp_seq { (#1)~#2 }
 }
 
@@ -237,15 +238,15 @@
     \seq_clear:N \l__ibge_notas_esp_seq
   }
 
-% Manter \ibgeRodape para uso avulso (compatibilidade com esboço v0.1.0)
-\NewDocumentCommand{\ibgeRodape}{}{ \__ibge_imprimir_rodape: }
+% Manter \abntRodape para uso avulso
+\NewDocumentCommand{\abntRodape}{}{ \__ibge_imprimir_rodape: }
 
 % =============================================================================
 % 9. CHAMADA REMISSIVA (seção 4.9)
 %    Formato configurável via opção 'chamada'.
 % =============================================================================
 
-\NewDocumentCommand{\ibgeChamada}{ m }{
+\NewDocumentCommand{\abntChamada}{ m }{
   \tl_if_eq:NnTF \g__ibge_tab_chamada_fmt_tl { exponencial }
     { \textsuperscript{#1} }
     {
@@ -274,34 +275,33 @@
 % =============================================================================
 
 % Série consecutiva: hífen (seção 5.2)
-\NewDocumentCommand{\ibgeSerieConsec}{ m m }{ #1\textendash#2 }
+\NewDocumentCommand{\abntSerieConsec}{ m m }{ #1\textendash#2 }
 
 % Série não consecutiva: barra (seção 5.3)
-\NewDocumentCommand{\ibgeSerieNConsec}{ m m }{ #1/#2 }
+\NewDocumentCommand{\abntSerieNConsec}{ m m }{ #1/#2 }
 
-% Safra: dois últimos dígitos com barra (seção 5.4)
-\NewDocumentCommand{\ibgeSafra}{ m m }{
-  Safra~\str_range:nnn{#1}{3}{4}\slash\str_range:nnn{#2}{3}{4}
-}
+% Safra (seção 5.4): a norma prevê notação com dois últimos dígitos
+% (ex.: "Safra 23/24"), mas essa convenção é ambígua a partir de 2000
+% e provavelmente obsoleta. Não implementado — ver checklist.
 
 % =============================================================================
 % 12. CLASSES DE FREQUÊNCIA (seção 6)
 % =============================================================================
 
 % w ⊢ z — inclui inferior, exclui superior (seção 6.1)
-\NewDocumentCommand{\ibgeClasseIE}{ m m }{ #1~a~menos~de~#2 }
+\NewDocumentCommand{\abntClasseIE}{ m m }{ #1~a~menos~de~#2 }
 
 % w ⊣ z — exclui inferior, inclui superior (seção 6.2)
-\NewDocumentCommand{\ibgeClasseEI}{ m m }{ mais~de~#1~a~#2 }
+\NewDocumentCommand{\abntClasseEI}{ m m }{ mais~de~#1~a~#2 }
 
 % w ⊢⊣ z — inclui ambos (seção 6.3)
-\NewDocumentCommand{\ibgeClasseII}{ m m }{ #1~a~#2 }
+\NewDocumentCommand{\abntClasseII}{ m m }{ #1~a~#2 }
 
 % =============================================================================
 % 13. NOTA DE ARREDONDAMENTO (seção 7)
 % =============================================================================
 
-\NewDocumentCommand{\ibgeNotaArrend}{}{%
+\NewDocumentCommand{\abntNotaArrend}{}{%
   Dados~numéricos~arredondados.~%
   As~divergências~entre~a~soma~das~parcelas~e~os~totais~são~provenientes~%
   do~critério~de~arredondamento.%
