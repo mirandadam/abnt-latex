@@ -1,0 +1,7 @@
+[doc]
+name = "latex-abnt"
+
+[[output]]
+name = "default"
+type = "pdf"
+tex_format = "latex"
