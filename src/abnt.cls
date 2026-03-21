@@ -199,8 +199,13 @@
 %       e) local (cidade)
 %       f) ano de depósito/entrega
 % =============================================================================
+% Página de título sem resetar o contador (diferente de titlepage).
+% O ambiente titlepage do LaTeX faz \setcounter{page}{1} a cada uso,
+% violando a contagem sequencial exigida pela NBR 14724 seção 5.3.
 \NewDocumentCommand{\imprimircapa}{}{
-  \begin{titlepage}
+  \clearpage
+  \thispagestyle{empty}
+  \group_begin:
     \centering
     \onehalfspacing
 
@@ -227,7 +232,8 @@
     \par
     \tl_use:N \g__abnt_ano_tl
 
-  \end{titlepage}
+  \group_end:
+  \clearpage
 }
 
 % =============================================================================
@@ -241,7 +247,9 @@
 %       f) ano de depósito/entrega
 % =============================================================================
 \NewDocumentCommand{\imprimirfolhaderosto}{}{
-  \begin{titlepage}
+  \clearpage
+  \thispagestyle{empty}
+  \group_begin:
     \centering
     \onehalfspacing
 
@@ -290,7 +298,8 @@
     \par
     \tl_use:N \g__abnt_ano_tl
 
-  \end{titlepage}
+  \group_end:
+  \clearpage
 }
 
 % =============================================================================

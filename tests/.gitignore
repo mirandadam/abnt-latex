@@ -1,0 +1,21 @@
+# Intermediários LaTeX
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.out
+*.toc
+*.idx
+*.ind
+*.ilg
+*.ist
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+
+# PDFs gerados (testes visuais, não versionados)
+*.pdf
+
+# Subdiretório de saída do latexmk
+out/

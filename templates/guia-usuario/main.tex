@@ -1,0 +1,1310 @@
+% =============================================================================
+% main.tex
+% Guia do Usuário — latex-abnt
+%
+% Este documento funciona simultaneamente como:
+%   1. Manual de referência de todos os comandos do projeto
+%   2. Exemplo compilável de um trabalho acadêmico ABNT válido
+%   3. Checklist de conformidade ABNT
+%
+% Compilação (a partir do diretório deste arquivo):
+%   TEXINPUTS=../../src: latexmk -pdf -shell-escape main.tex
+%
+% Ou a partir da raiz do projeto (requer -output-directory):
+%   TEXINPUTS=./src: latexmk -pdf -shell-escape -output-directory=templates/guia-usuario templates/guia-usuario/main.tex
+% =============================================================================
+
+\documentclass{abnt-trabalho-academico}
+
+% Pacotes não carregados automaticamente pela classe:
+\usepackage{abnt-resumo}               % resumo e abstract
+\usepackage{abnt-citacoes}             % citações (carrega abnt-refs automaticamente)
+\usepackage{ibge-tabelas}              % tabelas no padrão IBGE
+\usepackage{abnt-indice}               % índice remissivo
+\usepackage{abnt-lombada}              % lombada
+
+% O biblatex é carregado por abnt-refs (via abnt-citacoes).
+\addbibresource{refs.bib}
+
+% Pacote auxiliar para exemplos verbatim em minipage
+\usepackage{fancyvrb}
+
+% Comando \code para uso dentro de tabelaibge (onde \verb é proibido)
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\bsl}{\textbackslash}
+
+% --- Metadados ---
+\titulo{Guia do Usuário --- latex-abnt}
+\subtitulo{classes e pacotes LaTeX para normas ABNT}
+\autor{Equipe latex-abnt}
+\orientador{(não aplicável)}
+\instituicao{Projeto latex-abnt}
+\local{Brasília}
+\ano{2026}
+\natureza{Guia de referência elaborado como exemplo de documento acadêmico
+  formatado com as classes e pacotes do projeto latex-abnt.}
+\programa{Documentação do projeto}
+
+% Dados da lombada
+\lombadaElementos{v.~1}
+\lombadaLogomarcaTexto{ABNT}
+
+% =============================================================================
+\begin{document}
+
+% =====================================================================
+% PRÉ-TEXTUAIS
+% =====================================================================
+\imprimircapa
+\imprimirfolhaderosto
+
+% Folha de aprovação com placeholders (documento não é acadêmico real)
+\dataaprovacao{1 de janeiro de 2026}
+\membrodabanca{Colaborador A}{Desenvolvedor --- Projeto latex-abnt}
+\membrodabanca{Colaborador B}{Revisor --- Projeto latex-abnt}
+\membrodabanca{Colaborador C}{Testador --- Projeto latex-abnt}
+\imprimirfolhadeaprovacao
+
+\imprimirdedicatoria{%
+  A todos os estudantes e pesquisadores brasileiros que dedicam
+  tempo e esforço para formatar seus trabalhos conforme as normas ABNT.}
+
+\imprimiragradecimentos{%
+  Agradecemos à comunidade \LaTeX{} brasileira, em particular ao projeto
+  abnTeX2, que inspirou este trabalho.
+
+  Agradecemos também aos mantenedores do biblatex-abnt, do tabularray
+  e de todos os pacotes dos quais este projeto depende.}
+
+\imprimirepigrafe{%
+  ``A tipografia é o ofício que dá forma visível e durável
+  --- e portanto existência independente --- ao pensamento humano.''
+  (Robert Bringhurst)}
+
+\imprimirresumo{%
+  Este documento apresenta o projeto latex-abnt, um conjunto de classes
+  e pacotes LaTeX para formatação de documentos conforme normas da
+  Associação Brasileira de Normas Técnicas. O guia descreve a instalação,
+  configuração e uso de cada componente, cobrindo trabalhos acadêmicos
+  e projetos de pesquisa. O próprio documento serve como exemplo compilável
+  de um trabalho acadêmico ABNT, utilizando todos os recursos descritos.
+  São apresentados os comandos para estrutura do documento, numeração
+  progressiva de seções, citações e referências bibliográficas, tabelas
+  no padrão IBGE, índice remissivo e lombada. O documento inclui ainda
+  um checklist de conformidade com itens que as normas exigem mas que
+  o LaTeX não automatiza, e uma referência rápida de todos os comandos
+  públicos do projeto.}{%
+  latex-abnt; ABNT; LaTeX; normas; trabalho acadêmico}
+
+\imprimirabstract{%
+  This document presents the latex-abnt project, a set of LaTeX classes
+  and packages for formatting documents according to the standards of the
+  Brazilian Association of Technical Standards (ABNT). The guide describes
+  the installation, configuration and use of each component, covering
+  academic works and research projects. The document itself serves as a
+  compilable example of an ABNT academic work, using all the features
+  described. Commands for document structure, progressive section numbering,
+  citations and bibliographic references, IBGE-standard tables, back-of-book
+  index and spine are presented. The document also includes a conformance
+  checklist with items that standards require but LaTeX does not automate,
+  and a quick reference of all public commands.}{%
+  latex-abnt; ABNT; LaTeX; standards; academic work}
+
+\imprimirsumario
+
+% =====================================================================
+% ELEMENTOS TEXTUAIS
+% =====================================================================
+\textual
+
+% =====================================================================
+% CAPÍTULO 1 — INTRODUÇÃO
+% =====================================================================
+\chapter{Introdução}\label{ch:introducao}
+
+\index{introdução}
+
+O projeto latex-abnt fornece classes e pacotes \LaTeX{} para formatar
+documentos conforme as normas da Associação Brasileira de Normas Técnicas
+(ABNT)\index{ABNT}. O objetivo é oferecer uma alternativa moderna e
+modular ao abnTeX2, aproveitando os recursos do \LaTeX{} atual (formato
+2020+, expl3).
+
+Este guia cumpre três funções: manual de referência dos comandos,
+exemplo compilável de trabalho acadêmico e checklist de conformidade.
+O próprio documento que o leitor tem em mãos foi formatado com
+\verb|\documentclass{abnt-trabalho-academico}| e demonstra na prática
+todos os recursos descritos.
+
+\section{Início rápido}\label{sec:inicio-rapido}
+
+\index{início rápido}
+Para produzir um documento ABNT funcional, são necessários três passos:
+
+\begin{alineas}
+  \item criar um arquivo \verb|main.tex| com o preâmbulo mínimo mostrado
+    a seguir;
+  \item preencher os metadados (\verb|\titulo|, \verb|\autor|, etc.)
+    e o conteúdo;
+  \item compilar com o comando indicado abaixo.
+\end{alineas}
+
+Preâmbulo mínimo:
+
+\begin{Verbatim}[fontsize=\small]
+\documentclass{abnt-trabalho-academico}
+\usepackage{abnt-citacoes}
+\addbibresource{refs.bib}
+
+\titulo{Título do trabalho}
+\autor{Nome do Autor}
+\orientador{Nome do Orientador}
+\instituicao{Nome da Instituição}
+\local{Cidade}
+\ano{2026}
+\natureza{Dissertação apresentada ao Programa...}
+
+\begin{document}
+\imprimircapa
+\imprimirfolhaderosto
+\imprimirsumario
+\textual
+
+\chapter{Introdução}
+Texto do trabalho \parencite{referencia}.
+
+\postextual
+\imprimirreferencias
+\end{document}
+\end{Verbatim}
+
+Comando de compilação (a partir da raiz do projeto):
+
+\begin{Verbatim}[fontsize=\small]
+TEXINPUTS=./src: latexmk -pdf -shell-escape main.tex
+\end{Verbatim}
+
+O \verb|latexmk| detecta e invoca automaticamente o Biber (para
+referências) e o makeindex (para índice remissivo). A opção
+\verb|-shell-escape| é necessária porque o pacote \verb|abnt-indice|
+usa \verb|imakeidx|, que chama \verb|makeindex| via \verb|\write18|.
+
+\section{Requisitos}\label{sec:requisitos}
+
+\index{requisitos}
+O projeto requer:
+
+\begin{alineas}
+  \item TeX Live (pdfLaTeX\index{pdfLaTeX} ou
+    XeLaTeX\index{XeLaTeX}) --- distribuição 2020 ou posterior;
+  \item Biber\index{Biber} --- backend do biblatex;
+  \item biblatex-abnt\index{biblatex-abnt} --- estilo ABNT para biblatex
+    (disponível no CTAN e no TeX Live).
+\end{alineas}
+
+\section{Classes disponíveis}\label{sec:classes}
+
+\index{classes}
+O projeto oferece duas classes, ambas herdando de \verb|abnt.cls|:
+
+\begin{alineas}
+  \item \verb|abnt-trabalho-academico| --- para trabalhos acadêmicos
+    conforme NBR 14724:2024 (teses, dissertações, TCCs);
+  \item \verb|abnt-projeto-pesquisa| --- para projetos de pesquisa
+    conforme NBR 15287:2025 (sem dedicatória, agradecimentos, epígrafe,
+    folha de aprovação nem resumos).
+\end{alineas}
+
+Ambas as classes carregam automaticamente apenas \verb|abnt-sumario| e
+\verb|abnt-numeracao|. Os demais pacotes devem ser incluídos pelo
+usuário com \verb|\usepackage|.
+
+\section{Pacotes e normas}\label{sec:pacotes-normas}
+
+\index{pacotes}
+A tabela a seguir resume qual pacote implementa qual norma:
+
+\begin{tabela}{Pacotes do projeto latex-abnt e normas correspondentes}
+  \label{tab:pacotes}
+  \ibgeFonte{Elaboração própria.}
+  \begin{tabelaibge}{colspec={llp{6cm}}}
+    Pacote & Norma & Função \\
+    \code{abnt-numeracao} & NBR 6024:2012 & Numeração progressiva de seções \\
+    \code{abnt-sumario}   & NBR 6027:2012 & Formatação do sumário \\
+    \code{abnt-resumo}    & NBR 6028:2021 & Resumo e abstract \\
+    \code{abnt-indice}    & NBR 6034:2004 & Índice remissivo \\
+    \code{abnt-refs}      & NBR 6023:2025 & Referências bibliográficas \\
+    \code{abnt-citacoes}  & NBR 10520:2023 & Citações \\
+    \code{ibge-tabelas}   & IBGE 1993     & Tabelas no padrão IBGE \\
+    \code{abnt-lombada}   & NBR 12225:2023 & Lombada \\
+  \end{tabelaibge}
+\end{tabela}
+
+% =====================================================================
+% CAPÍTULO 2 — ESTRUTURA DO DOCUMENTO
+% =====================================================================
+\chapter{Estrutura do documento}\label{ch:estrutura}
+
+\index{estrutura do documento}
+Um trabalho acadêmico ABNT divide-se em três partes: pré-textuais,
+textuais e pós-textuais. A classe \verb|abnt-trabalho-academico|
+fornece comandos para cada elemento. A sequência recomendada é
+apresentada a seguir.
+
+\section{Metadados}\label{sec:metadados}
+
+\index{metadados}
+Os metadados são definidos no preâmbulo, antes de \verb|\begin{document}|.
+Todos os comandos aceitam um argumento obrigatório:
+
+\begin{Verbatim}[fontsize=\small]
+\titulo{Título do trabalho}
+\subtitulo{subtítulo, se houver}
+\autor{Nome completo do autor}
+\orientador{Nome do orientador}
+\coorientador{Nome do coorientador}
+\instituicao{Nome da instituição}
+\local{Cidade}
+\ano{2026}
+\natureza{Dissertação apresentada ao Programa de...}
+\programa{Programa de Pós-Graduação em...}
+\area{Área de concentração}
+\end{Verbatim}
+
+Os comandos \verb|\titulo| e \verb|\autor| são obrigatórios para a capa
+e folha de rosto. Os demais são opcionais (campos vazios são omitidos
+silenciosamente). O hyperref preenche automaticamente os metadados PDF
+(\verb|pdftitle|, \verb|pdfauthor|) a partir de \verb|\titulo| e
+\verb|\autor|.
+
+\section{Elementos pré-textuais}\label{sec:pretextuais}
+
+\index{pré-textuais}
+A sequência dos elementos pré-textuais segue a NBR 14724. O comando
+\verb|\pretextual| é chamado automaticamente por \verb|\begin{document}|
+(não é necessário invocá-lo manualmente).
+
+\begin{Verbatim}[fontsize=\small]
+\begin{document}
+\imprimircapa
+\imprimirfolhaderosto
+% Folha de aprovação (após defesa):
+\dataaprovacao{15 de março de 2026}
+\membrodabanca{Prof. Dr. Fulano}{Doutor --- Universidade X}
+\membrodabanca{Profa. Dra. Beltrana}{Doutora --- Universidade Y}
+\imprimirfolhadeaprovacao
+\imprimirdedicatoria{Texto da dedicatória.}
+\imprimiragradecimentos{Texto dos agradecimentos.}
+\imprimirepigrafe{``Citação inspiradora.'' (Autor)}
+\imprimirresumo{Texto do resumo...}{palavra1; palavra2; palavra3}
+\imprimirabstract{Abstract text...}{keyword1; keyword2; keyword3}
+\imprimirsumario
+\end{Verbatim}
+
+Cada comando gera o elemento em página própria. A capa e a folha de
+rosto são geradas por \verb|\imprimircapa| e \verb|\imprimirfolhaderosto|,
+respectivamente.
+
+A folha de aprovação requer \verb|\dataaprovacao{data}| e uma ou mais
+chamadas de \verb|\membrodabanca{nome}{titulação}| antes de
+\verb|\imprimirfolhadeaprovacao|. Se nenhum membro for definido,
+placeholders são inseridos automaticamente.
+
+O comando \verb|\imprimirdedicatoria{texto}| posiciona o texto na parte
+inferior direita da página. O comando \verb|\imprimiragradecimentos{texto}|
+aceita parágrafos múltiplos (argumento \verb|+m| no LaTeX3). O comando
+\verb|\imprimirepigrafe{texto}| usa o mesmo layout da dedicatória.
+
+\subsection{Paginação pré-textual}\label{subsec:paginacao-pre}
+
+\index{paginação}
+A paginação pré-textual segue a NBR 14724 seção 5.3: as páginas são
+contadas em arábico desde a primeira página (capa), mas os números não
+são exibidos. Quando \verb|\textual| é chamado, a contagem \emph{não}
+reinicia --- a primeira página textual terá número maior que~1.
+
+\section{Transição para o texto}\label{sec:textual}
+
+O comando \verb|\textual| ativa a exibição dos números de página e
+restaura o estilo \verb|fancy|. Deve ser chamado imediatamente antes
+do primeiro capítulo:
+
+\begin{Verbatim}[fontsize=\small]
+\textual
+\chapter{Introdução}
+...
+\end{Verbatim}
+
+\section{Elementos pós-textuais}\label{sec:postextuais}
+
+\index{pós-textuais}
+O comando \verb|\postextual| marca o início dos elementos pós-textuais.
+A paginação contínua é mantida. Os comandos típicos são:
+
+\begin{Verbatim}[fontsize=\small]
+\postextual
+\imprimirreferencias   % gera a lista de referências
+\imprimirindice        % gera o índice remissivo
+\end{Verbatim}
+
+O comando \verb|\imprimirreferencias| é um wrapper para
+\verb|\printbibliography| com heading customizado (``REFERÊNCIAS'',
+centralizado, em maiúsculas e negrito). O comando \verb|\imprimirindice|
+aceita um argumento opcional \verb|[nome]| para índices nomeados
+(quando se usa múltiplos índices via imakeidx).
+
+\section{Projeto de pesquisa}\label{sec:projeto-pesquisa}
+
+\index{projeto de pesquisa}
+A classe \verb|abnt-projeto-pesquisa| implementa a NBR 15287:2025.
+As diferenças em relação ao trabalho acadêmico são:
+
+\begin{alineas}
+  \item a capa é elemento opcional (não obrigatório);
+  \item não existem dedicatória, agradecimentos, epígrafe, folha de
+    aprovação nem resumos;
+  \item o comando \verb|\postextual| \textbf{não existe} --- use
+    \verb|\pagestyle{fancy}| diretamente se necessário.
+\end{alineas}
+
+Comandos disponíveis: \verb|\imprimircapa|, \verb|\imprimirfolhaderosto|,
+\verb|\imprimirsumario|, \verb|\textual| e todos os metadados.
+Comandos \textbf{não} disponíveis: \verb|\imprimirfolhadeaprovacao|,
+\verb|\imprimirdedicatoria|, \verb|\imprimiragradecimentos|,
+\verb|\imprimirepigrafe|, \verb|\postextual|.
+
+Exemplo mínimo de projeto de pesquisa:
+
+\begin{Verbatim}[fontsize=\small]
+\documentclass{abnt-projeto-pesquisa}
+\usepackage{abnt-citacoes}
+\addbibresource{refs.bib}
+
+\titulo{Título do projeto}
+\autor{Nome do Autor}
+\orientador{Nome do Orientador}
+\instituicao{Universidade}
+\local{Cidade}
+\ano{2026}
+\natureza{Projeto de pesquisa apresentado ao...}
+
+\begin{document}
+\imprimircapa
+\imprimirfolhaderosto
+\imprimirsumario
+\textual
+
+\chapter{Tema}
+Texto do projeto \parencite{referencia}.
+
+\imprimirreferencias
+\end{document}
+\end{Verbatim}
+
+
+% =====================================================================
+% CAPÍTULO 3 — NUMERAÇÃO E SEÇÕES
+% =====================================================================
+\chapter{Numeração e seções}\label{ch:numeracao}
+
+\index{numeração progressiva}
+\index{abnt-numeracao}
+O pacote \verb|abnt-numeracao| implementa a NBR 6024:2012, que
+regulamenta a numeração progressiva das seções de um documento. Este
+pacote é carregado automaticamente pelas duas classes do projeto.
+
+\section{Níveis de seção}\label{sec:niveis}
+
+Com as classes ABNT (que herdam de \verb|report|), os cinco níveis
+de seção são mapeados da seguinte forma:
+
+\begin{alineas}
+  \item nível primário: \verb|\chapter| --- MAIÚSCULAS + NEGRITO;
+  \item nível secundário: \verb|\section| --- MAIÚSCULAS;
+  \item nível terciário: \verb|\subsection| --- negrito;
+  \item nível quaternário: \verb|\subsubsection| --- normal;
+  \item nível quinário: \verb|\paragraph| --- itálico.
+\end{alineas}
+
+Este próprio guia demonstra a formatação: os capítulos estão em
+maiúsculas e negrito, as seções em maiúsculas sem negrito, e assim
+por diante. A hierarquia tipográfica segue a NBR 6024 seção 4.1.j.
+
+\subsection{Exemplo de nível terciário}
+
+Este é um exemplo de seção terciária (\verb|\subsection|), formatada
+em negrito conforme a norma.
+
+\subsubsection{Exemplo de nível quaternário}
+
+Este é um exemplo de seção quaternária (\verb|\subsubsection|),
+formatada em texto normal (sem negrito nem itálico).
+
+\paragraph{Exemplo de nível quinário}
+
+Este é um exemplo de seção quinária (\verb|\paragraph|), formatada
+em itálico conforme a norma.
+
+\section{Uso standalone com article}\label{sec:standalone-article}
+
+\index{standalone}
+Quando o pacote é usado com \verb|\documentclass{article}| (sem as
+classes ABNT), a correspondência muda porque \verb|article| não possui
+\verb|\chapter|:
+
+\begin{alineas}
+  \item nível primário: \verb|\section|;
+  \item nível secundário: \verb|\subsection|;
+  \item nível terciário: \verb|\subsubsection|;
+  \item nível quaternário: \verb|\paragraph|;
+  \item nível quinário: \verb|\subparagraph|.
+\end{alineas}
+
+\section{Títulos sem indicativo numérico}\label{sec:titulos-sem-numero}
+
+\index{títulos sem indicativo}
+Títulos sem indicativo numérico (como RESUMO, ABSTRACT, SUMÁRIO,
+REFERÊNCIAS) são gerados com \verb|\chapter*{TÍTULO}|. O pacote
+\verb|abnt-numeracao| formata esses títulos centralizados, com o mesmo
+destaque tipográfico das seções primárias (maiúsculas e negrito),
+conforme a NBR 6024 seção 4.1.h.
+
+\section{Alíneas e subalíneas}\label{sec:alineas}
+
+\index{alíneas}
+\index{subalíneas}
+O pacote fornece os ambientes \verb|alineas| e \verb|subalineas|,
+conforme as seções 4.2 e 4.3 da NBR 6024:
+
+\begin{Verbatim}[fontsize=\small]
+\begin{alineas}
+  \item primeiro item;
+  \item segundo item:
+    \begin{subalineas}
+      \item primeiro subitem;
+      \item segundo subitem;
+    \end{subalineas}
+  \item terceiro item.
+\end{alineas}
+\end{Verbatim}
+
+Resultado:
+
+\begin{alineas}
+  \item primeiro item;
+  \item segundo item:
+    \begin{subalineas}
+      \item primeiro subitem;
+      \item segundo subitem;
+    \end{subalineas}
+  \item terceiro item.
+\end{alineas}
+
+As alíneas usam letras minúsculas seguidas de parêntese: a), b),~\ldots,
+z), aa), bb),~\ldots, zz). O limite é de 52~itens; acima disso, um erro
+é emitido. As subalíneas usam travessão como marcador.
+
+A pontuação das alíneas (ponto e vírgula entre itens, ponto final no
+último) é responsabilidade do usuário --- o \LaTeX{} não automatiza isso.
+
+\section{Opção de maiúsculas}\label{sec:opcao-maiusculas}
+
+\index{maiúsculas}
+Por padrão, o pacote aplica maiúsculas automáticas nos títulos de seção
+primária e secundária. Para desligar esse comportamento:
+
+\begin{Verbatim}[fontsize=\small]
+\usepackage[maiusculas=false]{abnt-numeracao}
+\end{Verbatim}
+
+
+% =====================================================================
+% CAPÍTULO 4 — CITAÇÕES E REFERÊNCIAS
+% =====================================================================
+\chapter{Citações e referências}\label{ch:citacoes}
+
+\index{citações}
+\index{abnt-citacoes}
+\index{abnt-refs}
+Os pacotes \verb|abnt-citacoes| (NBR 10520:2023) e \verb|abnt-refs|
+(NBR 6023:2025) configuram o biblatex-abnt para produzir citações e
+referências conforme as normas ABNT. O \verb|abnt-citacoes| carrega
+\verb|abnt-refs| automaticamente.
+
+\section{Sistema autor-data}\label{sec:autor-data}
+
+\index{autor-data}
+O sistema autor-data é o padrão. Os principais comandos de citação são
+fornecidos pelo biblatex-abnt:
+
+\begin{alineas}
+  \item \verb|\textcite{chave}| --- citação no corpo do texto:
+    \textcite{abnt2024};
+  \item \verb|\parencite{chave}| --- citação entre parênteses:
+    \parencite{medeiros2019};
+  \item \verb|\parencite[p.~42]{chave}| --- com indicação de página:
+    \parencite[p.~42]{abnt2024}.
+\end{alineas}
+
+Com quatro ou mais autores, o biblatex-abnt aplica \textit{et al.}
+automaticamente: \parencite{cervo2007}.
+
+Quando há duas obras do mesmo autor no mesmo ano, o biblatex-abnt
+desambigua com letras: \parencite{silva2020a} e \parencite{silva2020b}.
+
+\section{Sistema numérico}\label{sec:numerico}
+
+\index{sistema numérico}
+Para usar o sistema numérico, altere a opção no preâmbulo:
+
+\begin{Verbatim}[fontsize=\small]
+\usepackage[sistema=numerico]{abnt-citacoes}
+\end{Verbatim}
+
+\section{Citação direta longa}\label{sec:citacao-direta}
+
+\index{citação direta}
+\index{citacaodireta}
+Citações diretas com mais de três linhas devem usar o ambiente
+\verb|citacaodireta|, que aplica recuo de 4~cm, fonte menor (10pt)
+e espaçamento simples:
+
+\begin{Verbatim}[fontsize=\small]
+\begin{citacaodireta}
+Texto da citação longa \parencite[p.~50]{chave}.
+\end{citacaodireta}
+\end{Verbatim}
+
+Exemplo real:
+
+\begin{citacaodireta}
+A normalização de documentos acadêmicos no Brasil evoluiu significativamente
+nas últimas décadas, acompanhando as transformações tecnológicas e as
+demandas crescentes por padronização na produção científica. As normas
+da ABNT estabelecem critérios claros para apresentação, citação e
+referenciação, contribuindo para a qualidade e a acessibilidade do
+conhecimento produzido nas universidades brasileiras
+\parencite[p.~50]{medeiros2019}.
+\end{citacaodireta}
+
+A detecção automática de citações longas (mais de três linhas) não é
+viável em \TeX{}; o usuário decide quando usar o ambiente.
+
+\section{Citação de citação}\label{sec:apud}
+
+\index{apud}
+A citação de citação (apud) é feita combinando \verb|\textcite| ou
+\verb|\parencite| com a indicação explícita da fonte intermediária.
+O biblatex-abnt oferece suporte nativo a essa construção. Exemplo:
+
+\begin{Verbatim}[fontsize=\small]
+\textcite{autor-original} apud \textcite{autor-consultado}
+\end{Verbatim}
+
+\section{Referências}\label{sec:referencias}
+
+\index{referências}
+A lista de referências é gerada por \verb|\imprimirreferencias|,
+que chama \verb|\printbibliography| com heading customizado. O título
+``REFERÊNCIAS'' aparece centralizado, em maiúsculas e negrito, e é
+adicionado ao sumário automaticamente.
+
+\section{Backref}\label{sec:backref}
+
+\index{backref}
+O backref (indicação das páginas onde cada referência é citada) é
+ativado por padrão. Para desligá-lo:
+
+\begin{Verbatim}[fontsize=\small]
+\usepackage[backref=false]{abnt-citacoes}
+\end{Verbatim}
+
+A opção \verb|backref| de \verb|abnt-citacoes| é repassada para
+\verb|abnt-refs|, que a repassa para o biblatex.
+
+\section{Arquivo bib}\label{sec:arquivo-bib}
+
+\index{arquivo bib}
+O arquivo \verb|.bib| segue o formato padrão do biblatex-abnt (que
+é compatível com o formato BibLaTeX geral). O \verb|refs.bib| deste
+guia contém exemplos de livro, artigo, recurso online, obra com
+múltiplos autores e entradas duplicadas de mesmo autor/ano.
+
+O biblatex-abnt está alinhado com a NBR 6023:2018; as diferenças
+para a revisão 2025 são marginais (ISSN opcional, e-locator, etc.)
+e devem ser aplicadas manualmente se exigidas pela instituição.
+
+
+% =====================================================================
+% CAPÍTULO 5 — TABELAS
+% =====================================================================
+\chapter{Tabelas}\label{ch:tabelas}
+
+\index{tabelas}
+\index{ibge-tabelas}
+O pacote \verb|ibge-tabelas| implementa as Normas de Apresentação
+Tabular do IBGE (3ª edição, 1993)\index{IBGE}. Ele fornece ambientes
+e comandos para tabelas com três traços horizontais, sem bordas
+verticais laterais, com rodapé padronizado.
+
+\section{Ambiente tabela}\label{sec:ambiente-tabela}
+
+O ambiente \verb|tabela{Título}| é um wrapper que integra float, caption
+e rodapé como unidade coesa. Dentro dele, usa-se o ambiente interno
+\verb|tabelaibge| com a opção \verb|colspec|:
+
+\begin{Verbatim}[fontsize=\small]
+\begin{tabela}{Título da tabela}
+  \label{tab:exemplo}
+  \ibgeFonte{Elaboração própria.}
+  \begin{tabelaibge}{colspec={lrr}}
+    Coluna A & Coluna B & Coluna C \\
+    Dado 1   & \num{100} & \num{50.5} \\
+    Dado 2   & \num{200} & \num{75.3} \\
+  \end{tabelaibge}
+\end{tabela}
+\end{Verbatim}
+
+\section{Rodapé da tabela}\label{sec:rodape-tabela}
+
+\index{rodapé da tabela}
+O rodapé segue ordem rígida: Fonte, Nota geral, Notas específicas.
+Os comandos devem ser usados dentro do ambiente \verb|tabela|, antes
+de \verb|\begin{tabelaibge}|:
+
+\begin{alineas}
+  \item \verb|\ibgeFonte{texto}| --- fonte obrigatória (seção 4.10).
+    A versão com estrela \verb|\ibgeFonte*{texto}| imprime ``Fontes:''
+    (plural);
+  \item \verb|\ibgeNota{texto}| --- nota geral (seção 4.11).
+    A versão com estrela \verb|\ibgeNota*{texto}| imprime ``Notas:''
+    (plural);
+  \item \verb|\ibgeNotaEsp{id}{texto}| --- nota específica (seção 4.12),
+    com \verb|\ibgeChamada{id}| no corpo da tabela para inserir a
+    chamada remissiva.
+\end{alineas}
+
+\section{Tabela com rodapé completo}\label{sec:tabela-completa}
+
+A Tabela~\ref{tab:demografica} demonstra o rodapé completo com fonte,
+nota geral e notas específicas.
+
+\begin{tabela}{População residente, por região --- Brasil --- 2022}
+  \label{tab:demografica}
+  \ibgeFonte{IBGE, Censo Demográfico 2022.}
+  \ibgeNota{Dados sujeitos a retificação.}
+  \ibgeNotaEsp{1}{Inclui estimativas para municípios sem coleta}
+  \ibgeNotaEsp{2}{Exclusive a população rural de Rondônia e Acre}
+  \begin{tabelaibge}{colspec={lrrr}}
+    Região       & Homens\ibgeChamada{1} & Mulheres & Total\ibgeChamada{2} \\
+    Norte        & \num{9200000}   & \num{9100000}  & \num{18300000} \\
+    Nordeste     & \num{27500000}  & \num{29000000} & \num{56500000} \\
+    Sudeste      & \num{42100000}  & \num{44900000} & \num{87000000} \\
+    Sul          & \num{14800000}  & \num{15200000} & \num{30000000} \\
+    Centro-Oeste & \num{8200000}   & \num{8300000}  & \num{16500000} \\
+  \end{tabelaibge}
+\end{tabela}
+
+\section{Sinais convencionais}\label{sec:sinais}
+
+\index{sinais convencionais}
+O pacote define comandos semânticos para os sinais convencionais do
+IBGE (seção 4.8.1):
+
+\begin{alineas}
+  \item \verb|\ibgeSinalZero| --- dado igual a zero, não resultante
+    de arredondamento: \ibgeSinalZero;
+  \item \verb|\ibgeSinalNA| --- não se aplica: \ibgeSinalNA;
+  \item \verb|\ibgeSinalND| --- dado não disponível: \ibgeSinalND;
+  \item \verb|\ibgeSinalOmitido| --- dado omitido: \ibgeSinalOmitido;
+  \item \verb|\ibgeSinalArrZero[casas]| --- zero por arredondamento,
+    ex.: \verb|\ibgeSinalArrZero[2]| produz ``\ibgeSinalArrZero[2]'';
+  \item \verb|\ibgeSinalArrZero*[casas]| --- idem, valor negativo,
+    ex.: \verb|\ibgeSinalArrZero*[2]| produz ``\ibgeSinalArrZero*[2]''.
+\end{alineas}
+
+A Tabela~\ref{tab:sinais} demonstra o uso dos sinais:
+
+\begin{tabela}{Demonstração dos sinais convencionais}
+  \label{tab:sinais}
+  \ibgeFonte{Dados fictícios para demonstração.}
+  \begin{tabelaibge}{colspec={lrrr}}
+    Indicador   & 2020              & 2021            & 2022 \\
+    Produção A  & \num{1500.20}     & \num{1620.50}   & \num{1780.30} \\
+    Produção B  & \ibgeSinalZero    & \num{42.10}     & \num{85.60} \\
+    Produção C  & \ibgeSinalNA      & \ibgeSinalNA    & \num{10.00} \\
+    Produção D  & \ibgeSinalND      & \num{320.00}    & \num{340.00} \\
+    Produção E  & \ibgeSinalOmitido & \ibgeSinalOmitido & \num{5.00} \\
+    Arrend.     & \ibgeSinalArrZero[2] & \num{0.10}   & \num{0.20} \\
+  \end{tabelaibge}
+\end{tabela}
+
+\section{Séries temporais}\label{sec:series}
+
+\index{séries temporais}
+Comandos para apresentação de tempo (IBGE seção 5):
+
+\begin{alineas}
+  \item \verb|\ibgeSerieConsec{1981}{1985}| --- série consecutiva:
+    \ibgeSerieConsec{1981}{1985};
+  \item \verb|\ibgeSerieNConsec{1981}{1985}| --- série não consecutiva:
+    \ibgeSerieNConsec{1981}{1985};
+  \item \verb|\ibgeSafra{2020}{2021}| --- safra agrícola (recebe anos
+    com 4 dígitos): \ibgeSafra{2020}{2021}.
+\end{alineas}
+
+\section{Classes de frequência}\label{sec:classes-freq}
+
+\index{classes de frequência}
+Comandos para notação textual de classes de frequência (IBGE seção 6):
+
+\begin{alineas}
+  \item \verb|\ibgeClasseIE{10}{20}| --- inclui inferior, exclui
+    superior: \ibgeClasseIE{10}{20};
+  \item \verb|\ibgeClasseEI{10}{20}| --- exclui inferior, inclui
+    superior: \ibgeClasseEI{10}{20};
+  \item \verb|\ibgeClasseII{10}{20}| --- inclui ambos:
+    \ibgeClasseII{10}{20}.
+\end{alineas}
+
+\section{Nota de arredondamento}\label{sec:nota-arrend}
+
+\index{nota de arredondamento}
+O comando \verb|\ibgeNotaArrend| produz o texto padronizado:
+
+\ibgeNotaArrend
+
+\section{Formatação numérica}\label{sec:num}
+
+\index{formatação numérica}
+\index{siunitx}
+O pacote configura o siunitx com vírgula decimal e espaço fino como
+separador de milhar (padrão IBGE). O comando \verb|\num{1234567}|
+produz: \num{1234567}.
+
+\section{Opções do pacote}\label{sec:opcoes-ibge}
+
+\index{chamada remissiva}
+As opções disponíveis para \verb|ibge-tabelas| são:
+
+\begin{alineas}
+  \item \verb|chamada=parenteses| (padrão), \verb|chamada=colchetes|
+    ou \verb|chamada=exponencial| --- formato da chamada remissiva;
+  \item \verb|subordinar=true| --- subordina a numeração das tabelas
+    aos capítulos (ex.: ``Tabela 1.1'' em vez de ``Tabela 1'').
+\end{alineas}
+
+
+% =====================================================================
+% CAPÍTULO 6 — OUTROS ELEMENTOS
+% =====================================================================
+\chapter{Outros elementos}\label{ch:outros}
+
+\section{Resumo e abstract}\label{sec:resumo-detalhe}
+
+\index{resumo}
+\index{abstract}
+\index{abnt-resumo}
+O pacote \verb|abnt-resumo| (NBR 6028:2021) fornece os comandos
+\verb|\imprimirresumo{texto}{palavras-chave}| e
+\verb|\imprimirabstract{text}{keywords}|. O fluxo de quando e onde
+usá-los foi apresentado no Capítulo~\ref{ch:estrutura}. Esta seção
+detalha as opções e orientações da norma.
+
+Opções do pacote:
+
+\begin{alineas}
+  \item \verb|titulo-resumo=TEXTO| --- altera o título do resumo
+    (padrão: ``RESUMO'');
+  \item \verb|titulo-abstract=TEXTO| --- altera o título do abstract
+    (padrão: ``ABSTRACT'').
+\end{alineas}
+
+Exemplo de uso com opções:
+
+\begin{Verbatim}[fontsize=\small]
+\usepackage[titulo-resumo=RESUMO GERAL]{abnt-resumo}
+\end{Verbatim}
+
+Orientações da NBR 6028: o resumo deve ser redigido em parágrafo único,
+com extensão entre 150 e 500 palavras para trabalhos acadêmicos, e
+na terceira pessoa do singular.
+
+\section{Índice remissivo}\label{sec:indice-detalhe}
+
+\index{índice remissivo}
+\index{abnt-indice}
+O pacote \verb|abnt-indice| (NBR 6034:2004) integra o imakeidx para
+geração de índices remissivos com ordenação correta para o português.
+
+\subsection{Indexação de termos}
+
+Para indexar um termo, use o comando padrão do \LaTeX{}:
+
+\begin{Verbatim}[fontsize=\small]
+\index{termo}
+\index{termo!subtermo}
+\end{Verbatim}
+
+O pacote aplica automaticamente strip de acentos para a chave de
+ordenação (apenas com makeindex). Assim, \verb|\index{água}| é
+convertido internamente para \verb|\index{agua@água}|.
+
+\subsection{Remissivas}
+
+\index{remissivas}
+Dois comandos geram entradas de remissiva no índice:
+
+\begin{alineas}
+  \item \verb|\indiceVer{ONU}{Organização das Nações Unidas}| --- gera
+    ``ONU, \textit{ver} Organização das Nações Unidas'';
+  \item \verb|\indiceVerTambem{férias}{licença}| --- gera
+    ``férias, \textit{ver também} licença''.
+\end{alineas}
+
+\indiceVer{ONU}{Organização das Nações Unidas}
+\indiceVerTambem{normas}{padronização}
+
+\subsection{Impressão do índice}
+
+O comando \verb|\imprimirindice| gera o índice remissivo. Para índices
+nomeados (múltiplos índices), use o argumento opcional:
+
+\begin{Verbatim}[fontsize=\small]
+\imprimirindice          % índice padrão
+\imprimirindice[autores] % índice nomeado "autores"
+\end{Verbatim}
+
+\subsection{Opções do pacote}
+
+\begin{alineas}
+  \item \verb|titulo=TEXTO| --- altera o título do índice
+    (padrão: ``ÍNDICE'');
+  \item \verb|processador=makeindex| (padrão) ou
+    \verb|processador=xindy| --- seleciona o processador de índice.
+\end{alineas}
+
+\section{Lombada}\label{sec:lombada-detalhe}
+
+\index{lombada}
+\index{abnt-lombada}
+O pacote \verb|abnt-lombada| (NBR 12225:2023) gera uma página com o
+desenho da lombada para impressão e encadernação.
+
+\subsection{Conteúdo da lombada}
+
+Os comandos para definir o conteúdo são:
+
+\begin{alineas}
+  \item \verb|\lombadaAutor{nome}| --- nome do autor (o pacote herda
+    de \verb|\autor| automaticamente);
+  \item \verb|\lombadaTitulo{título}| --- título (o pacote herda
+    de \verb|\titulo| automaticamente);
+  \item \verb|\lombadaElementos{v.~1}| --- elementos alfanuméricos
+    (volume, fascículo);
+  \item \verb|\lombadaLogomarca{arquivo.png}| --- logomarca da
+    instituição (arquivo de imagem);
+  \item \verb|\lombadaLogomarcaTexto{SIGLA}| --- logomarca em texto
+    (alternativa ao arquivo de imagem).
+\end{alineas}
+
+O comando \verb|\imprimirlombada| gera a página com a lombada.
+
+\subsection{Opções do pacote}
+
+\begin{alineas}
+  \item \verb|disposicao=descendente| (padrão) ou
+    \verb|disposicao=horizontal| --- disposição do texto;
+  \item \verb|largura=2cm| (padrão) --- largura da lombada;
+  \item \verb|paginas=300| --- calcula a largura a partir do número
+    de páginas (aproximação);
+  \item \verb|espessura=0.1mm| (padrão) --- espessura por folha
+    (usada no cálculo com \verb|paginas|).
+\end{alineas}
+
+
+% =====================================================================
+% CAPÍTULO 7 — PERSONALIZAÇÃO
+% =====================================================================
+\chapter{Personalização}\label{ch:personalizacao}
+
+\index{personalização}
+
+\section{Links coloridos}\label{sec:links}
+
+\index{hyperref}
+\index{links}
+Por padrão, o hyperref é carregado com \verb|hidelinks| (links
+funcionais sem indicação visual). Para reativar a cor dos links:
+
+\begin{Verbatim}[fontsize=\small]
+\hypersetup{colorlinks, allcolors=blue}
+\end{Verbatim}
+
+Para bordas coloridas em vez de texto colorido:
+
+\begin{Verbatim}[fontsize=\small]
+\hypersetup{allbordercolors=blue}
+\end{Verbatim}
+
+\section{Maiúsculas automáticas}\label{sec:maiusculas-config}
+
+Para desligar a conversão automática de maiúsculas nos títulos de seção
+primária e secundária:
+
+\begin{Verbatim}[fontsize=\small]
+\usepackage[maiusculas=false]{abnt-numeracao}
+\end{Verbatim}
+
+\section{Sumário}\label{sec:sumario-config}
+
+\index{sumário}
+\index{abnt-sumario}
+O pacote \verb|abnt-sumario| aceita duas opções:
+
+\begin{alineas}
+  \item \verb|pontilhado=false| --- remove o pontilhado entre o título
+    e o número de página;
+  \item \verb|titulo=CONTEÚDO| --- altera o título do sumário
+    (padrão: ``SUMÁRIO'').
+\end{alineas}
+
+Exemplo:
+
+\begin{Verbatim}[fontsize=\small]
+\usepackage[pontilhado=false, titulo=CONTEÚDO]{abnt-sumario}
+\end{Verbatim}
+
+\section{Uso standalone dos pacotes}\label{sec:uso-standalone}
+
+\index{uso standalone}
+Os pacotes podem ser usados fora das classes ABNT, com
+\verb|\documentclass{article}| ou \verb|\documentclass{report}|.
+Nesse caso, o usuário precisa carregar manualmente os pacotes e
+configurar margens, fontes e espaçamento. Exemplo:
+
+\begin{Verbatim}[fontsize=\small]
+\documentclass[a4paper, 12pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{abnt-numeracao}
+\usepackage{abnt-sumario}
+\usepackage{abnt-citacoes}
+\addbibresource{refs.bib}
+\end{Verbatim}
+
+As opções específicas de cada pacote estão documentadas nos respectivos
+capítulos deste guia (Capítulos~\ref{ch:numeracao} a~\ref{ch:outros}).
+
+
+% =====================================================================
+% PÓS-TEXTUAIS
+% =====================================================================
+\postextual
+
+\imprimirreferencias
+
+% =====================================================================
+% APÊNDICE A — CHECKLIST DE CONFORMIDADE ABNT
+% =====================================================================
+\appendix
+\chapter{Checklist de conformidade ABNT}\label{ap:checklist}
+
+\index{checklist}
+A tabela a seguir lista requisitos que as normas ABNT exigem mas que
+o \LaTeX{} \textbf{não} automatiza. É responsabilidade do usuário
+verificar cada item.
+
+{%
+\small
+\singlespacing
+
+\noindent\textbf{Redação e estilo}
+
+\begin{tabelaibge}{colspec={clp{3.8cm}p{5.5cm}}}
+  \# & Norma & Requisito & Ação do usuário \\
+  1 & NBR 6024 \S4.2 & Pontuação de alíneas &
+    Letras minúsculas terminadas por ponto e vírgula, última por ponto.
+    Responsabilidade do usuário. \\
+  2 & NBR 6028 \S4.1.8 & Contagem de palavras do resumo &
+    150--500 palavras para trabalhos acadêmicos. Não verificado
+    automaticamente. \\
+  3 & NBR 6028 & Tipo de resumo &
+    Informativo vs indicativo. Responsabilidade do usuário. \\
+  4 & NBR 6028 \S4.1.4 & Verbo na terceira pessoa &
+    Estilo de redação do resumo. Responsabilidade do usuário. \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{Elementos do documento}
+
+\begin{tabelaibge}{colspec={clp{3.8cm}p{5.5cm}}}
+  \# & Norma & Requisito & Ação do usuário \\
+  5 & NBR 14724 & Ordem dos elementos pré-textuais &
+    A classe fornece os comandos mas não impõe sequência. Seguir a
+    ordem do Capítulo~\ref{ch:estrutura}. \\
+  6 & NBR 14724 & Folha de aprovação &
+    Inserida após a defesa. Antes da defesa, usar placeholders. \\
+  7 & NBR 14724 & Errata &
+    Elemento opcional não implementado; inserir manualmente se
+    necessário. \\
+  8 & NBR 14724 & Listas de ilustrações, tabelas, siglas, símbolos &
+    Não automatizadas pelas classes. Usar
+    \code{\bsl listoffigures},
+    \code{\bsl listoftables} ou construir manualmente. \\
+  9 & NBR 14724 & Ficha catalográfica &
+    Verso da folha de rosto. Geralmente fornecida pela biblioteca;
+    inserir como PDF. \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{Tabelas (IBGE)}
+
+\begin{tabelaibge}{colspec={clp{3.8cm}p{5.5cm}}}
+  \# & Norma & Requisito & Ação do usuário \\
+  10 & IBGE \S4.10 & Fonte obrigatória em tabelas &
+    Warning emitido, mas o usuário deve incluir \code{\bsl ibgeFonte}. \\
+  11 & IBGE \S7.4b & Correção por razão de arredondamento &
+    Requer dados brutos; não automatizável. \\
+  12 & IBGE \S8.1--8.2 & Diagramação de tabelas largas &
+    Responsabilidade do usuário. \\
+  13 & IBGE & Tabelas longas &
+    \code{longtblr} do tabularray está disponível mas não integrado ao
+    ambiente \code{tabela}. \\
+  14 & IBGE \S6.1b--6.3b & Notação gráfica de classes de frequência &
+    Apenas notação textual implementada. \\
+  15 & IBGE/siunitx & Coluna S do siunitx com tabularray &
+    Incompatível em versões anteriores; usar \code{\bsl num\{\}}. \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{Índice}
+
+\begin{tabelaibge}{colspec={clp{3.8cm}p{5.5cm}}}
+  \# & Norma & Requisito & Ação do usuário \\
+  16 & NBR 6034 \S6.8 & Marca ``(continuação)'' &
+    Em índices que quebram de página. Não implementado. \\
+  17 & NBR 6034 \S6.5 & Letras iniciais no running header &
+    Não implementado. \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{Sumário}
+
+\begin{tabelaibge}{colspec={clp{3.8cm}p{5.5cm}}}
+  \# & Norma & Requisito & Ação do usuário \\
+  18 & NBR 6027 \S5.3 & Obras coletivas &
+    Sumário com vários autores. Não implementado (caso raro). \\
+  19 & NBR 6027 \S5.5 & Traduções &
+    Sumário traduzido. Não implementado (caso raro). \\
+  20 & NBR 6027 \S5.6 & Sumário por idioma &
+    Não implementado (caso raro). \\
+  21 & NBR 6027 & Largura fixa do indicativo &
+    O indicativo usa largura fixa de 4em. Ajustar manualmente com
+    código expl3 se necessário. \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{Lombada}
+
+\begin{tabelaibge}{colspec={clp{3.8cm}p{5.5cm}}}
+  \# & Norma & Requisito & Ação do usuário \\
+  22 & NBR 12225 \S4.1c & Modo misto &
+    Combinação descendente/horizontal. Não implementado. \\
+  23 & NBR 12225 \S4.3.3 & Título de margem de capa &
+    Fora do escopo do pacote. \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{Citações}
+
+\begin{tabelaibge}{colspec={clp{3.8cm}p{5.5cm}}}
+  \# & Norma & Requisito & Ação do usuário \\
+  24 & NBR 10520 \S7.1.1 & Detecção automática de citação longa &
+    Citação com mais de 3 linhas deve usar \code{citacaodireta}.
+    A detecção não é viável em TeX; o usuário decide. \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{Referências}
+
+\begin{tabelaibge}{colspec={clp{3.8cm}p{5.5cm}}}
+  \# & Norma & Requisito & Ação do usuário \\
+  25 & NBR 6023 & Diferenças NBR 6023:2018 vs 2025 &
+    biblatex-abnt alinhado com 2018. Diferenças (ISSN opcional,
+    e-locator, etc.) devem ser aplicadas manualmente. \\
+\end{tabelaibge}
+
+}% end of \small\singlespacing group
+
+
+% =====================================================================
+% APÊNDICE B — REFERÊNCIA RÁPIDA DE COMANDOS
+% =====================================================================
+\chapter{Referência rápida de comandos}\label{ap:referencia}
+
+\index{referência rápida}
+A tabela a seguir lista todos os comandos públicos do projeto, organizados
+por pacote ou classe.
+
+{%
+\small
+\singlespacing
+
+\noindent\textbf{abnt.cls --- Classe base}
+
+\begin{tabelaibge}{colspec={lp{3.5cm}p{5.5cm}}}
+  Comando & Argumentos & Descrição \\
+  \code{\bsl titulo}          & \code{\{texto\}}   & Define o título do trabalho \\
+  \code{\bsl subtitulo}       & \code{\{texto\}}   & Define o subtítulo \\
+  \code{\bsl autor}           & \code{\{nome\}}    & Define o nome do autor \\
+  \code{\bsl orientador}      & \code{\{nome\}}    & Define o nome do orientador \\
+  \code{\bsl coorientador}    & \code{\{nome\}}    & Define o nome do coorientador \\
+  \code{\bsl instituicao}     & \code{\{nome\}}    & Define a instituição \\
+  \code{\bsl local}           & \code{\{cidade\}}  & Define a cidade \\
+  \code{\bsl ano}             & \code{\{ano\}}     & Define o ano \\
+  \code{\bsl natureza}        & \code{\{texto\}}   & Define a natureza do trabalho \\
+  \code{\bsl programa}        & \code{\{texto\}}   & Define o programa \\
+  \code{\bsl area}            & \code{\{texto\}}   & Define a área de concentração \\
+  \code{\bsl imprimircapa}    & ---              & Gera a capa \\
+  \code{\bsl imprimirfolhaderosto} & ---         & Gera a folha de rosto \\
+  \code{\bsl pretextual}      & ---              & Inicia modo pré-textual \\
+  \code{\bsl textual}         & ---              & Inicia modo textual \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{abnt-trabalho-academico.cls --- Trabalho acadêmico}
+
+\begin{tabelaibge}{colspec={lp{3.5cm}p{5.5cm}}}
+  Comando & Argumentos & Descrição \\
+  \code{\bsl dataaprovacao}   & \code{\{data\}} & Define data de aprovação \\
+  \code{\bsl membrodabanca}   & \code{\{nome\}\{tit.\}} & Adiciona membro da banca \\
+  \code{\bsl imprimirfolhadeaprovacao} & --- & Gera folha de aprovação \\
+  \code{\bsl imprimirdedicatoria} & \code{\{texto\}} & Gera dedicatória \\
+  \code{\bsl imprimiragradecimentos} & \code{\{texto\}} & Gera agradecimentos \\
+  \code{\bsl imprimirepigrafe} & \code{\{texto\}} & Gera epígrafe \\
+  \code{\bsl postextual}      & ---              & Inicia modo pós-textual \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{abnt-numeracao.sty --- Numeração progressiva (NBR 6024)}
+
+\begin{tabelaibge}{colspec={lp{3.5cm}p{5.5cm}}}
+  Comando/Ambiente & Argumentos/Opções & Descrição \\
+  \code{alineas}       & (ambiente)        & Lista com alíneas (a, b, c\ldots) \\
+  \code{subalineas}    & (ambiente)        & Sublista com travessão \\
+  opção \code{maiusculas} & \code{true/false} & Ativa/desativa maiúsculas \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{abnt-sumario.sty --- Sumário (NBR 6027)}
+
+\begin{tabelaibge}{colspec={lp{3.5cm}p{5.5cm}}}
+  Comando & Argumentos/Opções & Descrição \\
+  \code{\bsl imprimirsumario} & --- & Gera o sumário ABNT \\
+  opção \code{titulo}     & \code{TEXTO} & Altera título do sumário \\
+  opção \code{pontilhado} & \code{true/false} & Ativa/desativa pontilhado \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{abnt-resumo.sty --- Resumo e abstract (NBR 6028)}
+
+\begin{tabelaibge}{colspec={lp{3.5cm}p{5.5cm}}}
+  Comando & Argumentos & Descrição \\
+  \code{\bsl imprimirresumo}   & \code{\{texto\}\{palavras\}} & Gera o resumo \\
+  \code{\bsl imprimirabstract}  & \code{\{text\}\{keywords\}}  & Gera o abstract \\
+  opção \code{titulo-resumo} & \code{TEXTO} & Altera título do resumo \\
+  opção \code{titulo-abstract} & \code{TEXTO} & Altera título do abstract \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{abnt-citacoes.sty --- Citações (NBR 10520)}
+
+\begin{tabelaibge}{colspec={lp{3.5cm}p{5.5cm}}}
+  Comando/Ambiente & Argumentos/Opções & Descrição \\
+  \code{citacaodireta}  & (ambiente)    & Citação direta longa \\
+  opção \code{sistema}  & \code{autor-data/numerico} & Sistema de citação \\
+  opção \code{backref}  & \code{true/false} & Ativa/desativa backref \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{abnt-refs.sty --- Referências (NBR 6023)}
+
+\begin{tabelaibge}{colspec={lp{3.5cm}p{5.5cm}}}
+  Comando & Argumentos & Descrição \\
+  \code{\bsl imprimirreferencias} & --- & Gera lista de referências \\
+  opção \code{backref} & \code{true/false} & Ativa/desativa backref \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{ibge-tabelas.sty --- Tabelas (IBGE 1993)}
+
+\begin{tabelaibge}{colspec={lp{3.5cm}p{5.5cm}}}
+  Comando/Ambiente & Argumentos & Descrição \\
+  \code{tabela}           & \code{\{título\}} (ambiente) & Wrapper: float + caption + rodapé \\
+  \code{tabelaibge}       & \code{\{colspec=\{...\}\}} (amb.) & Tabela interna com estilo IBGE \\
+  \code{\bsl ibgeFonte}       & \code{\{texto\}}    & Fonte no rodapé (obrigatória) \\
+  \code{\bsl ibgeFonte*}      & \code{\{texto\}}    & Fontes (plural) \\
+  \code{\bsl ibgeNota}        & \code{\{texto\}}    & Nota geral \\
+  \code{\bsl ibgeNota*}       & \code{\{texto\}}    & Notas (plural) \\
+  \code{\bsl ibgeNotaEsp}     & \code{\{id\}\{texto\}} & Nota específica \\
+  \code{\bsl ibgeChamada}     & \code{\{id\}}       & Chamada remissiva no corpo \\
+  \code{\bsl ibgeSinalZero}   & ---               & Sinal: dado = zero \\
+  \code{\bsl ibgeSinalNA}     & ---               & Sinal: não se aplica \\
+  \code{\bsl ibgeSinalND}     & ---               & Sinal: não disponível \\
+  \code{\bsl ibgeSinalOmitido} & ---              & Sinal: dado omitido \\
+  \code{\bsl ibgeSinalArrZero} & \code{[casas]}   & Zero por arredondamento \\
+  \code{\bsl ibgeSinalArrZero*} & \code{[casas]}  & Idem, valor negativo \\
+  \code{\bsl ibgeSerieConsec} & \code{\{a1\}\{a2\}}   & Série consecutiva \\
+  \code{\bsl ibgeSerieNConsec} & \code{\{a1\}\{a2\}}  & Série não consecutiva \\
+  \code{\bsl ibgeSafra}       & \code{\{a1\}\{a2\}}   & Safra agrícola \\
+  \code{\bsl ibgeClasseIE}    & \code{\{min\}\{max\}} & Classe: inclui inf., exclui sup. \\
+  \code{\bsl ibgeClasseEI}    & \code{\{min\}\{max\}} & Classe: exclui inf., inclui sup. \\
+  \code{\bsl ibgeClasseII}    & \code{\{min\}\{max\}} & Classe: inclui ambos \\
+  \code{\bsl ibgeNotaArrend}  & ---               & Nota de arredondamento \\
+  \code{\bsl num}             & \code{\{número\}}   & Formatação numérica (siunitx) \\
+  opção \code{chamada}    & \code{par./colch./exp.} & Formato da chamada \\
+  opção \code{subordinar} & \code{true/false} & Subordina numeração a capítulos \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{abnt-indice.sty --- Índice remissivo (NBR 6034)}
+
+\begin{tabelaibge}{colspec={lp{3.5cm}p{5.5cm}}}
+  Comando & Argumentos & Descrição \\
+  \code{\bsl index}           & \code{\{termo\}}       & Indexa um termo (padrão LaTeX) \\
+  \code{\bsl indiceVer}       & \code{\{de\}\{para\}}    & Remissiva ``ver'' \\
+  \code{\bsl indiceVerTambem}  & \code{\{de\}\{para\}}    & Remissiva ``ver também'' \\
+  \code{\bsl imprimirindice}  & \code{[nome]}        & Gera o índice remissivo \\
+  opção \code{titulo}     & \code{TEXTO}         & Altera título do índice \\
+  opção \code{processador} & \code{makeindex/xindy} & Seleciona processador \\
+\end{tabelaibge}
+
+\vspace{12pt}
+\noindent\textbf{abnt-lombada.sty --- Lombada (NBR 12225)}
+
+\begin{tabelaibge}{colspec={lp{3.5cm}p{5.5cm}}}
+  Comando & Argumentos & Descrição \\
+  \code{\bsl lombadaAutor}     & \code{\{nome\}}    & Define autor na lombada \\
+  \code{\bsl lombadaTitulo}    & \code{\{título\}}  & Define título na lombada \\
+  \code{\bsl lombadaElementos} & \code{\{texto\}}   & Elementos alfanuméricos \\
+  \code{\bsl lombadaLogomarca} & \code{\{arquivo\}} & Logomarca (imagem) \\
+  \code{\bsl lombadaLogomarcaTexto} & \code{\{texto\}} & Logomarca (texto) \\
+  \code{\bsl imprimirlombada}  & ---              & Gera a página da lombada \\
+  opção \code{disposicao}  & \code{desc./horiz.} & Disposição do texto \\
+  opção \code{largura}     & \code{dimensão}  & Largura da lombada \\
+  opção \code{paginas}     & \code{número}    & Calcula largura por páginas \\
+  opção \code{espessura}   & \code{dimensão}  & Espessura por folha \\
+\end{tabelaibge}
+
+}% end of \small\singlespacing group
+
+
+% =====================================================================
+% ÍNDICE REMISSIVO E LOMBADA
+% =====================================================================
+\imprimirindice
+
+\imprimirlombada
+
+\end{document}

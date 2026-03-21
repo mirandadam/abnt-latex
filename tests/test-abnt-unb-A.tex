@@ -1,0 +1,167 @@
+% =============================================================================
+% test-abnt-unb-A.tex
+% Teste visual — abnt-unb-A.cls (Modelo UnB — engenharia)
+%
+% Compilação (da raiz do repositório):
+%   TEXINPUTS=./src:./assets/unb: latexmk -pdf -outdir=tests tests/test-abnt-unb-A.tex
+%
+% Checklist de verificação visual:
+%   1  — Logo UnB centralizado no topo da capa
+%   2  — "UNIVERSIDADE DE BRASÍLIA" em maiúsculas abaixo do logo
+%   3  — Nome da faculdade abaixo da instituição
+%   4  — Nome do departamento abaixo da faculdade
+%   5  — Autor centralizado em maiúsculas
+%   6  — Título LARGE, negrito, maiúsculas, centralizado
+%   7  — Subtítulo em peso normal, precedido por ":"
+%   8  — Local e ano no rodapé da capa
+%   9  — Folha de rosto: logo menor (1.5cm), cabeçalho institucional em \small
+%  10  — Folha de rosto: natureza do trabalho alinhada à direita
+%  11  — Folha de aprovação funciona (herdada)
+%  12  — Dedicatória funciona (herdada)
+%  13  — Agradecimentos funciona (herdada)
+%  14  — Epígrafe funciona (herdada)
+%  15  — Resumo e abstract funcionam (via abnt-resumo)
+%  16  — Sumário funciona (herdado)
+%  17  — Compila com pdfLaTeX (font fallback TeX Gyre Termes)
+% =============================================================================
+
+\documentclass{abnt-unb-A}
+\usepackage{abnt-resumo}
+
+% =============================================================================
+% METADADOS UnB
+% =============================================================================
+\faculdade{Faculdade UnB Gama}
+\departamento{Departamento de Engenharia de Software}
+\curso{Engenharia de Software}
+\grau{Bacharel}
+\tipotrabalho{Trabalho de Conclusão de Curso}
+
+% =============================================================================
+% METADADOS ABNT (herdados de abnt.cls)
+% =============================================================================
+\titulo{Sistema de monitoramento ambiental usando IoT}
+\subtitulo{uma abordagem baseada em microcontroladores}
+\autor{Fulana de Tal Silva}
+\orientador{Prof.\ Dr.\ Beltrano Souza}
+\ano{2025}
+
+\natureza{Trabalho de Conclusão de Curso apresentado como requisito
+parcial para obtenção do grau de Bacharel em Engenharia de Software
+pela Universidade de Brasília.}
+\programa{Engenharia de Software}
+\area{Sistemas Embarcados}
+
+% Banca examinadora
+\dataaprovacao{20 de março de 2025}
+\membrodabanca{Prof.\ Dr.\ Beltrano Souza}
+  {Universidade de Brasília (Orientador)}
+\membrodabanca{Prof.\ Dr.\ Sicrana Oliveira}
+  {Universidade de Brasília}
+\membrodabanca{Prof.\ Dr.\ Ciclano Pereira}
+  {Universidade de Brasília}
+
+% =============================================================================
+% DOCUMENTO
+% =============================================================================
+\begin{document}
+
+% --- Pré-textuais ---
+\pretextual
+
+\imprimircapa
+\imprimirfolhaderosto
+\imprimirfolhadeaprovacao
+
+\imprimirdedicatoria{%
+Aos meus pais, pelo apoio incondicional durante toda a graduação.}
+
+\imprimiragradecimentos{%
+Agradeço ao meu orientador, Prof.\ Dr.\ Beltrano Souza, pela
+orientação dedicada ao longo deste trabalho.
+
+Agradeço também aos colegas do Laboratório de Sistemas Embarcados
+pela colaboração nos testes de campo.}
+
+\imprimirepigrafe{%
+\textit{``A ciência nunca resolve um problema sem criar pelo menos
+outros dez.''} --- George Bernard Shaw}
+
+\imprimirresumo{%
+Este trabalho apresenta o desenvolvimento de um sistema de
+monitoramento ambiental baseado em dispositivos IoT utilizando
+microcontroladores de baixo custo.\ O sistema proposto realiza a
+coleta contínua de dados de temperatura, umidade e qualidade do ar
+em ambientes urbanos, transmitindo as informações para uma plataforma
+em nuvem para análise e visualização em tempo real.\ A validação
+experimental demonstrou que o sistema é capaz de operar de forma
+autônoma por períodos prolongados com consumo energético reduzido,
+atendendo aos requisitos de monitoramento ambiental definidos pela
+legislação brasileira vigente.%
+}{IoT; monitoramento ambiental; sistemas embarcados; microcontroladores;
+qualidade do ar}
+
+\imprimirabstract{%
+This work presents the development of an environmental monitoring
+system based on IoT devices using low-cost microcontrollers.\ The
+proposed system continuously collects temperature, humidity, and air
+quality data in urban environments, transmitting the information to a
+cloud platform for real-time analysis and visualization.\ Experimental
+validation demonstrated that the system can operate autonomously for
+extended periods with reduced energy consumption, meeting the
+environmental monitoring requirements defined by current Brazilian
+legislation.%
+}{IoT; environmental monitoring; embedded systems; microcontrollers;
+air quality}
+
+\imprimirsumario
+
+% --- Textuais ---
+\textual
+
+\chapter{Introdução}
+
+O monitoramento ambiental é uma atividade essencial para a gestão
+sustentável dos recursos naturais e para a proteção da saúde humana.
+Com o avanço da Internet das Coisas (IoT), tornou-se viável a
+implantação de redes de sensores de baixo custo capazes de coletar
+dados ambientais de forma contínua e distribuída.
+
+\section{Objetivos}
+
+\subsection{Objetivo geral}
+
+Desenvolver um sistema de monitoramento ambiental baseado em
+microcontroladores de baixo custo integrados a uma plataforma IoT.
+
+\subsection{Objetivos específicos}
+
+\begin{alineas}
+  \item projetar o hardware de coleta de dados ambientais;
+  \item implementar o firmware de comunicação sem fio;
+  \item desenvolver a interface de visualização em nuvem;
+  \item validar o sistema em ambiente real.
+\end{alineas}
+
+\chapter{Fundamentação teórica}
+
+A fundamentação teórica abrange os conceitos de Internet das Coisas,
+protocolos de comunicação sem fio e técnicas de monitoramento ambiental.
+
+\section{Internet das Coisas}
+
+A IoT refere-se à interconexão de dispositivos físicos por meio de
+redes de comunicação, permitindo a troca de dados e o controle remoto
+de sistemas.
+
+% --- Pós-textuais ---
+\postextual
+
+\chapter*{Referências}
+\addcontentsline{toc}{chapter}{REFERÊNCIAS}
+
+{\singlespacing
+Referências seriam geradas aqui via \texttt{\textbackslash imprimirreferencias}
+com um arquivo \texttt{.bib}.}
+
+\end{document}

@@ -1,0 +1,146 @@
+% =============================================================================
+% test-abnt-unb-B.tex
+% Teste visual — abnt-unb-B.cls (Modelo UnB — clássico)
+%
+% Compilação (da raiz do repositório):
+%   TEXINPUTS=./src:./assets/unb: latexmk -pdf -outdir=tests tests/test-abnt-unb-B.tex
+%
+% Checklist de verificação visual:
+%   1  — Logo UnB pequeno centralizado no topo (~2.5cm)
+%   2  — Hierarquia institucional uppercase (universidade, instituto, programa)
+%   3  — Autor uppercase centralizado
+%   4  — Título bold uppercase centralizado
+%   5  — Tipo de trabalho centralizado
+%   6  — Local uppercase e ano no rodapé
+%   7  — Sem faixa azul (diferente do modelo A)
+%   8  — Folha de rosto com cabeçalho discreto + natureza do trabalho
+%   9  — Elementos herdados funcionam (aprovação, dedicatória, etc.)
+%  10  — Compila com pdfLaTeX
+% =============================================================================
+
+\documentclass{abnt-unb-B}
+\usepackage{abnt-resumo}
+
+% =============================================================================
+% METADADOS UnB
+% =============================================================================
+\faculdade{Instituto de Ciência Política}
+\curso{Ciência Política}
+\grau{Mestre}
+\tipotrabalho{Dissertação de Mestrado}
+
+% =============================================================================
+% METADADOS ABNT (herdados de abnt.cls)
+% =============================================================================
+\titulo{Participação política e redes sociais}
+\subtitulo{um estudo comparado entre Brasil e Portugal}
+\autor{Ciclana Menezes dos Santos}
+\orientador{Prof.\ Dr.\ Beltrano Vieira}
+\ano{2024}
+
+\natureza{Dissertação apresentada como requisito parcial para obtenção
+do grau de Mestre em Ciência Política pela Universidade de Brasília.}
+\programa{Programa de Pós-Graduação em Ciência Política}
+\area{Política Comparada}
+
+% Banca examinadora
+\dataaprovacao{15 de agosto de 2024}
+\membrodabanca{Prof.\ Dr.\ Beltrano Vieira}
+  {Universidade de Brasília (Orientador)}
+\membrodabanca{Profa.\ Dra.\ Sicrana Ferreira}
+  {Universidade de Brasília}
+\membrodabanca{Prof.\ Dr.\ Fulano Almeida}
+  {Universidade Federal de Minas Gerais}
+
+% =============================================================================
+% DOCUMENTO
+% =============================================================================
+\begin{document}
+
+\pretextual
+
+\imprimircapa
+\imprimirfolhaderosto
+\imprimirfolhadeaprovacao
+
+\imprimirdedicatoria{%
+À memória da minha avó, que sempre acreditou na força da educação.}
+
+\imprimiragradecimentos{%
+Agradeço ao meu orientador, Prof.\ Dr.\ Beltrano Vieira, pela
+dedicação e pelos ensinamentos ao longo desta pesquisa.
+
+Agradeço à CAPES pelo financiamento desta pesquisa
+(Portaria 206/2018).}
+
+\imprimirepigrafe{%
+\textit{``A democracia é o governo do povo, pelo povo, para o povo.''}
+--- Abraham Lincoln}
+
+\imprimirresumo{%
+Esta dissertação investiga a relação entre participação política e
+uso de redes sociais em perspectiva comparada entre Brasil e Portugal.
+A partir de dados de survey aplicados em ambos os países no período
+de 2020 a 2023, analisa-se como diferentes plataformas digitais
+influenciam o engajamento cívico dos cidadãos. Os resultados indicam
+que, embora as redes sociais ampliem o acesso à informação política,
+seu impacto na participação efetiva varia significativamente conforme
+o contexto institucional e a cultura política de cada país.%
+}{participação política; redes sociais; política comparada;
+democracia digital; Brasil; Portugal}
+
+\imprimirabstract{%
+This dissertation investigates the relationship between political
+participation and social media use in a comparative perspective
+between Brazil and Portugal. Based on survey data collected in both
+countries from 2020 to 2023, it analyzes how different digital
+platforms influence citizens' civic engagement. Results indicate
+that, although social media broaden access to political information,
+their impact on effective participation varies significantly
+according to each country's institutional context and political
+culture.%
+}{political participation; social media; comparative politics;
+digital democracy; Brazil; Portugal}
+
+\imprimirsumario
+
+% --- Textuais ---
+\textual
+
+\chapter{Introdução}
+
+A participação política constitui um dos pilares fundamentais das
+democracias contemporâneas. Com a expansão das tecnologias digitais,
+novas formas de engajamento cívico emergiram, alterando a dinâmica
+entre cidadãos e instituições políticas.
+
+\section{Problema de pesquisa}
+
+De que maneira o uso de redes sociais influencia a participação
+política em democracias com diferentes tradições institucionais?
+
+\section{Objetivos}
+
+\subsection{Objetivo geral}
+
+Analisar comparativamente o impacto das redes sociais na
+participação política no Brasil e em Portugal.
+
+\chapter{Referencial teórico}
+
+O debate sobre participação política remonta às formulações
+clássicas da teoria democrática, desde a democracia direta
+ateniense até as concepções contemporâneas de democracia
+deliberativa.
+
+% --- Pós-textuais ---
+\postextual
+
+\chapter*{Referências}
+\addcontentsline{toc}{chapter}{REFERÊNCIAS}
+
+{\singlespacing
+Referências seriam geradas aqui via \texttt{\textbackslash imprimirreferencias}
+com um arquivo \texttt{.bib}.}
+
+\end{document}

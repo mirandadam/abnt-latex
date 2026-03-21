@@ -1,0 +1,18 @@
+# Intermediários LaTeX
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.out
+*.toc
+*.idx
+*.ind
+*.ilg
+*.ist
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+
+# PDFs gerados (compilar localmente)
+*.pdf

@@ -198,11 +198,12 @@
       % Margem superior = 2cm da borda superior
       % Margem inferior = 3cm da borda inferior
 
-      % Autor (seção 3.a) — na parte superior
+      % Autor (seção 3.a) — na parte superior, dentro da margem de 2cm
+      % anchor=center evita que o texto ultrapasse a margem superior
       \tl_if_empty:NF \g__abnt_lomb_autor_tl
         {
-          \node[rotate=270, anchor=east]
-            at ([yshift=-2cm] centro |- current~page.north)
+          \node[rotate=270, anchor=center]
+            at ([yshift=-3.5cm] centro |- current~page.north)
             {\normalsize\tl_use:N \g__abnt_lomb_autor_tl};
         }
 

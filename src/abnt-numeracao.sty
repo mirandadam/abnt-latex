@@ -134,8 +134,9 @@
 
     % Primária — seção 4.1.j: maiúsculas + negrito
     % NBR 14724 5.2.2: nova página, título no topo, afterskip = 18pt
+    % \raggedright evita espaçamento excessivo entre palavras em maiúsculas
     \titleformat{\chapter}[hang]
-      {\normalfont\normalsize\bfseries}
+      {\normalfont\normalsize\bfseries\raggedright}
       {\thechapter\hspace{1ex}}
       {0pt}
       {\__abnt_num_maybe_upper:n}
@@ -143,7 +144,7 @@
 
     % Secundária — seção 4.1.j: maiúsculas, sem negrito
     \titleformat{\section}[hang]
-      {\normalfont\normalsize}
+      {\normalfont\normalsize\raggedright}
       {\thesection\hspace{1ex}}
       {0pt}
       {\__abnt_num_maybe_upper:n}
@@ -186,8 +187,9 @@
     % --- Sem \chapter (article) ---
 
     % Primária — \section
+    % \raggedright evita espaçamento excessivo entre palavras em maiúsculas
     \titleformat{\section}[hang]
-      {\normalfont\normalsize\bfseries}
+      {\normalfont\normalsize\bfseries\raggedright}
       {\thesection\hspace{1ex}}
       {0pt}
       {\__abnt_num_maybe_upper:n}
@@ -195,7 +197,7 @@
 
     % Secundária — \subsection
     \titleformat{\subsection}[hang]
-      {\normalfont\normalsize}
+      {\normalfont\normalsize\raggedright}
       {\thesubsection\hspace{1ex}}
       {0pt}
       {\__abnt_num_maybe_upper:n}
