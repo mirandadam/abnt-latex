@@ -22,7 +22,7 @@
 %   NBR 14724:2024 seção 4.1.1 / NBR 15287:2025 seção 4.1.1  → capa
 %   NBR 14724:2024 seção 4.2.1.1 / NBR 15287:2025 seção 4.2.1.1 → folha de rosto
 %
-% Nota: recuo de parágrafo de 1,25 cm é convenção herdada do abnTeX2.
+% Nota: recuo de parágrafo de 1,3 cm é convenção do abnTeX2.
 %   As normas NBR 14724 e NBR 15287 não especificam valor explícito.
 % =============================================================================
 
@@ -115,15 +115,17 @@
 
 % =============================================================================
 % 7. PARÁGRAFOS
-%    Recuo de 1,25 cm é convenção do abnTeX2 (não especificado nas normas).
+%    Recuo de parágrafo não é especificado pelas normas ABNT.
+%    O abnTeX2 usa 1,3 cm como convenção consolidada.
 % =============================================================================
-\setlength{\parindent}{1.25cm}
+\setlength{\parindent}{1.3cm}
 \setlength{\parskip}{0pt}
 
 % =============================================================================
 % 8. IDIOMA
 % =============================================================================
 \RequirePackage[brazil]{babel}
+\frenchspacing  % espaçamento uniforme após pontos — padrão para português
 
 % =============================================================================
 % 9. HYPERREF — links internos e metadados PDF
