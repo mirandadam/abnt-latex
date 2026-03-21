@@ -17,6 +17,8 @@ tests/**/*.fls
 tests/**/*.xml
 tests/**/*.blg
 tests/**/*.bcf
+tests/**/*.ind
+tests/**/*.ilg
 tests/**/*.fdb_latexmk
 
 # Temporário - não ignorar depois que a base de código estabilizar um pouco

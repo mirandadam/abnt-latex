@@ -1,9 +1,0 @@
-This is makeindex, version 2.17 [TeX Live 2023] (kpathsea + Thai support).
-Scanning input file test-abnt-indice.idx....done (54 entries accepted, 0 rejected).
-Sorting entries....done (327 comparisons).
-Generating output file test-abnt-indice.ind....
-## Warning (input = test-abnt-indice.idx, line = 21; output = test-abnt-indice.ind, line = 8):
-   -- Conflicting entries: multiple encaps for the same page under same key.
-done (102 lines written, 1 warning).
-Output written in test-abnt-indice.ind.
-Transcript written in test-abnt-indice.ilg.
