@@ -1,20 +1,136 @@
 % =============================================================================
 % abnt-refs.sty
-% Referências — ABNT NBR 6023:2025
+% Referências bibliográficas — ABNT NBR 6023:2025
 %
 % Licença: LPPL 1.3c
-% Versão:  0.1.0 (stub)
+% Versão:  1.0.0
 %
 % Este pacote NÃO reimplementa referências bibliográficas. Ele configura
 % o biblatex-abnt com os parâmetros exigidos pela NBR 6023:2025.
+%
+% Dependências:
+%   biblatex     — com style=abnt, backend=biber
+%   csquotes     — recomendado pelo biblatex para citações corretas
+%
+% Dependência externa:
+%   Biber        — backend do biblatex
+%   Fluxo com latexmk: latexmk -pdf arquivo.tex (detecta biber automaticamente)
+%
+% Rastreabilidade à norma:
+%   Seção 6.3    → espaçamento simples, separação por linha em branco,
+%                  alinhamento à esquerda
+%   Seção 9      → ordenação alfabética (autor-data) ou numérica
+%
+% Limitações documentadas:
+%   biblatex-abnt alinhado com NBR 6023:2018 — diferenças para 2025 são
+%   marginais (ISSN opcional, e-locator, etc.)
 % =============================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesExplPackage{abnt-refs}{2025/03/21}{0.1.0}
+\ProvidesExplPackage{abnt-refs}{2025/03/21}{1.0.0}
   {Referências~\textemdash~NBR~6023:2025}
 
-% TODO: Configurar biblatex-abnt para formatação de referências
-% conforme NBR 6023:2025.
+\RequirePackage{l3keys2e}
+
+% =============================================================================
+% 1. OPÇÕES DO PACOTE
+% =============================================================================
+
+\bool_new:N \g__abnt_refs_backref_bool
+\bool_gset_true:N \g__abnt_refs_backref_bool
+
+\tl_new:N \g__abnt_refs_estilo_tl
+\tl_gset:Nn \g__abnt_refs_estilo_tl { abnt }
+
+\keys_define:nn { abnt-refs }
+  {
+    backref .bool_gset:N = \g__abnt_refs_backref_bool,
+    backref .default:n   = true,
+    backref .initial:n   = true,
+    % Estilo interno — definido por abnt-citacoes.sty via opção 'sistema'
+    % Não exposto diretamente ao usuário de abnt-refs.sty
+    estilo .tl_gset:N    = \g__abnt_refs_estilo_tl,
+    estilo .initial:n    = { abnt },
+  }
+
+\ProcessKeysOptions { abnt-refs }
+
+% =============================================================================
+% 2. CARREGAMENTO DO BIBLATEX (seção 9 — ordenação / sistema de chamada)
+%    Detecta se biblatex já foi carregado para evitar conflito.
+% =============================================================================
+
+\cs_if_exist:NTF \printbibliography
+  {
+    \msg_new:nnn { abnt-refs } { biblatex-ja-carregado }
+      {
+        biblatex~já~foi~carregado~antes~de~abnt-refs.~
+        As~opções~de~estilo~podem~não~ter~efeito.~
+        Carregue~abnt-refs~(ou~abnt-citacoes)~ANTES~de~biblatex.
+      }
+    \msg_warning:nn { abnt-refs } { biblatex-ja-carregado }
+  }
+  {
+    \tl_new:N \l__abnt_refs_biblatex_opts_tl
+    \tl_set:Nx \l__abnt_refs_biblatex_opts_tl
+      {
+        style = \tl_use:N \g__abnt_refs_estilo_tl,
+        backend = biber
+        \bool_if:NT \g__abnt_refs_backref_bool { , backref = true }
+      }
+    \exp_args:NV \PassOptionsToPackage \l__abnt_refs_biblatex_opts_tl { biblatex }
+    \RequirePackage{ biblatex }
+  }
+
+\RequirePackage{csquotes}  % recomendado pelo biblatex
+
+% =============================================================================
+% 3. BACKREF EM PORTUGUÊS
+%    Tradução das strings de backref para português brasileiro.
+% =============================================================================
+
+\bool_if:NT \g__abnt_refs_backref_bool
+  {
+    \cs_if_exist:NT \DefineBibliographyStrings
+      {
+        \DefineBibliographyStrings{brazil}{
+          backrefpage  = {citado~na~p\adddot},
+          backrefpages = {citado~nas~pp\adddot},
+        }
+      }
+  }
+
+% =============================================================================
+% 4. HEADING CUSTOMIZADO (seção 6.3 — título "REFERÊNCIAS")
+%    Centralizado, maiúsculas, negrito — mesmo padrão dos títulos primários.
+%    Usa \chapter* (ou \section*) via \defbibheading.
+% =============================================================================
+
+\cs_if_exist:NTF \chapter
+  {
+    \defbibheading{abnt}[\refname]{
+      \chapter*{REFERÊNCIAS}
+      \phantomsection
+      \addcontentsline{toc}{chapter}{REFERÊNCIAS}
+    }
+  }
+  {
+    \defbibheading{abnt}[\refname]{
+      \section*{REFERÊNCIAS}
+      \phantomsection
+      \addcontentsline{toc}{section}{REFERÊNCIAS}
+    }
+  }
+
+% =============================================================================
+% 5. COMANDO \imprimirreferencias
+%    Wrapper para \printbibliography com heading customizado.
+% =============================================================================
+
+\NewDocumentCommand{\imprimirreferencias}{}{
+  \clearpage
+  \printbibliography[heading=abnt]
+}
 
 % =============================================================================
 % FIM DO ARQUIVO

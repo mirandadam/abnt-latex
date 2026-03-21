@@ -1,0 +1,168 @@
+% =============================================================================
+% test-abnt-resumo.tex
+% Documento de teste para abnt-resumo.sty e folha de aprovação
+%
+% Demonstra resumo (NBR 6028:2021) e folha de aprovação (NBR 14724:2024
+% seção 4.2.1.3), integrados com abnt-trabalho-academico.cls.
+%
+% Compilação:
+%   TEXINPUTS=./src: latexmk -pdf -output-directory=tests tests/test-abnt-resumo.tex
+%
+% Checklist:
+%   1  — Título "RESUMO" centralizado, negrito, maiúsculas
+%   2  — Texto do resumo em parágrafo único
+%   3  — Palavras-chave precedidas de "Palavras-chave:"
+%   4  — Palavras-chave separadas por ponto e vírgula, finalizadas por ponto
+%   5  — Título "ABSTRACT" centralizado, negrito, maiúsculas
+%   6  — Keywords precedidas de "Keywords:"
+%   7  — Folha de aprovação com nome do autor e título
+%   8  — Natureza do trabalho na folha de aprovação
+%   9  — Data de aprovação
+%   10 — Linhas de assinatura com nomes e titulações
+%   11 — Placeholders visíveis quando membros não definidos
+%   12 — Compatibilidade com abnt-trabalho-academico.cls
+%   13 — Ordem correta dos elementos pré-textuais
+% =============================================================================
+
+\documentclass{abnt-trabalho-academico}
+\usepackage{abnt-resumo}
+\usepackage{hyperref}
+
+% Metadados
+\titulo{Impactos ambientais da urbanização em áreas de preservação permanente}
+\subtitulo{um estudo de caso na região metropolitana}
+\autor{João Carlos da Silva}
+\orientador{Prof. Dr. Maria Helena de Souza}
+\instituicao{Universidade de São Paulo}
+\local{São Paulo}
+\ano{2025}
+\natureza{Dissertação apresentada ao Programa de Pós-Graduação em
+Geografia da Universidade de São Paulo, como requisito parcial para
+obtenção do título de Mestre em Geografia.}
+\programa{Programa de Pós-Graduação em Geografia}
+\area{Geografia Física}
+
+% Banca examinadora (checklist 10)
+\dataaprovacao{15 de março de 2025}
+\membrodabanca{Prof. Dr. Maria Helena de Souza (Orientadora)}
+  {Doutora em Geografia \textendash\ Universidade de São Paulo}
+\membrodabanca{Prof. Dr. Carlos Eduardo Lima}
+  {Doutor em Ciências Ambientais \textendash\ Universidade Estadual de Campinas}
+\membrodabanca{Prof. Dr. Ana Paula Oliveira}
+  {Doutora em Planejamento Urbano \textendash\ Universidade Federal do Rio de Janeiro}
+
+\begin{document}
+
+% =====================================================================
+% PRÉ-TEXTUAIS (checklist 13 — ordem correta)
+% =====================================================================
+\pretextual
+
+% Capa
+\imprimircapa
+
+% Folha de rosto
+\imprimirfolhaderosto
+
+% Folha de aprovação (checklist 7, 8, 9, 10)
+\imprimirfolhadeaprovacao
+
+% Dedicatória
+\imprimirdedicatoria{%
+  A todos os pesquisadores que dedicam suas carreiras à preservação
+  do meio ambiente.
+}
+
+% Agradecimentos
+\imprimiragradecimentos{%
+  Agradeço à minha orientadora, Prof. Dr. Maria Helena de Souza, pela
+  dedicação e paciência durante todo o processo de pesquisa.
+
+  Aos membros da banca examinadora, pelas valiosas contribuições.
+
+  À CAPES, pelo apoio financeiro que viabilizou esta pesquisa.
+}
+
+% Epígrafe
+\imprimirepigrafe{%
+  ``A Terra não é uma herança dos nossos pais, mas um empréstimo dos
+  nossos filhos.'' \\[0.5cm]
+  \textit{Provérbio indígena}
+}
+
+% Resumo em português (checklist 1, 2, 3, 4)
+\imprimirresumo{%
+  Esta dissertação investiga os impactos ambientais decorrentes do processo
+  de urbanização em áreas de preservação permanente na região metropolitana
+  de São Paulo. A pesquisa utiliza uma abordagem metodológica mista,
+  combinando análise de imagens de sensoriamento remoto, levantamento de
+  campo e entrevistas com moradores das áreas afetadas. Os resultados
+  indicam que o avanço da ocupação urbana irregular provocou degradação
+  significativa da cobertura vegetal, alteração do regime hídrico e aumento
+  da vulnerabilidade a eventos climáticos extremos. A análise temporal
+  revela que a taxa de desmatamento acelerou nos últimos quinze anos,
+  coincidindo com o crescimento populacional nas áreas periféricas. O estudo
+  propõe um conjunto de diretrizes para compatibilizar a ocupação urbana com
+  a preservação ambiental, incluindo mecanismos de regularização fundiária
+  sustentável e programas de recuperação de áreas degradadas.
+}{gestão ambiental; urbanização; áreas de preservação permanente;
+  sensoriamento remoto; região metropolitana de São Paulo}
+
+% Abstract em inglês (checklist 5, 6)
+\imprimirabstract{%
+  This dissertation investigates the environmental impacts of urbanization
+  in permanent preservation areas in the metropolitan region of São Paulo.
+  The research uses a mixed methodological approach, combining remote
+  sensing image analysis, field surveys, and interviews with residents of
+  affected areas. The results indicate that the advance of irregular urban
+  occupation caused significant degradation of vegetation cover, alteration
+  of the water regime, and increased vulnerability to extreme weather
+  events. The temporal analysis reveals that the deforestation rate
+  accelerated over the past fifteen years, coinciding with population
+  growth in peripheral areas. The study proposes a set of guidelines for
+  reconciling urban occupation with environmental preservation, including
+  sustainable land regularization mechanisms and degraded area recovery
+  programs.
+}{environmental management; urbanization; permanent preservation areas;
+  remote sensing; São Paulo metropolitan region}
+
+% Sumário
+\imprimirsumario
+
+% =====================================================================
+% ELEMENTOS TEXTUAIS
+% =====================================================================
+\textual
+
+\chapter{Introdução}
+
+Este trabalho aborda os impactos ambientais da urbanização.
+
+\chapter{Revisão da literatura}
+
+A literatura sobre o tema é vasta.
+
+\chapter{Metodologia}
+
+A pesquisa adotou abordagem mista.
+
+\chapter{Resultados e discussão}
+
+Os resultados confirmam a hipótese inicial.
+
+\chapter{Considerações finais}
+
+O estudo contribui para o debate sobre gestão ambiental urbana.
+
+% =====================================================================
+% PÓS-TEXTUAIS
+% =====================================================================
+\postextual
+
+\chapter*{Referências}
+\addcontentsline{toc}{chapter}{REFERÊNCIAS}
+
+ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. \textbf{NBR 6028}: informação e
+documentação: resumo, resenha e recensão: apresentação. Rio de Janeiro, 2021.
+
+\end{document}

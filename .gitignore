@@ -7,11 +7,17 @@ __pycache__/
 
 # Intermediários LaTeX gerados na compilação dos testes
 tests/*.idx
-tests/*.ind
-tests/*.ilg
 tests/*.ist
+tests/*.toc
 tests/*.aux
 tests/*.log
+tests/*.bbl
+tests/*.out
+tests/*.fls
+tests/*.xml
+tests/*.blg
+tests/*.bcf
+tests/*.fdb_latexmk
 
 # Temporário - não ignorar depois que a base de código estabilizar um pouco
 tests/*.pdf

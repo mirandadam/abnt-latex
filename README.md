@@ -1,20 +1,36 @@
 # latex-abnt
 
-Implementação independente de classes e pacotes LaTeX para produção de documentos acadêmicos conforme as normas ABNT vigentes.
+**Esta introdução foi integralmente escrita por um ser humano, sem nenhuma interferência, opinião, correção ou qualquer contribuição baseada em IA**
+
+Este projeto implementa classes e pacotes LaTeX para gerar documentos no formato determinado pelas normas ABNT NBR exigidas por instituições acadêmicas no Brasil.
+
+Esta foi uma experiênca pessoal bem-sucedida para implementar praticamente do zero essa conformidade utilizando o Claude Code com o modelo Opus 4.6.
+
+Disciplinei a implementação com requisitos de qualidade do código LaTeX e incluí testes para verificação visual. Realizei inúmeras intervenções quando vi que a ferramenta não estava indo pelo caminho certo, mas não toquei em quase nada do código.
+
+Após os testes, fiquei seguro de utilizar estas classes para meus próprios documentos, no entanto recomendo cautela. Este código não tem o mesmo histórico de testes do excelente projeto em `https://github.com/fga-unb/template-latex-tcc` e provavelmente já existe um modelo no OverLeaf com o padrão que você precisa. No futuro, se eu estiver convencido de que este projeto apresenta alguma vantagem definitiva sobre os demais, alterarei esta parte do texto.
+
+Fora desta seção, considere que tudo foi gerado pelo Claude sob minha supervisão.
 
 ## Status
 
-Em desenvolvimento inicial. Os dois primeiros tipos de documento contemplados são:
+Em desenvolvimento. Os dois tipos de documento contemplados são:
 
 - **Trabalho acadêmico** (ABNT NBR 14724:2024) — teses, dissertações, TCCs e similares
 - **Projeto de pesquisa** (ABNT NBR 15287:2025)
 
-O primeiro pacote completo é o `abnt-indice.sty` (NBR 6034:2004). O repositório contém também esqueletos das classes e um esboço do pacote `ibge-tabelas.sty` (v0.1.0). Os demais pacotes são stubs.
+Todos os pacotes planejados estão implementados e testados:
 
-### Ainda não implementado
-
-- Folha de aprovação (NBR 14724 seção 4.2.1.3)
-- Resumos em língua vernácula e estrangeira (NBR 14724 seções 4.2.1.7–4.2.1.8, depende da NBR 6028)
+| Pacote | Norma | Versão |
+|---|---|---|
+| `abnt-numeracao.sty` | NBR 6024:2012 | 1.0.0 |
+| `abnt-sumario.sty` | NBR 6027:2012 | 1.0.0 |
+| `abnt-resumo.sty` | NBR 6028:2021 | 1.0.0 |
+| `abnt-indice.sty` | NBR 6034:2004 | 1.0.0 |
+| `abnt-refs.sty` | NBR 6023:2025 | 1.0.0 |
+| `abnt-citacoes.sty` | NBR 10520:2023 | 1.0.0 |
+| `ibge-tabelas.sty` | IBGE 1993 | 1.0.0 |
+| `abnt-lombada.sty` | NBR 12225:2023 | 1.0.0 |
 
 ## Motivação
 
@@ -49,6 +65,7 @@ latex-abnt/
 │   ├── abnt-sumario.sty               # Pacote: sumário (NBR 6027)
 │   ├── abnt-numeracao.sty             # Pacote: numeração progressiva (NBR 6024)
 │   ├── abnt-indice.sty                # Pacote: índice (NBR 6034)
+│   ├── abnt-resumo.sty                # Pacote: resumo e abstract (NBR 6028)
 │   └── abnt-lombada.sty               # Pacote: lombada (NBR 12225)
 ├── templates/                         # Documentos de exemplo
 │   ├── trabalho-academico/
@@ -61,11 +78,16 @@ latex-abnt/
     └── (um .tex mínimo por pacote/classe)
 ```
 
-Os arquivos `.cls` e `.sty` ficam em `src/`. A compilação requer que o diretório `src/` esteja no `TEXINPUTS` (o Tectonic pode ser configurado para isso via `Tectonic.toml`).
+Os arquivos `.cls` e `.sty` ficam em `src/`. A compilação requer que o diretório `src/` esteja no `TEXINPUTS`:
+
+```bash
+export TEXINPUTS=./src:
+latexmk -pdf tests/test-abnt-numeracao.tex
+```
 
 ### Compatibilidade de engines
 
-O projeto suporta **XeLaTeX** e **pdfLaTeX**. Toda a validação e certificação é feita com o **Tectonic** (que usa XeLaTeX internamente).
+O projeto suporta **pdfLaTeX** e **XeLaTeX**. A validação é feita com **TeX Live 2023** (pdfLaTeX + Biber 2.19).
 
 ### Dependências principais
 

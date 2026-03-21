@@ -1,0 +1,170 @@
+% =============================================================================
+% test-abnt-sumario.tex
+% Documento de teste para o pacote abnt-sumario.sty
+%
+% Demonstra todos os recursos do pacote conforme NBR 6027:2012.
+% Cada bloco indica qual requisito da norma está sendo exercitado.
+%
+% Compilação:
+%   TEXINPUTS=./src: latexmk -pdf -output-directory=tests tests/test-abnt-sumario.tex
+%
+% Checklist:
+%   1  — Título "SUMÁRIO" centralizado, negrito, maiúsculas (6.1)
+%   2  — Primárias: negrito + maiúsculas no TOC (6.2)
+%   3  — Secundárias: maiúsculas sem negrito no TOC (6.2)
+%   4  — Terciárias: negrito no TOC (6.2)
+%   5  — Quaternárias: normal no TOC (6.2)
+%   6  — Quinárias: itálico no TOC (6.2)
+%   7  — Indicativos alinhados à esquerda (5.1)
+%   8  — Sem recuo progressivo (5.2)
+%   9  — Pontilhado até o número de página (5.4)
+%   10 — Número de página à margem direita (5.4)
+%   11 — Elementos pré-textuais ausentes (6.3)
+%   12 — Título sem indicativo no TOC (6.1, ref. cruzada 4.1.h)
+%   13 — Compatibilidade hyperref (5.7)
+%   14 — Título longo no TOC
+%   15 — 5 níveis simultâneos
+% =============================================================================
+
+\documentclass[a4paper, 12pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{abnt-sumario}         % carrega abnt-numeracao automaticamente
+\usepackage{hyperref}              % checklist 13: compatibilidade
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\onehalfspacing
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\begin{document}
+
+% =====================================================================
+% PRÉ-TEXTUAIS — não devem aparecer no sumário (checklist 11)
+% =====================================================================
+\pagestyle{empty}
+
+\begin{titlepage}
+  \centering\vfill
+  {\Large\bfseries CAPA DO DOCUMENTO}\par
+  \vfill
+  Cidade\par 2025
+\end{titlepage}
+
+\begin{titlepage}
+  \centering\vfill
+  {\Large\bfseries FOLHA DE ROSTO}\par
+  \vfill
+\end{titlepage}
+
+% =====================================================================
+% SUMÁRIO — checklist 1, 7, 8, 9, 10
+% =====================================================================
+\imprimirsumario
+
+% =====================================================================
+% ELEMENTOS TEXTUAIS
+% =====================================================================
+% =====================================================================
+% CAPÍTULO 1 — checklist 2, 15: primária no TOC
+% =====================================================================
+\chapter{Introdução}
+
+Este capítulo testa a entrada de seção primária no sumário: deve aparecer em
+maiúsculas e negrito.
+
+% Checklist 3: secundária no TOC
+\section{Contexto da pesquisa}
+
+A seção secundária aparece em maiúsculas, sem negrito no sumário.
+
+% Checklist 4: terciária no TOC
+\subsection{Delimitação do tema}
+
+A seção terciária aparece em negrito no sumário.
+
+% Checklist 5: quaternária no TOC
+\subsubsection{Aspectos específicos do recorte}
+
+A seção quaternária aparece em fonte normal no sumário.
+
+% Checklist 6: quinária no TOC
+\paragraph{Considerações preliminares}
+
+A seção quinária aparece em itálico no sumário.
+
+% =====================================================================
+% CAPÍTULO 2 — checklist 14: título longo no TOC
+% =====================================================================
+\chapter{Revisão da literatura sobre metodologias de pesquisa em ciências
+sociais aplicadas ao estudo de fenômenos contemporâneos}
+
+Este capítulo demonstra um título longo no sumário. A segunda linha deve
+alinhar sob a primeira letra do título, não sob o indicativo numérico.
+
+\section{Abordagens qualitativas e suas contribuições para a compreensão de
+fenômenos sociais complexos na pesquisa contemporânea}
+
+Título longo de seção secundária no sumário.
+
+\subsection{Etnografia digital}
+
+Seção terciária curta para contraste.
+
+% =====================================================================
+% CAPÍTULO 3 — mais entradas para demonstrar variedade
+% =====================================================================
+\chapter{Metodologia}
+
+\section{Participantes}
+
+A amostra foi composta por trinta participantes.
+
+\section{Instrumentos de coleta}
+
+Foram utilizados dois instrumentos principais.
+
+\subsection{Questionário}
+
+Instrumento padronizado.
+
+\subsection{Entrevista semiestruturada}
+
+Roteiro com quinze perguntas abertas.
+
+% =====================================================================
+% CAPÍTULO 4 — resultados
+% =====================================================================
+\chapter{Resultados e discussão}
+
+Apresentação dos dados e análise.
+
+% =====================================================================
+% CAPÍTULO 5 — conclusão
+% =====================================================================
+\chapter{Considerações finais}
+
+Síntese dos achados.
+
+% =====================================================================
+% PÓS-TEXTUAIS — checklist 12: título sem indicativo no TOC
+% =====================================================================
+\chapter*{Referências}
+\addcontentsline{toc}{chapter}{REFERÊNCIAS}
+
+ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. \textbf{NBR 6027}: informação e
+documentação: sumário: apresentação. Rio de Janeiro, 2012.
+
+\chapter*{Apêndice A -- Roteiro de entrevista}
+\addcontentsline{toc}{chapter}{APÊNDICE A -- ROTEIRO DE ENTREVISTA}
+
+Roteiro utilizado nas entrevistas com os participantes da pesquisa.
+
+\chapter*{Anexo A -- Parecer do comitê de ética}
+\addcontentsline{toc}{chapter}{ANEXO A -- PARECER DO COMITÊ DE ÉTICA}
+
+Documento emitido pelo comitê de ética em pesquisa.
+
+\end{document}

@@ -1,0 +1,153 @@
+% =============================================================================
+% test-ibge-tabelas.tex
+% Documento de teste para ibge-tabelas.sty
+%
+% Demonstra formatação de tabelas conforme Normas de Apresentação Tabular
+% do IBGE (3ª edição, 1993).
+%
+% Compilação:
+%   TEXINPUTS=./src: latexmk -pdf -output-directory=tests tests/test-ibge-tabelas.tex
+%
+% Checklist:
+%   1  — Três traços horizontais (4.3.1)
+%   2  — Sem bordas verticais (4.3.3)
+%   3  — Traços verticais internos opcionais (4.3.2)
+%   4  — Numeração automática (4.1)
+%   5  — Título no topo (4.2)
+%   6  — Fonte obrigatória no rodapé (4.10)
+%   7  — Ordem do rodapé: Fonte → Nota → Notas específicas (4.10–4.12)
+%   8  — Sinais convencionais (4.8.1)
+%   9  — Chamada remissiva (4.9)
+%   10 — Vírgula decimal (4.7)
+%   11 — Classes de frequência (6)
+%   12 — Apresentação de tempo (5)
+%   13 — Nota de arredondamento (7)
+%   14 — Compatibilidade hyperref
+%   15 — Warning sem fonte (4.10)
+% =============================================================================
+
+\documentclass[a4paper, 12pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{abnt-numeracao}
+\usepackage{ibge-tabelas}
+\usepackage{hyperref}                % checklist 14
+\usepackage{setspace}
+\onehalfspacing
+
+\begin{document}
+
+% =====================================================================
+% CAPÍTULO 1 — Tabela básica (checklist 1, 2, 4, 5, 6, 10)
+% =====================================================================
+\chapter{Tabelas básicas}
+
+A Tabela~\ref{tab:producao} apresenta dados de produção por estado.
+
+% Checklist 1 (três traços), 2 (sem bordas verticais), 4 (numeração),
+% 5 (título no topo), 6 (fonte no rodapé), 10 (vírgula decimal)
+\begin{tabela}{Produção de casulos do bicho-da-seda, por Unidade da
+Federação \textendash\ Brasil \textendash\ 1974}
+  \label{tab:producao}
+  \ibgeFonte{IBGE, Diretoria de Pesquisas, Departamento de Agropecuária.}
+  \begin{tabelaibge}{colspec={lrr}}
+    Unidade da Federação & Produção (t) & Participação (\%) \\
+    São Paulo            & \num{120.50} & \num{45.30}       \\
+    Paraná               & \num{98.20}  & \num{36.90}       \\
+    Minas Gerais         & \num{32.80}  & \num{12.30}       \\
+    Outros               & \num{14.50}  & \num{5.50}        \\
+    Total                & \num{266.00} & \num{100.00}      \\
+  \end{tabelaibge}
+\end{tabela}
+
+% =====================================================================
+% CAPÍTULO 2 — Rodapé completo e chamadas (checklist 7, 9)
+% =====================================================================
+\chapter{Rodapé e chamadas}
+
+A Tabela~\ref{tab:populacao} demonstra o rodapé completo.
+
+% Checklist 7 (ordem do rodapé), 9 (chamada)
+\begin{tabela}{População residente, por sexo \textendash\ Brasil
+\textendash\ 2022}
+  \label{tab:populacao}
+  \ibgeFonte{IBGE, Censo Demográfico 2022.}
+  \ibgeNota{Dados sujeitos a retificação.}
+  \ibgeNotaEsp{1}{Inclui nascidos vivos registrados em anos anteriores}
+  \ibgeNotaEsp{2}{Exclusive a população rural de Rondônia, Acre, Amazonas,
+  Roraima, Pará e Amapá}
+  \begin{tabelaibge}{colspec={lrrr}}
+    Região     & Homens\ibgeChamada{1} & Mulheres & Total\ibgeChamada{2} \\
+    Norte      & \num{9200000}   & \num{9100000}  & \num{18300000}  \\
+    Nordeste   & \num{27500000}  & \num{29000000} & \num{56500000}  \\
+    Sudeste    & \num{42100000}  & \num{44900000} & \num{87000000}  \\
+    Sul        & \num{14800000}  & \num{15200000} & \num{30000000}  \\
+    Centro-Oeste & \num{8200000} & \num{8300000}  & \num{16500000}  \\
+  \end{tabelaibge}
+\end{tabela}
+
+% =====================================================================
+% CAPÍTULO 3 — Sinais convencionais (checklist 8)
+% =====================================================================
+\chapter{Sinais convencionais}
+
+A Tabela~\ref{tab:sinais} demonstra os sinais convencionais da norma.
+
+\begin{tabela}{Demonstração dos sinais convencionais}
+  \label{tab:sinais}
+  \ibgeFonte{Dados fictícios para fins de demonstração.}
+  \ibgeNota{Os sinais convencionais utilizados seguem as Normas de
+  Apresentação Tabular do IBGE.}
+  \begin{tabelaibge}{colspec={lrrr}}
+    Indicador     & 2020            & 2021            & 2022            \\
+    Produção A    & \num{1500.20}   & \num{1620.50}   & \num{1780.30}   \\
+    Produção B    & \ibgeSinalZero  & \num{42.10}     & \num{85.60}     \\
+    Produção C    & \ibgeSinalNA    & \ibgeSinalNA    & \num{10.00}     \\
+    Produção D    & \ibgeSinalND    & \num{320.00}    & \num{340.00}    \\
+    Produção E    & \ibgeSinalOmitido & \ibgeSinalOmitido & \num{5.00}  \\
+    Arredondado+  & \ibgeSinalArrZero[2] & \num{0.10} & \num{0.20}     \\
+    Arredondado$-$ & \ibgeSinalArrZero*[1] & \num{-0.3} & \num{0.10}  \\
+  \end{tabelaibge}
+\end{tabela}
+
+% =====================================================================
+% Texto com classes de frequência e apresentação de tempo
+% (checklist 11, 12, 13)
+% =====================================================================
+\chapter{Exemplos auxiliares}
+
+\section{Apresentação de tempo}
+
+% Checklist 12
+A série de dados abrange o período de \ibgeSerieConsec{1981}{1985}
+(série consecutiva). Para anos não consecutivos, usa-se
+\ibgeSerieNConsec{1981}{1985}. Para safras agrícolas, a notação é
+\ibgeSafra{1991}{1992}.
+
+\section{Classes de frequência}
+
+% Checklist 11
+As classes de frequência podem ser expressas de três formas:
+\begin{itemize}
+  \item Inclui inferior, exclui superior: \ibgeClasseIE{10}{20}
+  \item Exclui inferior, inclui superior: \ibgeClasseEI{10}{20}
+  \item Inclui ambos: \ibgeClasseII{10}{20}
+\end{itemize}
+
+\section{Nota de arredondamento}
+
+% Checklist 13
+\ibgeNotaArrend
+
+% =====================================================================
+% Tabela sem fonte — gera warning (checklist 15)
+% =====================================================================
+\begin{tabela}{Tabela sem fonte para teste de warning}
+  \label{tab:semfonte}
+  \begin{tabelaibge}{colspec={lr}}
+    Item & Valor \\
+    A    & \num{10} \\
+  \end{tabelaibge}
+\end{tabela}
+
+\end{document}

@@ -1,0 +1,172 @@
+% =============================================================================
+% test-abnt-refs-citacoes.tex
+% Documento de teste para abnt-refs.sty e abnt-citacoes.sty
+%
+% Demonstra referências (NBR 6023:2025) e citações (NBR 10520:2023).
+%
+% Compilação (requer Biber instalado):
+%   TEXINPUTS=./src: latexmk -pdf -output-directory=tests tests/test-abnt-refs-citacoes.tex
+%
+% Para sistema numérico, alterar: \usepackage[sistema=numerico]{abnt-citacoes}
+%
+% Checklist:
+%   1  — Compilação sem erros (XeLaTeX + Biber)
+%   2  — Lista de referências formatada (espaçamento, alinhamento)
+%   3  — Título REFERÊNCIAS centralizado, maiúsculas, negrito
+%   4  — Backref (páginas de citação após cada referência)
+%   5  — Citação autor-data inline (\textcite)
+%   6  — Citação autor-data parentética (\parencite)
+%   7  — Citação com et al. (4+ autores)
+%   8  — Citação direta curta (até 3 linhas, entre aspas)
+%   9  — Citação direta longa (ambiente citacaodireta)
+%   10 — Citação de citação (apud)
+%   11 — Sistema numérico (trocar opção para testar)
+%   12 — Tipos de referência variados (livro, artigo, tese, legislação, site)
+%   13 — Compatibilidade hyperref
+%   14 — Compatibilidade abnt.cls
+% =============================================================================
+
+\documentclass[a4paper, 12pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{abnt-numeracao}
+\usepackage{abnt-sumario}
+\usepackage{abnt-citacoes}            % carrega abnt-refs automaticamente
+\usepackage{hyperref}                  % checklist 13
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\onehalfspacing
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\addbibresource{refs.bib}
+
+\begin{document}
+
+% =====================================================================
+% PRÉ-TEXTUAIS
+% =====================================================================
+\pagestyle{empty}
+
+\begin{titlepage}
+  \centering\vfill
+  {\Large\bfseries TESTE DE REFERÊNCIAS E CITAÇÕES}\par
+  \vfill
+  Cidade\par 2025
+\end{titlepage}
+
+% =====================================================================
+% SUMÁRIO
+% =====================================================================
+\imprimirsumario
+
+% =====================================================================
+% ELEMENTOS TEXTUAIS
+% =====================================================================
+
+% =====================================================================
+% CAPÍTULO 1 — Citações autor-data (checklist 5, 6)
+% =====================================================================
+\chapter{Citações no sistema autor-data}
+
+% Checklist 5: citação inline (\textcite)
+Segundo \textcite{severino2007}, a metodologia do trabalho científico é
+fundamental para a formação acadêmica.
+
+% Checklist 6: citação parentética (\parencite)
+A metodologia científica é considerada essencial na formação universitária
+\parencite{severino2007}.
+
+% Checklist 7: citação com et al. (4+ autores)
+As reformas econômicas no Brasil foram amplamente discutidas na literatura
+\parencite{urani1994}.
+
+% Artigo de periódico
+A análise de políticas públicas educacionais revela desafios estruturais no
+sistema brasileiro \parencite{souza2019}.
+
+% Tese
+Estudos sobre impactos ambientais em áreas urbanas demonstram a necessidade de
+planejamento territorial \parencite{silva2015}.
+
+% =====================================================================
+% CAPÍTULO 2 — Citações diretas (checklist 8, 9)
+% =====================================================================
+\chapter{Citações diretas}
+
+% Checklist 8: citação direta curta (até 3 linhas, entre aspas)
+\section{Citação direta curta}
+
+Conforme \textcite[p.~23]{severino2007}, ``a metodologia é o instrumento que
+permite ao pesquisador organizar sua investigação de forma sistemática e
+rigorosa.''
+
+% Checklist 9: citação direta longa (ambiente citacaodireta)
+\section{Citação direta longa}
+
+A importância da metodologia na pesquisa científica é assim descrita:
+
+\begin{citacaodireta}
+A pesquisa científica exige do investigador uma postura metodológica que vai
+além da simples aplicação de técnicas. Trata-se de uma atitude intelectual
+que envolve questionamento constante, rigor na coleta e análise dos dados,
+e capacidade de articular teoria e prática de forma coerente e fundamentada.
+O pesquisador deve estar preparado para revisar suas hipóteses e adaptar
+seus métodos conforme os resultados parciais o indiquem
+\parencite[p.~45--46]{severino2007}.
+\end{citacaodireta}
+
+O trecho acima demonstra o uso do ambiente \texttt{citacaodireta}, com recuo
+de 4~cm, fonte menor e espaçamento simples.
+
+% =====================================================================
+% CAPÍTULO 3 — Citação de citação e outros casos (checklist 10)
+% =====================================================================
+\chapter{Casos especiais}
+
+% Checklist 10: citação de citação (apud)
+\section{Citação de citação}
+
+\textcite{piaget1975} apud \textcite{moreira2011} defende que o
+desenvolvimento cognitivo ocorre por meio de processos de assimilação e
+acomodação.
+
+% Desambiguação por letra (mesmo autor, mesmo ano)
+\section{Desambiguação por ano}
+
+A educação inclusiva foi discutida em dois estudos distintos
+\parencite{santos2020a,santos2020b}.
+
+% Múltiplas citações
+\section{Múltiplas citações}
+
+Diversos autores trataram de metodologia de pesquisa
+\parencite{severino2007,demo2003,silva2015}.
+
+% =====================================================================
+% CAPÍTULO 4 — Tipos variados de referência (checklist 12)
+% =====================================================================
+\chapter{Referências variadas}
+
+% Legislação
+A legislação educacional brasileira é complexa \parencite{brasil2014}.
+
+% Site / recurso eletrônico
+Os dados populacionais mais recentes estão disponíveis no portal do censo
+\parencite{ibge2023}.
+
+% Trabalho em evento
+Técnicas computacionais têm sido aplicadas na classificação de solos
+\parencite{oliveira2018}.
+
+% Capítulo de livro
+A pesquisa como princípio educativo é discutida por \textcite{demo2003}.
+
+% =====================================================================
+% PÓS-TEXTUAIS — checklist 2, 3, 4
+% =====================================================================
+\imprimirreferencias
+
+\end{document}

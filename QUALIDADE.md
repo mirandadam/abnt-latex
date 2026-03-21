@@ -70,7 +70,7 @@ Cada documento responde uma pergunta. Nada supérfluo.
 É possível verificar que o pacote funciona corretamente sem inspeção visual manual?
 
 - O documento de teste compila sem erros e sem warnings relevantes.
-- O teste pode ser executado com um único comando (`make test`, `tectonic ...`, ou equivalente).
+- O teste pode ser executado com um único comando (`make test`, `latexmk ...`, ou equivalente).
 - Regressões são detectáveis: se uma mudança quebrar a saída, o teste falha.
 - Para propriedades visuais (formatação, espaçamento), um PDF de referência serve como baseline para comparação.
 
@@ -94,10 +94,23 @@ Quando uma norma ABNT for revisada ou um bug for reportado, a correção é fác
 
 O pacote funciona nos ambientes em que o público-alvo realmente trabalha?
 
-- Compila com XeLaTeX (Tectonic) e pdfLaTeX (TeX Live / Overleaf).
+- Compila com pdfLaTeX e XeLaTeX (TeX Live / Overleaf).
 - Não conflita com pacotes comuns (`hyperref`, `babel`, `biblatex`, `geometry`).
 - Funciona tanto standalone (`\documentclass{article}`) quanto com as classes ABNT do projeto.
 - Caracteres acentuados e cedilha funcionam sem intervenção manual do usuário.
+
+---
+
+## 7. Tratamento de casos especiais
+
+A implementação trata corretamente os casos de borda previstos pela norma?
+
+- **Não assumir que "nunca acontece".** Se a norma prevê um caso, a implementação deve tratá-lo ou emitir um erro claro — não silenciosamente ignorá-lo.
+- **Limites explícitos:** quando uma funcionalidade tem limite técnico (ex.: número máximo de itens numa lista), o pacote deve emitir uma mensagem de erro compreensível ao atingir o limite, não falhar com erro críptico do LaTeX.
+- **Entradas inesperadas:** comandos públicos devem se comportar de forma previsível com entradas vazias, muito longas ou contendo caracteres especiais.
+- **Interação entre funcionalidades:** o teste deve exercitar combinações de recursos (ex.: alínea dentro de seção quinária, título com acento em maiúsculas automáticas, índice + numeração no mesmo documento).
+
+**Como verificar:** para cada caso especial previsto na norma, há um item correspondente no documento de teste ou uma limitação documentada com justificativa técnica.
 
 ---
 
@@ -114,3 +127,4 @@ Ao avaliar se um módulo está pronto para merge:
 | 5   | Compilação   | O teste compila sem erros em XeLaTeX e pdfLaTeX?                                       |
 | 6   | Manutenção   | Consigo achar onde mudar se a norma for revisada?                                      |
 | 7   | Robustez     | Funciona com `hyperref`, `babel`, `biblatex` carregados simultaneamente?               |
+| 8   | Casos especiais | Casos de borda previstos pela norma são tratados ou documentados como limitação?    |

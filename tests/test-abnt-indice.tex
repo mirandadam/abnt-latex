@@ -7,10 +7,7 @@
 %
 % Compilação:
 %   Requer shell-escape para que imakeidx chame makeindex automaticamente.
-%   Com tectonic:
-%     tectonic -Z shell-escape -Z search-path=src tests/test-abnt-indice.tex
-%   Com latexmk:
-%     latexmk -pdf -shell-escape -auxdir=tests -outdir=tests tests/test-abnt-indice.tex
+%   TEXINPUTS=./src: latexmk -pdf -pdflatex="pdflatex -shell-escape" -output-directory=tests tests/test-abnt-indice.tex
 % =============================================================================
 
 \documentclass[a4paper, 12pt]{report}

@@ -3,14 +3,294 @@
 % Lombada — ABNT NBR 12225:2023
 %
 % Licença: LPPL 1.3c
-% Versão:  0.1.0 (stub)
+% Versão:  1.0.0
+%
+% Dependências:
+%   tikz      — desenho do retângulo e posicionamento/rotação de texto
+%   graphicx  — inclusão de logomarca
+%   l3keys2e  — opções do pacote
+%
+% Rastreabilidade à norma:
+%   Seção 3.a    → nome do autor (opcional)
+%   Seção 3.b    → título (obrigatório)
+%   Seção 3.c    → elementos alfanuméricos (volume, fascículo)
+%   Seção 3.d    → logomarca (opcional)
+%   Seção 4      → margem inferior 3 cm, margem superior 2 cm
+%   Seção 4.1    → disposição descendente ou horizontal
+%   Seção 4.3.1  → horizontal: texto impresso horizontalmente
+%   Seção 4.3.2  → descendente: texto de cima para baixo (rotação 270°)
+%   Seção 4.4    → elementos alfanuméricos na parte inferior
+%   Seção 4.5    → logomarca na parte inferior, distância 3 cm da borda
+%
+% Limitações documentadas:
+%   Modo misto (4.1c) não implementado
+%   Seção 4.3.3 (título de margem de capa) fora do escopo
+%   Logomarca: apenas posicionamento básico
+%   Largura da lombada depende de fatores físicos externos
 % =============================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesExplPackage{abnt-lombada}{2025/03/21}{0.1.0}
+\ProvidesExplPackage{abnt-lombada}{2025/03/21}{1.0.0}
   {Lombada~\textemdash~NBR~12225:2023}
 
-% TODO: Implementar formatação de lombada conforme NBR 12225:2023.
+\RequirePackage{l3keys2e}
+
+% =============================================================================
+% 1. OPÇÕES DO PACOTE
+% =============================================================================
+
+\tl_new:N \g__abnt_lomb_disposicao_tl
+\tl_gset:Nn \g__abnt_lomb_disposicao_tl { descendente }
+
+\dim_new:N \g__abnt_lomb_largura_dim
+\dim_gset:Nn \g__abnt_lomb_largura_dim { 2cm }
+
+\int_new:N \g__abnt_lomb_paginas_int
+\dim_new:N \g__abnt_lomb_espessura_dim
+\dim_gset:Nn \g__abnt_lomb_espessura_dim { 0.1mm }
+
+\bool_new:N \g__abnt_lomb_usar_paginas_bool
+\bool_gset_false:N \g__abnt_lomb_usar_paginas_bool
+
+\keys_define:nn { abnt-lombada }
+  {
+    disposicao .choices:nn =
+      { descendente, horizontal }
+      { \tl_gset:Nn \g__abnt_lomb_disposicao_tl {#1} },
+    disposicao .initial:n = descendente,
+    largura .dim_gset:N   = \g__abnt_lomb_largura_dim,
+    largura .initial:n    = 2cm,
+    paginas .code:n       =
+      {
+        \int_gset:Nn \g__abnt_lomb_paginas_int {#1}
+        \bool_gset_true:N \g__abnt_lomb_usar_paginas_bool
+      },
+    espessura .dim_gset:N = \g__abnt_lomb_espessura_dim,
+    espessura .initial:n  = 0.1mm,
+  }
+
+\ProcessKeysOptions { abnt-lombada }
+
+% =============================================================================
+% 2. DEPENDÊNCIAS
+% =============================================================================
+
+\RequirePackage{tikz}
+\RequirePackage{graphicx}
+
+% =============================================================================
+% 3. CÁLCULO DA LARGURA (se opção 'paginas' foi usada)
+%    largura = páginas × espessura_por_folha / 2 (frente e verso)
+%    Aviso: é uma aproximação.
+% =============================================================================
+
+\msg_new:nnn { abnt-lombada } { largura-aproximada }
+  {
+    A~largura~da~lombada~foi~calculada~automaticamente~
+    (\dim_use:N \g__abnt_lomb_largura_dim).~
+    Este~valor~é~uma~aproximação.~A~largura~real~depende~do~papel~
+    e~da~encadernação.
+  }
+
+\bool_if:NT \g__abnt_lomb_usar_paginas_bool
+  {
+    \dim_gset:Nn \g__abnt_lomb_largura_dim
+      {
+        \fp_to_dim:n
+          {
+            \int_use:N \g__abnt_lomb_paginas_int
+            * \dim_to_fp:n { \g__abnt_lomb_espessura_dim }
+            / 2
+          }
+      }
+    \msg_warning:nn { abnt-lombada } { largura-aproximada }
+  }
+
+% =============================================================================
+% 4. VARIÁVEIS DE CONTEÚDO
+%    Integração com abnt.cls: lê metadados se disponíveis.
+% =============================================================================
+
+\tl_new:N \g__abnt_lomb_autor_tl
+\tl_new:N \g__abnt_lomb_titulo_tl
+\tl_new:N \g__abnt_lomb_elementos_tl
+\tl_new:N \g__abnt_lomb_logomarca_tl
+\tl_new:N \g__abnt_lomb_logomarca_texto_tl
+
+% Herdar de abnt.cls se disponível
+\AtBeginDocument{
+  \tl_if_empty:NT \g__abnt_lomb_autor_tl
+    {
+      \cs_if_exist:NT \g__abnt_autor_tl
+        { \tl_gset_eq:NN \g__abnt_lomb_autor_tl \g__abnt_autor_tl }
+    }
+  \tl_if_empty:NT \g__abnt_lomb_titulo_tl
+    {
+      \cs_if_exist:NT \g__abnt_titulo_tl
+        { \tl_gset_eq:NN \g__abnt_lomb_titulo_tl \g__abnt_titulo_tl }
+    }
+}
+
+% =============================================================================
+% 5. COMANDOS PÚBLICOS
+% =============================================================================
+
+\NewDocumentCommand{\lombadaAutor}{ m }
+  { \tl_gset:Nn \g__abnt_lomb_autor_tl {#1} }
+
+\NewDocumentCommand{\lombadaTitulo}{ m }
+  { \tl_gset:Nn \g__abnt_lomb_titulo_tl {#1} }
+
+\NewDocumentCommand{\lombadaElementos}{ m }
+  { \tl_gset:Nn \g__abnt_lomb_elementos_tl {#1} }
+
+\NewDocumentCommand{\lombadaLogomarca}{ m }
+  { \tl_gset:Nn \g__abnt_lomb_logomarca_tl {#1} }
+
+\NewDocumentCommand{\lombadaLogomarcaTexto}{ m }
+  { \tl_gset:Nn \g__abnt_lomb_logomarca_texto_tl {#1} }
+
+% =============================================================================
+% 6. MENSAGENS DE ERRO
+% =============================================================================
+
+\msg_new:nnn { abnt-lombada } { titulo-ausente }
+  {
+    O~título~da~lombada~é~obrigatório~(NBR~12225~seção~3.b).~
+    Use~\lombadaTitulo\{texto\}~ou~carregue~abnt.cls~com~\titulo\{texto\}.
+  }
+
+% =============================================================================
+% 7. COMANDO \imprimirlombada
+%    Gera uma página com o retângulo da lombada centralizado.
+%    Layout descendente: texto rotacionado 270°.
+%    Layout horizontal: texto empilhado verticalmente.
+% =============================================================================
+
+\NewDocumentCommand{\imprimirlombada}{}{
+  % Verificar título obrigatório
+  \tl_if_empty:NT \g__abnt_lomb_titulo_tl
+    { \msg_error:nn { abnt-lombada } { titulo-ausente } }
+  \clearpage
+  \thispagestyle{empty}
+  \tl_if_eq:NnTF \g__abnt_lomb_disposicao_tl { horizontal }
+    { \__abnt_lomb_horizontal: }
+    { \__abnt_lomb_descendente: }
+  \clearpage
+}
+
+% --- Layout descendente (seção 4.3.2) ---
+% Texto rotacionado 270°, legível do alto para baixo
+\cs_new_protected:Nn \__abnt_lomb_descendente:
+  {
+    \begin{tikzpicture}[remember~picture, overlay]
+      % Origem no centro da página
+      \coordinate (centro) at (current~page.center);
+
+      % Retângulo da lombada centralizado na página
+      \draw[black, line~width=0.4pt]
+        ([xshift=-\g__abnt_lomb_largura_dim/2] centro |- current~page.north)
+        rectangle
+        ([xshift=\g__abnt_lomb_largura_dim/2] centro |- current~page.south);
+
+      % Altura útil: altura do papel - 2cm topo - 3cm base (seção 4)
+      % Posicionar conteúdo rotacionado no centro vertical
+      % Margem superior = 2cm da borda superior
+      % Margem inferior = 3cm da borda inferior
+
+      % Autor (seção 3.a) — na parte superior
+      \tl_if_empty:NF \g__abnt_lomb_autor_tl
+        {
+          \node[rotate=270, anchor=east]
+            at ([yshift=-2cm] centro |- current~page.north)
+            {\normalsize\tl_use:N \g__abnt_lomb_autor_tl};
+        }
+
+      % Título (seção 3.b) — no centro
+      \node[rotate=270, anchor=center]
+        at (centro)
+        {\normalsize\bfseries\tl_use:N \g__abnt_lomb_titulo_tl};
+
+      % Elementos alfanuméricos (seção 4.4) — na parte inferior
+      \tl_if_empty:NF \g__abnt_lomb_elementos_tl
+        {
+          \node[rotate=270, anchor=west]
+            at ([yshift=4cm] centro |- current~page.south)
+            {\normalsize\tl_use:N \g__abnt_lomb_elementos_tl};
+        }
+
+      % Logomarca texto (seção 4.5) — parte inferior, 3cm da borda
+      \tl_if_empty:NF \g__abnt_lomb_logomarca_texto_tl
+        {
+          \node[rotate=270, anchor=west]
+            at ([yshift=3cm] centro |- current~page.south)
+            {\normalsize\tl_use:N \g__abnt_lomb_logomarca_texto_tl};
+        }
+
+      % Logomarca imagem (seção 4.5) — parte inferior, 3cm da borda
+      \tl_if_empty:NF \g__abnt_lomb_logomarca_tl
+        {
+          \node[rotate=270, anchor=west]
+            at ([yshift=3cm] centro |- current~page.south)
+            {\includegraphics[height=\g__abnt_lomb_largura_dim*0.7]
+              {\tl_use:N \g__abnt_lomb_logomarca_tl}};
+        }
+    \end{tikzpicture}
+    \null  % página não vazia
+  }
+
+% --- Layout horizontal (seção 4.3.1) ---
+% Texto horizontal, empilhado verticalmente
+\cs_new_protected:Nn \__abnt_lomb_horizontal:
+  {
+    \begin{tikzpicture}[remember~picture, overlay]
+      \coordinate (centro) at (current~page.center);
+
+      % Retângulo da lombada
+      \draw[black, line~width=0.4pt]
+        ([xshift=-\g__abnt_lomb_largura_dim/2] centro |- current~page.north)
+        rectangle
+        ([xshift=\g__abnt_lomb_largura_dim/2] centro |- current~page.south);
+
+      % Autor (seção 3.a) — parte superior
+      \tl_if_empty:NF \g__abnt_lomb_autor_tl
+        {
+          \node[text~width=\g__abnt_lomb_largura_dim-4mm, align=center]
+            at ([yshift=-3cm] centro |- current~page.north)
+            {\normalsize\tl_use:N \g__abnt_lomb_autor_tl};
+        }
+
+      % Título (seção 3.b) — centro
+      \node[text~width=\g__abnt_lomb_largura_dim-4mm, align=center]
+        at (centro)
+        {\normalsize\bfseries\tl_use:N \g__abnt_lomb_titulo_tl};
+
+      % Elementos alfanuméricos (seção 4.4) — parte inferior
+      \tl_if_empty:NF \g__abnt_lomb_elementos_tl
+        {
+          \node[text~width=\g__abnt_lomb_largura_dim-4mm, align=center]
+            at ([yshift=4cm] centro |- current~page.south)
+            {\normalsize\tl_use:N \g__abnt_lomb_elementos_tl};
+        }
+
+      % Logomarca texto (seção 4.5)
+      \tl_if_empty:NF \g__abnt_lomb_logomarca_texto_tl
+        {
+          \node[text~width=\g__abnt_lomb_largura_dim-4mm, align=center]
+            at ([yshift=3cm] centro |- current~page.south)
+            {\normalsize\tl_use:N \g__abnt_lomb_logomarca_texto_tl};
+        }
+
+      % Logomarca imagem (seção 4.5)
+      \tl_if_empty:NF \g__abnt_lomb_logomarca_tl
+        {
+          \node at ([yshift=3cm] centro |- current~page.south)
+            {\includegraphics[width=\g__abnt_lomb_largura_dim*0.7]
+              {\tl_use:N \g__abnt_lomb_logomarca_tl}};
+        }
+    \end{tikzpicture}
+    \null
+  }
 
 % =============================================================================
 % FIM DO ARQUIVO

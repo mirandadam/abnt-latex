@@ -1,0 +1,120 @@
+% =============================================================================
+% test-abnt-numeracao.tex
+% Documento de teste para o pacote abnt-numeracao.sty
+%
+% Demonstra todos os recursos do pacote conforme NBR 6024:2012.
+% Cada bloco indica qual requisito da norma está sendo exercitado.
+%
+% Compilação:
+%   TEXINPUTS=./src: latexmk -pdf -output-directory=tests tests/test-abnt-numeracao.tex
+% =============================================================================
+
+\documentclass[a4paper, 12pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{abnt-numeracao}
+\usepackage{hyperref}  % checklist item 10: compatibilidade
+\usepackage{setspace}
+\onehalfspacing
+
+\begin{document}
+
+% =====================================================================
+% CAPÍTULO 1 — Exercita: primária em nova página (4), formatação
+% hierárquica (2), numeração sem ponto (3), espaçamento (5)
+% =====================================================================
+\chapter{Introdução}
+
+Este capítulo demonstra a formatação da seção primária: título em maiúsculas
+e negrito, alinhado à esquerda, com o indicativo numérico separado por espaço
+(sem ponto, hífen ou travessão).
+
+% Checklist 2, 3: formatação hierárquica, numeração sem ponto
+\section{Contexto da pesquisa}
+
+A seção secundária aparece em maiúsculas, sem negrito. O indicativo ``1.1''
+não tem ponto final.
+
+\subsection{Delimitação do tema}
+
+A seção terciária aparece em negrito, sem maiúsculas automáticas. O indicativo
+é ``1.1.1''.
+
+\subsubsection{Aspectos específicos do recorte}
+
+A seção quaternária aparece em fonte normal, sem negrito nem itálico. O
+indicativo é ``1.1.1.1''.
+
+\paragraph{Considerações preliminares sobre o recorte temático}
+
+A seção quinária aparece em itálico. O indicativo é ``1.1.1.1.1''. Este
+parágrafo demonstra a formatação do quinto nível hierárquico.
+
+% =====================================================================
+% CAPÍTULO 2 — Exercita: primária em nova página (4),
+% título longo com hanging indent (7),
+% \label e \ref em título com hyperref (10)
+% =====================================================================
+\chapter{Revisão da literatura sobre metodologias de pesquisa em ciências
+sociais aplicadas\label{cap:revisao}}
+
+Este capítulo demonstra um título de seção primária longo, que ocupa mais de
+uma linha. A segunda linha deve estar alinhada sob a primeira letra do título,
+não sob o indicativo numérico.
+
+O capítulo anterior pode ser referenciado: ver Capítulo~\ref{cap:revisao}.
+
+\section{Abordagens qualitativas e suas contribuições para a compreensão de
+fenômenos sociais complexos\label{sec:quali}}
+
+Esta seção demonstra um título de seção secundária longo. O indicativo é
+``2.1'' e a segunda linha deve alinhar sob a primeira letra do título.
+
+A Seção~\ref{sec:quali} contém referência cruzada no título, testando a
+compatibilidade de \verb|\MakeTextUppercase| com \verb|hyperref|.
+
+% =====================================================================
+% CAPÍTULO 3 — Exercita: alíneas (8), subalíneas (9)
+% =====================================================================
+\chapter{Metodologia}
+
+% Checklist 8: alíneas (seção 4.2)
+% Texto antes das alíneas termina em dois pontos (seção 4.2.b)
+Os procedimentos metodológicos foram organizados nas seguintes etapas:
+
+\begin{alineas}
+  \item revisão bibliográfica em bases de dados nacionais e internacionais;
+  \item coleta de dados primários por meio de entrevistas semiestruturadas;
+  % Checklist 9: subalíneas (seção 4.3)
+  \item análise dos dados coletados, incluindo:
+    \begin{subalineas}
+      \item codificação das entrevistas transcritas;
+      \item categorização temática dos conteúdos identificados;
+      \item triangulação com dados documentais.
+    \end{subalineas}
+  \item elaboração do relatório final com os resultados consolidados.
+\end{alineas}
+
+As etapas acima foram executadas sequencialmente ao longo de doze meses.
+
+% Demonstrar mais seções para variedade
+\section{Participantes}
+
+A amostra foi composta por trinta participantes selecionados por conveniência.
+
+\section{Instrumentos de coleta}
+
+Foram utilizados dois instrumentos principais.
+
+% =====================================================================
+% Título sem indicativo numérico, centralizado
+% Exercita: checklist item 6 (seção 4.1.h / 14724 5.2.3)
+% =====================================================================
+\chapter*{Referências}
+\addcontentsline{toc}{chapter}{REFERÊNCIAS}
+
+ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. \textbf{NBR 6024}: informação e
+documentação: numeração progressiva das seções de um documento: apresentação.
+Rio de Janeiro, 2012.
+
+\end{document}

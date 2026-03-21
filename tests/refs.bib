@@ -1,0 +1,134 @@
+% =============================================================================
+% refs.bib
+% Arquivo de bibliografia para testes de abnt-refs.sty e abnt-citacoes.sty
+%
+% Contém entradas variadas para exercitar diferentes tipos de referência
+% conforme NBR 6023:2025 e diferentes padrões de citação conforme
+% NBR 10520:2023.
+% =============================================================================
+
+% ---- Livro (monografia) ----
+@book{severino2007,
+  author    = {Antônio Joaquim Severino},
+  title     = {Metodologia do trabalho científico},
+  edition   = {23},
+  publisher = {Cortez},
+  location  = {São Paulo},
+  year      = {2007},
+}
+
+% ---- Livro com 4+ autores (testa et al.) ----
+@book{urani1994,
+  author    = {André Urani and Fábio Giambiagi and John Reis and André Carlos},
+  title     = {Reformas no {Brasil}},
+  subtitle  = {balanço e agenda},
+  publisher = {Nova Fronteira},
+  location  = {Rio de Janeiro},
+  year      = {1994},
+}
+
+% ---- Artigo de periódico ----
+@article{souza2019,
+  author    = {Maria Helena de Souza},
+  title     = {Análise de políticas públicas educacionais no contexto brasileiro},
+  journal   = {Revista Brasileira de Educação},
+  volume    = {24},
+  number    = {78},
+  pages     = {1--25},
+  year      = {2019},
+  doi       = {10.1590/S1413-24782019240078},
+}
+
+% ---- Tese / dissertação ----
+@thesis{silva2015,
+  author      = {João Carlos da Silva},
+  title       = {Impactos ambientais da urbanização em áreas de preservação permanente},
+  type        = {Dissertação (Mestrado em Geografia)},
+  institution = {Universidade de São Paulo},
+  location    = {São Paulo},
+  year        = {2015},
+  pagetotal   = {145},
+}
+
+% ---- Legislação ----
+@legislation{brasil2014,
+  author  = {{BRASIL}},
+  title   = {Lei nº 13.005, de 25 de junho de 2014},
+  note    = {Aprova o Plano Nacional de Educação – PNE e dá outras providências},
+  journal = {Diário Oficial [da] República Federativa do Brasil},
+  location = {Brasília, DF},
+  date    = {2014-06-26},
+}
+
+% ---- Site / recurso eletrônico ----
+@online{ibge2023,
+  author  = {{IBGE}},
+  title   = {Censo demográfico 2022},
+  subtitle = {resultados preliminares},
+  url     = {https://censo2022.ibge.gov.br},
+  urldate = {2023-08-15},
+  year    = {2023},
+}
+
+% ---- Trabalho em evento (anais) ----
+@inproceedings{oliveira2018,
+  author    = {Ana Paula Oliveira and Carlos Eduardo Lima},
+  title     = {Uso de técnicas de aprendizado de máquina na classificação de solos},
+  booktitle = {Anais do X Congresso Brasileiro de Agroinformática},
+  location  = {Ponta Grossa},
+  year      = {2018},
+  pages     = {112--120},
+}
+
+% ---- Capítulo de livro ----
+@inbook{demo2003,
+  author    = {Pedro Demo},
+  title     = {Pesquisa},
+  subtitle  = {princípio científico e educativo},
+  booktitle = {Metodologia científica em ciências sociais},
+  editor    = {Roberto Jarry Richardson},
+  edition   = {3},
+  publisher = {Atlas},
+  location  = {São Paulo},
+  year      = {2003},
+  pages     = {41--69},
+}
+
+% ---- Para testar apud (citação de citação) ----
+% Fonte original (não consultada diretamente)
+@book{piaget1975,
+  author    = {Jean Piaget},
+  title     = {A equilibração das estruturas cognitivas},
+  publisher = {Zahar},
+  location  = {Rio de Janeiro},
+  year      = {1975},
+}
+
+% Fonte consultada que cita Piaget
+@book{moreira2011,
+  author    = {Marco Antônio Moreira},
+  title     = {Teorias de aprendizagem},
+  edition   = {2},
+  publisher = {EPU},
+  location  = {São Paulo},
+  year      = {2011},
+}
+
+% ---- Dois autores, mesmo sobrenome (desambiguação) ----
+@article{santos2020a,
+  author  = {Ana Santos},
+  title   = {Primeiro artigo sobre educação inclusiva},
+  journal = {Revista de Pedagogia},
+  volume  = {12},
+  pages   = {10--20},
+  year    = {2020},
+}
+
+@article{santos2020b,
+  author  = {Ana Santos},
+  title   = {Segundo artigo sobre práticas pedagógicas},
+  journal = {Revista de Pedagogia},
+  volume  = {13},
+  pages   = {30--40},
+  year    = {2020},
+}

@@ -1,287 +1,312 @@
 % =============================================================================
-% ibge-tabular.sty
+% ibge-tabelas.sty
 % Normas de Apresentação Tabular — IBGE, 3ª ed., 1993
 %
 % Licença: LPPL 1.3c
-% Versão:  0.1.0 (esboço de arquitetura)
+% Versão:  1.0.0
 %
 % Dependências:
-%   tabularray  — estrutura e estilo das tabelas         (expl3-nativo)
-%   siunitx     — alinhamento numérico e unidades        (expl3-nativo)
+%   tabularray  — estrutura e estilo das tabelas (expl3-nativo)
+%   siunitx     — formatação numérica brasileira (vírgula decimal)
 %   caption     — formatação do título no topo
-%   xparse      — interface de comandos (já incluso no LaTeX moderno)
-%   expl3       — lógica programática interna
+%   l3keys2e    — processamento de opções
+%
+% Rastreabilidade à norma:
+%   Seção 4.1     → numeração automática "Tabela 1", "Tabela 2"
+%   Seção 4.1.2   → numeração subordinada a capítulos (opção subordinar)
+%   Seção 4.2     → título no topo: natureza + abrangência + tempo
+%   Seção 4.3.1   → mínimo três traços horizontais (topo, cabeçalho, rodapé)
+%   Seção 4.3.3   → sem traços verticais nas bordas laterais
+%   Seção 4.5     → coluna indicadora alinhada à esquerda
+%   Seção 4.6–4.7 → vírgula decimal, separador de milhar (siunitx)
+%   Seção 4.8.1   → sinais convencionais (a–f)
+%   Seção 4.9     → chamada remissiva (parênteses/colchetes/exponencial)
+%   Seção 4.10    → fonte obrigatória no rodapé
+%   Seção 4.11    → nota geral após a fonte
+%   Seção 4.12    → notas específicas em ordem de chamada
+%   Seção 5       → apresentação de tempo (séries, safra)
+%   Seção 6       → classes de frequência
+%   Seção 7       → nota de arredondamento
+%
+% Limitações documentadas:
+%   Seção 7.4b   → correção por razão de arredondamento (requer dados brutos)
+%   Seção 8.1–8.2 → diagramação especial de tabelas largas
+%   Seção 6.1b–6.3b → notação gráfica de classes (apenas textual implementada)
+%   tabularray v2021 → coluna S do siunitx não reconhecida; usar \num{}
+%   Tabelas longas → longtblr disponível mas não integrado ao ambiente tabela
 % =============================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesExplPackage{ibge-tabular}{2024/01/01}{0.1.0}
-  {Normas de Apresentação Tabular — IBGE 1993}
+\ProvidesExplPackage{ibge-tabelas}{2025/03/21}{1.0.0}
+  {Normas~de~Apresentação~Tabular~\textemdash~IBGE~1993}
 
-% -----------------------------------------------------------------------------
-% 1. DEPENDÊNCIAS
-% -----------------------------------------------------------------------------
-% tabularray é o núcleo. Ele permite separar completamente a definição de
-% estrutura (colunas, linhas) da definição de estilo (traços, cores, fontes).
-% Isso mapeia diretamente para a distinção que a norma faz entre "moldura"
-% (traços) e "conteúdo" (dados, cabeçalho, indicadores).
+\RequirePackage{l3keys2e}
+
+% =============================================================================
+% 1. OPÇÕES DO PACOTE
+% =============================================================================
+
+% Formato da chamada remissiva (seção 4.9.1)
+\tl_new:N \g__ibge_tab_chamada_fmt_tl
+\tl_gset:Nn \g__ibge_tab_chamada_fmt_tl { parenteses }
+
+% Subordinação da numeração a capítulos (seção 4.1.2)
+\bool_new:N \g__ibge_tab_subordinar_bool
+\bool_gset_false:N \g__ibge_tab_subordinar_bool
+
+\keys_define:nn { ibge-tabelas }
+  {
+    chamada .choices:nn =
+      { parenteses, colchetes, exponencial }
+      { \tl_gset:Nn \g__ibge_tab_chamada_fmt_tl {#1} },
+    chamada .initial:n = parenteses,
+    subordinar .bool_gset:N = \g__ibge_tab_subordinar_bool,
+    subordinar .default:n   = true,
+    subordinar .initial:n   = false,
+  }
+
+\ProcessKeysOptions { ibge-tabelas }
+
+% =============================================================================
+% 2. DEPENDÊNCIAS
+% =============================================================================
+
 \RequirePackage{tabularray}
 \RequirePackage{siunitx}
 \RequirePackage{caption}
-\RequirePackage{xparse}
 
-% -----------------------------------------------------------------------------
-% 2. CONFIGURAÇÃO DO siunitx PARA O PADRÃO BRASILEIRO
+% =============================================================================
+% 3. CONFIGURAÇÃO DO siunitx PARA O PADRÃO BRASILEIRO
 %    (seções 4.6, 4.7 — vírgula decimal, separador de milhar por espaço)
-% -----------------------------------------------------------------------------
+% =============================================================================
+
 \sisetup{
   output-decimal-marker  = {,},   % vírgula decimal (padrão brasileiro)
   group-separator        = {\,},  % espaço fino como separador de milhar
   group-minimum-digits   = 4,     % ex.: 1 000 (e não 1000 vs 10 000)
 }
 
-% -----------------------------------------------------------------------------
-% 3. DEFINIÇÃO DO AMBIENTE CENTRAL: tabelaibge
-%    Baseado em tabularray, com as restrições estruturais da norma embutidas.
-%
-%    Seção 4.3.1: mínimo três traços horizontais paralelos
-%    Seção 4.3.3: a moldura NÃO deve ter traços verticais nas bordas
-% -----------------------------------------------------------------------------
+% =============================================================================
+% 4. NUMERAÇÃO E TÍTULO (seções 4.1, 4.2)
+%    "Tabela 1 — Título" no topo da tabela.
+% =============================================================================
+
+\ExplSyntaxOff
+\renewcommand{\tablename}{Tabela}
+\captionsetup[table]{
+  position    = top,
+  labelsep    = endash,            % "Tabela 1 — "
+  justification = raggedright,
+  singlelinecheck = false,
+  skip        = 6pt,
+}
+\ExplSyntaxOn
+
+% Subordinação a capítulos (seção 4.1.2)
+\bool_if:NT \g__ibge_tab_subordinar_bool
+  {
+    \cs_if_exist:NT \chapter
+      {
+        \ExplSyntaxOff
+        \counterwithin{table}{chapter}
+        \ExplSyntaxOn
+      }
+  }
+
+% =============================================================================
+% 5. MENSAGENS DE ERRO/WARNING
+% =============================================================================
+
+\msg_new:nnn { ibge-tabelas } { fonte-ausente }
+  {
+    A~fonte~é~obrigatória~no~rodapé~da~tabela~(IBGE~seção~4.10).~
+    Use~\ibgeFonte\{texto\}~dentro~do~ambiente~tabela.
+  }
+
+% =============================================================================
+% 6. AMBIENTE tabelaibge (seções 4.3.1, 4.3.3, 4.5)
+%    Ambiente interno tabularray com estilo IBGE.
+%    Três traços horizontais, sem verticais nas bordas.
+% =============================================================================
+
 \NewTblrEnviron{tabelaibge}
 
 \SetTblrInner[tabelaibge]{
-  % --- Moldura (seção 4.3) ---
-  % Três traços horizontais obrigatórios:
-  %   hline{1}  = traço que separa o topo do centro
-  %   hline{2}  = traço que separa o espaço do cabeçalho dos dados
-  %   hline{Z}  = traço que separa o centro do rodapé
-  % Traços verticais nas bordas PROIBIDOS (seção 4.3.3):
-  %   vline nos extremos = nunca
-  hlines         = {},              % ponto de partida: nenhum traço
-  vlines         = {},              % sem traços verticais (padrão)
-  % Os três traços horizontais obrigatórios são definidos pelo usuário
-  % via \ibgeSetLinhas (ver seção 5 abaixo), mas o ambiente já define
-  % os traços de abertura e fechamento como padrão:
-  hline{1}       = {0.8pt, solid}, % traço superior (início do centro)
-  hline{2}       = {0.4pt, solid}, % traço do cabeçalho
-  hline{Z}       = {0.8pt, solid}, % traço inferior (início do rodapé)
-  % --- Alinhamento padrão de células ---
-  % Colunas indicadoras: alinhamento à esquerda
-  % Colunas numéricas:   alinhamento à direita (sobrescrito pelo siunitx)
-  column{1}      = {l},
-  column{2-Z}    = {r},
-  % --- Espaçamento interno ---
-  rowsep         = 2pt,
-  colsep         = 6pt,
+  hline{1}    = {0.8pt},  % traço superior (seção 4.3.1)
+  hline{2}    = {0.4pt},  % traço do cabeçalho (seção 4.3.1)
+  hline{Z}    = {0.8pt},  % traço inferior (seção 4.3.1)
+  rowsep      = 2pt,
+  colsep      = 6pt,
 }
 
-% -----------------------------------------------------------------------------
-% 4. SINAIS CONVENCIONAIS (seção 4.8.1)
-%    Comandos semânticos que encapsulam cada sinal, de forma que:
-%    a) o significado fica no código, não no PDF
-%    b) é fácil mudar a representação tipográfica depois
-%
-%    a) dado igual a zero não resultante de arredondamento  → traço (—)
-%    b) não se aplica dado numérico                         → dois pontos (..)
-%    c) dado numérico não disponível                        → reticências (...)
-%    d) dado omitido (individualização)                     → x
-%    e) zero resultante de arredondamento positivo          → 0 / 0,0 / 0,00
-%    f) zero resultante de arredondamento negativo          → −0 / −0,0 / −0,00
-% -----------------------------------------------------------------------------
+% =============================================================================
+% 7. SINAIS CONVENCIONAIS (seção 4.8.1)
+%    Comandos semânticos para os seis sinais padronizados.
+% =============================================================================
 
-% Sinal (a): zero real, não de arredondamento
+% Sinal (a): dado igual a zero, não resultante de arredondamento
 \NewDocumentCommand{\ibgeSinalZero}{}{\textemdash}
 
-% Sinal (b): não aplicável
+% Sinal (b): não se aplica dado numérico
 \NewDocumentCommand{\ibgeSinalNA}{}{..}
 
-% Sinal (c): dado indisponível
+% Sinal (c): dado numérico não disponível
 \NewDocumentCommand{\ibgeSinalND}{}{...}
 
 % Sinal (d): dado omitido para evitar individualização
 \NewDocumentCommand{\ibgeSinalOmitido}{}{\textit{x}}
 
-% Sinais (e) e (f): zeros de arredondamento
-% O argumento opcional define o número de casas decimais (padrão: 0)
-% O argumento estrela indica valor originalmente negativo
+% Sinais (e) e (f): zeros resultantes de arredondamento
+% Argumento estrela = valor originalmente negativo (f)
+% Argumento opcional = número de casas decimais (padrão: 0)
 \NewDocumentCommand{\ibgeSinalArrZero}{ s O{0} }{
   \IfBooleanTF{#1}
-    { \ibge_sinal_arr_neg:n {#2} }
-    { \ibge_sinal_arr_pos:n {#2} }
+    { \__ibge_sinal_arr_neg:n {#2} }
+    { \__ibge_sinal_arr_pos:n {#2} }
 }
 
-% Implementação interna em expl3
-\cs_new:Npn \ibge_sinal_arr_pos:n #1 {
+\cs_new:Npn \__ibge_sinal_arr_pos:n #1 {
   \int_compare:nNnTF {#1} = {0}
     { 0 }
-    { 0 \text{,} \prg_replicate:nn {#1} {0} }
+    { 0{,} \prg_replicate:nn {#1} {0} }
 }
 
-\cs_new:Npn \ibge_sinal_arr_neg:n #1 {
+\cs_new:Npn \__ibge_sinal_arr_neg:n #1 {
   \int_compare:nNnTF {#1} = {0}
-    { $-$0 }
-    { $-$0 \text{,} \prg_replicate:nn {#1} {0} }
+    { $\mathord{-}$0 }
+    { $\mathord{-}$0{,} \prg_replicate:nn {#1} {0} }
 }
 
-% -----------------------------------------------------------------------------
-% 5. ESTRUTURA DO RODAPÉ (seções 4.10, 4.11, 4.12)
-%    A norma define uma ordem rígida no rodapé:
-%      1. Fonte   (obrigatória — seção 4.10)
-%      2. Nota    (quando necessária — seção 4.11)
-%      3. Notas específicas, em ordem de chamada (seção 4.12)
-%
-%    A implementação usa uma lista de tokens acumulada durante a declaração
-%    da tabela e impressa ao final via \ibgeRodape.
-% -----------------------------------------------------------------------------
+% =============================================================================
+% 8. RODAPÉ DA TABELA (seções 4.10, 4.11, 4.12)
+%    Ordem rígida: Fonte → Nota → Notas específicas.
+%    Impresso automaticamente ao fechar o ambiente tabela.
+% =============================================================================
 
-% Variáveis internas de acumulação
-\tl_new:N \l_ibge_fonte_tl
-\tl_new:N \l_ibge_nota_tl
-\seq_new:N \l_ibge_notas_esp_seq   % sequência ordenada de notas específicas
+\tl_new:N \l__ibge_fonte_tl
+\tl_new:N \l__ibge_nota_tl
+\seq_new:N \l__ibge_notas_esp_seq
 
-% Comando público: define a fonte obrigatória
-\NewDocumentCommand{\ibgeFonte}{ m }{
-  \tl_set:Nn \l_ibge_fonte_tl {#1}
+% Comando público: define a fonte (obrigatória — seção 4.10)
+% Versão estrela (*) para "Fontes:" (plural — seção 4.10.1)
+\NewDocumentCommand{\ibgeFonte}{ s m }{
+  \IfBooleanTF{#1}
+    { \tl_set:Nn \l__ibge_fonte_tl { \textbf{Fontes:}~#2 } }
+    { \tl_set:Nn \l__ibge_fonte_tl { \textbf{Fonte:}~#2 } }
 }
 
-% Comando público: define a nota geral
-\NewDocumentCommand{\ibgeNota}{ m }{
-  \tl_set:Nn \l_ibge_nota_tl {#1}
+% Comando público: define a nota geral (seção 4.11)
+% Versão estrela (*) para "Notas:" (plural — seção 4.11.1)
+\NewDocumentCommand{\ibgeNota}{ s m }{
+  \IfBooleanTF{#1}
+    { \tl_set:Nn \l__ibge_nota_tl { \textbf{Notas:}~#2 } }
+    { \tl_set:Nn \l__ibge_nota_tl { \textbf{Nota:}~#2 } }
 }
 
-% Comando público: adiciona uma nota específica (chamada numérica — seção 4.9)
-% O argumento #1 é o número da chamada; #2 é o texto da nota
+% Comando público: adiciona uma nota específica (seção 4.12)
 \NewDocumentCommand{\ibgeNotaEsp}{ m m }{
-  \seq_put_right:Nn \l_ibge_notas_esp_seq { (#1)~#2 }
+  \seq_put_right:Nn \l__ibge_notas_esp_seq { (#1)~#2 }
 }
 
-% Comando que imprime o rodapé completo com a ordem exigida pela norma
-\NewDocumentCommand{\ibgeRodape}{}{
-  \par\vspace{4pt}\small
-  % Fonte (obrigatória)
-  \tl_if_empty:NF \l_ibge_fonte_tl {
-    \noindent\textbf{Fonte:}~\tl_use:N \l_ibge_fonte_tl \par
+% Comando interno: imprime o rodapé completo
+\cs_new_protected:Nn \__ibge_imprimir_rodape:
+  {
+    % Warning se fonte ausente (seção 4.10 — obrigatória)
+    \tl_if_empty:NT \l__ibge_fonte_tl
+      { \msg_warning:nn { ibge-tabelas } { fonte-ausente } }
+    \par\vspace{4pt}
+    \group_begin:
+      \small\singlespacing
+      % Fonte (primeira linha — seção 4.10)
+      \tl_if_empty:NF \l__ibge_fonte_tl
+        { \noindent \tl_use:N \l__ibge_fonte_tl \par }
+      % Nota geral (seção 4.11)
+      \tl_if_empty:NF \l__ibge_nota_tl
+        { \noindent \tl_use:N \l__ibge_nota_tl \par }
+      % Notas específicas separadas por ponto (seção 4.12.2)
+      \seq_if_empty:NF \l__ibge_notas_esp_seq
+        {
+          \noindent
+          \seq_use:Nn \l__ibge_notas_esp_seq { .~}
+          . \par
+        }
+    \group_end:
+    % Limpar estado após impressão
+    \tl_clear:N \l__ibge_fonte_tl
+    \tl_clear:N \l__ibge_nota_tl
+    \seq_clear:N \l__ibge_notas_esp_seq
   }
-  % Nota geral
-  \tl_if_empty:NF \l_ibge_nota_tl {
-    \noindent\textbf{Nota:}~\tl_use:N \l_ibge_nota_tl \par
-  }
-  % Notas específicas em ordem de chamada (seção 4.12.2)
-  \seq_map_inline:Nn \l_ibge_notas_esp_seq {
-    \noindent ##1 \par
-  }
-  % Limpar estado após impressão
-  \tl_clear:N \l_ibge_fonte_tl
-  \tl_clear:N \l_ibge_nota_tl
-  \seq_clear:N \l_ibge_notas_esp_seq
+
+% Manter \ibgeRodape para uso avulso (compatibilidade com esboço v0.1.0)
+\NewDocumentCommand{\ibgeRodape}{}{ \__ibge_imprimir_rodape: }
+
+% =============================================================================
+% 9. CHAMADA REMISSIVA (seção 4.9)
+%    Formato configurável via opção 'chamada'.
+% =============================================================================
+
+\NewDocumentCommand{\ibgeChamada}{ m }{
+  \tl_if_eq:NnTF \g__ibge_tab_chamada_fmt_tl { colchetes }
+    { \textsuperscript{[#1]} }
+    {
+      \tl_if_eq:NnTF \g__ibge_tab_chamada_fmt_tl { exponencial }
+        { \textsuperscript{#1} }
+        { \textsuperscript{(#1)} }  % parênteses (padrão)
+    }
 }
 
-% Chamada remissiva inline (seção 4.9.1): entre parênteses, exponencial ou
-% entre colchetes. O padrão adotado aqui é expoente entre parênteses.
-\NewDocumentCommand{\ibgeChamada}{ m }{%
-  \textsuperscript{(#1)}%
+% =============================================================================
+% 10. AMBIENTE tabela (wrapper: float + título + tabela + rodapé)
+%     Integra numeração, título (caption) e rodapé como unidade coesa.
+%     Argumento obrigatório: título da tabela.
+% =============================================================================
+
+\NewDocumentEnvironment{tabela}{ m }{
+  \begin{table}[htbp]
+    \caption{#1}
+}{
+    \__ibge_imprimir_rodape:
+  \end{table}
 }
 
-% -----------------------------------------------------------------------------
-% 6. APRESENTAÇÃO DE TEMPO (seção 5)
-%    Série consecutiva  → pontos ligados por hífen      ex.: 1981-1985
-%    Série não consecutiva → pontos ligados por barra   ex.: 1981/1985
-%    Safra              → dois últimos dígitos com barra ex.: Safra 91/92
-% -----------------------------------------------------------------------------
+% =============================================================================
+% 11. APRESENTAÇÃO DE TEMPO (seção 5)
+% =============================================================================
 
+% Série consecutiva: hífen (seção 5.2)
 \NewDocumentCommand{\ibgeSerieConsec}{ m m }{ #1\textendash#2 }
+
+% Série não consecutiva: barra (seção 5.3)
 \NewDocumentCommand{\ibgeSerieNConsec}{ m m }{ #1/#2 }
+
+% Safra: dois últimos dígitos com barra (seção 5.4)
 \NewDocumentCommand{\ibgeSafra}{ m m }{
-  Safra~\ibge_safra_digitos:n{#1}\slash\ibge_safra_digitos:n{#2}
+  Safra~\str_range:nnn{#1}{3}{4}\slash\str_range:nnn{#2}{3}{4}
 }
 
-% Extrai os dois últimos dígitos de um ano de quatro dígitos
-\cs_new:Npn \ibge_safra_digitos:n #1 {
-  % #1 é ex. "1991" — pega os dois últimos caracteres
-  \str_range:nnn {#1} {3} {4}
-}
+% =============================================================================
+% 12. CLASSES DE FREQUÊNCIA (seção 6)
+% =============================================================================
 
-% -----------------------------------------------------------------------------
-% 7. APRESENTAÇÃO DE CLASSES DE FREQUÊNCIA (seção 6)
-%    6.1 — inclui extremo inferior, exclui superior: "w a menos de z"
-%    6.2 — exclui inferior, inclui superior: "mais de w a z"
-%    6.3 — inclui ambos: "w a z"
-%    A norma também aceita notações gráficas com colchetes/barras (6.1b, 6.2b, 6.3b)
-%    mas a representação textual é mais portátil.
-% -----------------------------------------------------------------------------
-
-% w ⊢ z  (inclui w, exclui z)
+% w ⊢ z — inclui inferior, exclui superior (seção 6.1)
 \NewDocumentCommand{\ibgeClasseIE}{ m m }{ #1~a~menos~de~#2 }
 
-% w ⊣ z  (exclui w, inclui z)
+% w ⊣ z — exclui inferior, inclui superior (seção 6.2)
 \NewDocumentCommand{\ibgeClasseEI}{ m m }{ mais~de~#1~a~#2 }
 
-% w ⊢⊣ z (inclui ambos)
+% w ⊢⊣ z — inclui ambos (seção 6.3)
 \NewDocumentCommand{\ibgeClasseII}{ m m }{ #1~a~#2 }
 
-% -----------------------------------------------------------------------------
-% 8. TÍTULO (seção 4.2)
-%    A norma exige: natureza + abrangência geográfica + abrangência temporal
-%    A implementação constrói o título a partir de partes semânticas,
-%    formatando automaticamente com " — " como separador (padrão IBGE).
-%
-%    Uso:
-%      \ibgeTitulo{Produção de casulos do bicho-da-seda}
-%                 {por Unidade da Federação — Brasil}
-%                 {1974}
-% -----------------------------------------------------------------------------
-
-\NewDocumentCommand{\ibgeTitulo}{ m m m }{
-  \begin{center}
-    \normalsize #1,~#2~\textendash~#3
-  \end{center}
-}
-
-% -----------------------------------------------------------------------------
-% 9. ARREDONDAMENTO (seção 7)
-%    A norma define um procedimento específico para o caso em que a soma
-%    das parcelas arredondadas diverge do total arredondado (seção 7.4b):
-%    corrigir a parcela com menor |razão de arredondamento|.
-%
-%    Esta lógica NÃO pode ser implementada em LaTeX puro de forma genérica
-%    (requer acesso aos dados brutos). A solução arquitetural aqui é:
-%    a) fornecer o comando \ibgeNotaArrend{} para declarar a nota padrão
-%       "Os dados numéricos foram arredondados" (seção 7, cabeçalho)
-%    b) deixar a responsabilidade do cálculo 7.4b para o fluxo de dados
-%       upstream (Python, R, etc.) que alimenta a tabela
-% -----------------------------------------------------------------------------
+% =============================================================================
+% 13. NOTA DE ARREDONDAMENTO (seção 7)
+% =============================================================================
 
 \NewDocumentCommand{\ibgeNotaArrend}{}{%
-  Dados numéricos arredondados.
-  As divergências entre a soma das parcelas e os totais são provenientes
-  do critério de arredondamento.
+  Dados~numéricos~arredondados.~%
+  As~divergências~entre~a~soma~das~parcelas~e~os~totais~são~provenientes~%
+  do~critério~de~arredondamento.%
 }
 
-% -----------------------------------------------------------------------------
-% 10. EXEMPLO DE USO (comentado)
-% -----------------------------------------------------------------------------
-%
-% \ibgeFonte{Fundação Instituto Brasileiro de Geografia e Estatística – IBGE.}
-% \ibgeNota{Dados sujeitos a retificação.}
-% \ibgeNotaEsp{1}{Inclui registros de nascidos vivos em anos anteriores.}
-%
-% \ibgeTitulo
-%   {Produção de casulos do bicho-da-seda}
-%   {por Unidade da Federação — Brasil}
-%   {1974}
-%
-% \begin{tabelaibge}{
-%   colspec = {l S[table-format=3.2] S[table-format=3.2]},
-% }
-%   \hline[0.8pt]
-%   {Unidade da Federação} & {Produção (t)} & {Relativa (\%)} \\
-%   \hline[0.4pt]
-%   São Paulo              & 120,50         & 45,30           \\
-%   Paraná                 & 98,20          & 36,90           \\
-%   \hline[0.8pt]
-% \end{tabelaibge}
-%
-% \ibgeRodape
-%
 % =============================================================================
 % FIM DO ARQUIVO
 % =============================================================================

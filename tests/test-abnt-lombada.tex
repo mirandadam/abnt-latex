@@ -1,0 +1,67 @@
+% =============================================================================
+% test-abnt-lombada.tex
+% Documento de teste para abnt-lombada.sty
+%
+% Demonstra a geração de lombada conforme NBR 12225:2023.
+%
+% Compilação:
+%   TEXINPUTS=./src: latexmk -pdf -output-directory=tests tests/test-abnt-lombada.tex
+%
+% Checklist:
+%   1  — Elementos obrigatórios: autor, título, elementos alfanuméricos (3)
+%   2  — Disposição descendente: texto rotacionado 270° (4.3.2)
+%   3  — Disposição horizontal: texto horizontal empilhado (4.3.1)
+%   4  — Margem inferior 3 cm (seção 4)
+%   5  — Margem superior 2 cm (seção 4)
+%   6  — Elementos alfanuméricos na parte inferior (4.4)
+%   7  — Logomarca na parte inferior (4.5)
+%   8  — Uso standalone sem abnt.cls
+%   9  — Largura configurável
+%   10 — Compatibilidade hyperref
+% =============================================================================
+
+\documentclass[a4paper, 12pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{abnt-lombada}
+\usepackage{hyperref}                  % checklist 10
+
+% Dados da lombada (standalone, sem abnt.cls — checklist 8)
+\lombadaAutor{SILVA, João Carlos da}
+\lombadaTitulo{Impactos ambientais da urbanização}
+\lombadaElementos{v.~1}
+\lombadaLogomarcaTexto{USP}
+
+\begin{document}
+
+% =====================================================================
+% Lombada descendente (padrão) — checklist 1, 2, 4, 5, 6, 7
+% =====================================================================
+\imprimirlombada
+
+% =====================================================================
+% Conteúdo mínimo do documento
+% =====================================================================
+\chapter{Introdução}
+
+Este documento testa a geração de lombada conforme NBR 12225:2023.
+
+A lombada descendente foi impressa na página anterior. A lombada horizontal
+será impressa ao final do documento.
+
+\chapter{Considerações finais}
+
+Texto de conclusão.
+
+% =====================================================================
+% Lombada horizontal — checklist 3, 9
+% =====================================================================
+% Mudar disposição para horizontal para a segunda lombada
+\ExplSyntaxOn
+\tl_gset:Nn \g__abnt_lomb_disposicao_tl { horizontal }
+\dim_gset:Nn \g__abnt_lomb_largura_dim { 4cm }  % largura maior para horizontal
+\ExplSyntaxOff
+
+\imprimirlombada
+
+\end{document}

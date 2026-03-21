@@ -3,18 +3,103 @@
 % Citações em documentos — ABNT NBR 10520:2023
 %
 % Licença: LPPL 1.3c
-% Versão:  0.1.0 (stub)
+% Versão:  1.0.0
 %
 % Este pacote NÃO reimplementa citações. Ele configura o biblatex-abnt
-% com os parâmetros exigidos pela NBR 10520:2023.
+% com os parâmetros exigidos pela NBR 10520:2023 e fornece o ambiente
+% citacaodireta para citações longas.
+%
+% Dependências:
+%   abnt-refs  — carrega biblatex-abnt e configura referências
+%
+% Rastreabilidade à norma:
+%   Seção 6.1    → sistema autor-data (padrão)
+%   Seção 6.2    → sistema numérico (opção sistema=numerico)
+%   Seção 7.1.1  → citação direta longa: recuo 4cm, fonte menor,
+%                  espaço simples, sem aspas
+%   Seção 7.3    → citação de citação (apud) — via biblatex-abnt
+%   Seção 8.1    → expressões latinas — automáticas via biblatex-abnt
+%
+% Limitações documentadas:
+%   Citação direta longa — detecção automática de "> 3 linhas" não é
+%   viável em TeX; o usuário decide quando usar o ambiente citacaodireta.
 % =============================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesExplPackage{abnt-citacoes}{2025/03/21}{0.1.0}
+\ProvidesExplPackage{abnt-citacoes}{2025/03/21}{1.0.0}
   {Citações~\textemdash~NBR~10520:2023}
 
-% TODO: Configurar biblatex com estilo abnt e opções da NBR 10520:2023
-% \RequirePackage[style=abnt]{biblatex}
+\RequirePackage{l3keys2e}
+
+% =============================================================================
+% 1. OPÇÕES DO PACOTE
+% =============================================================================
+
+\tl_new:N \g__abnt_cit_sistema_tl
+\tl_gset:Nn \g__abnt_cit_sistema_tl { autor-data }
+
+\bool_new:N \g__abnt_cit_backref_bool
+\bool_gset_true:N \g__abnt_cit_backref_bool
+
+\keys_define:nn { abnt-citacoes }
+  {
+    sistema .choices:nn =
+      { autor-data, numerico }
+      {
+        \tl_gset:Nn \g__abnt_cit_sistema_tl {#1}
+      },
+    sistema .initial:n  = autor-data,
+    backref .bool_gset:N = \g__abnt_cit_backref_bool,
+    backref .default:n   = true,
+    backref .initial:n   = true,
+  }
+
+\ProcessKeysOptions { abnt-citacoes }
+
+% =============================================================================
+% 2. CARREGAMENTO DO abnt-refs (passa opções de estilo e backref)
+%    Mapeia sistema → estilo do biblatex-abnt:
+%      autor-data → style=abnt
+%      numerico   → style=abnt-numeric
+% =============================================================================
+
+\tl_if_eq:NnTF \g__abnt_cit_sistema_tl { numerico }
+  { \PassOptionsToPackage{ estilo = abnt-numeric }{ abnt-refs } }
+  { \PassOptionsToPackage{ estilo = abnt }{ abnt-refs } }
+
+\bool_if:NTF \g__abnt_cit_backref_bool
+  { \PassOptionsToPackage{ backref = true }{ abnt-refs } }
+  { \PassOptionsToPackage{ backref = false }{ abnt-refs } }
+
+\RequirePackage{abnt-refs}
+
+% =============================================================================
+% 3. AMBIENTE citacaodireta (NBR 10520 seção 7.1.1)
+%    Citação direta longa (mais de 3 linhas):
+%    - Recuo de 4 cm da margem esquerda
+%    - Fonte menor (tamanho 10pt quando corpo é 12pt)
+%    - Espaçamento simples entre linhas
+%    - Sem aspas
+%    - Parágrafo sem recuo da primeira linha
+% =============================================================================
+
+\NewDocumentEnvironment{citacaodireta}{}{
+  \par\addvspace{12pt}
+  \begin{list}{}{
+    \setlength{\leftmargin}{4cm}    % recuo de 4 cm (NBR 10520 seção 7.1.1)
+    \setlength{\rightmargin}{0pt}
+    \setlength{\listparindent}{0pt} % sem recuo da primeira linha
+    \setlength{\parsep}{0pt}
+    \setlength{\itemsep}{0pt}
+    \setlength{\topsep}{0pt}
+  }
+  \item\relax
+  \small                            % fonte menor (10pt)
+  \singlespacing                    % espaçamento simples
+}{
+  \end{list}
+  \addvspace{12pt}
+}
 
 % =============================================================================
 % FIM DO ARQUIVO

@@ -1,20 +1,250 @@
 % =============================================================================
 % abnt-sumario.sty
-% Sumário — ABNT NBR 6027:2012
+% Formatação do sumário — ABNT NBR 6027:2012
 %
 % Licença: LPPL 1.3c
-% Versão:  0.1.0 (stub)
+% Versão:  1.0.0
+%
+% Dependências:
+%   abnt-numeracao — formatação de títulos (titlesec, textcase)
+%   titletoc       — formatação de entradas do sumário (companion do titlesec)
+%
+% Rastreabilidade à norma:
+%   Seção 3.4    → entradas reproduzem formatação dos títulos
+%   Seção 4.1.b  → sumário inicia no anverso de uma folha
+%   Seção 5.1    → indicativos alinhados à esquerda, conforme NBR 6024
+%   Seção 5.2    → títulos alinhados pela margem do indicativo mais extenso
+%   Seção 5.4    → paginação à margem direita, pontilhado
+%   Seção 5.7    → compatibilidade com hyperref (links clicáveis)
+%   Seção 6.1    → título "SUMÁRIO" centralizado, negrito, maiúsculas
+%   Seção 6.2    → entradas espelham formatação tipográfica dos títulos
+%   Seção 6.3    → elementos pré-textuais não constam no sumário
+%
+% Acoplamento:
+%   Lê \g__abnt_num_uppercase_bool de abnt-numeracao.sty para decidir
+%   se aplica maiúsculas nas entradas de nível primário e secundário.
+%   Lê \g__abnt_num_has_chapter_bool para detectar se \chapter existe.
+%
+% Limitações documentadas:
+%   Seção 5.3 (obras coletivas)  → não implementado (caso raro)
+%   Seção 5.5 (traduções)        → não implementado (caso raro)
+%   Seção 5.6 (sumário por idioma) → não implementado (caso raro)
+%   Largura fixa do indicativo   → 4em padrão, configurável via opção
 % =============================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesExplPackage{abnt-sumario}{2025/03/21}{0.1.0}
-  {Sumário~\textemdash~NBR~6027:2012}
+\ProvidesExplPackage{abnt-sumario}{2025/03/21}{1.0.0}
+  {Formatação~do~sumário~\textemdash~NBR~6027:2012}
 
-% Configuração básica do sumário conforme NBR 6027.
-% Por enquanto, usa o sumário padrão do LaTeX com ajustes mínimos.
+\RequirePackage{l3keys2e}
 
-% Título do sumário em maiúsculas, negrito, centralizado
-\renewcommand{\contentsname}{\hfill\bfseries SUMÁRIO\hfill}
+% =============================================================================
+% 1. OPÇÕES DO PACOTE
+% =============================================================================
+
+\tl_new:N \g__abnt_sum_titulo_tl
+\tl_gset:Nn \g__abnt_sum_titulo_tl { SUMÁRIO }
+
+\bool_new:N \g__abnt_sum_pontilhado_bool
+\bool_gset_true:N \g__abnt_sum_pontilhado_bool
+
+\keys_define:nn { abnt-sumario }
+  {
+    titulo .tl_gset:N     = \g__abnt_sum_titulo_tl,
+    titulo .initial:n     = { SUMÁRIO },
+    pontilhado .bool_gset:N = \g__abnt_sum_pontilhado_bool,
+    pontilhado .default:n = true,
+    pontilhado .initial:n = true,
+  }
+
+\ProcessKeysOptions { abnt-sumario }
+
+% =============================================================================
+% 2. DEPENDÊNCIAS
+% =============================================================================
+
+\RequirePackage{abnt-numeracao}  % garante titlesec + textcase + formatação
+\RequirePackage{titletoc}        % formatação de entradas do sumário
+
+% =============================================================================
+% 3. MARGEM DIREITA DO NÚMERO DE PÁGINA (seção 5.4)
+%    Alinhado à margem direita da mancha.
+% =============================================================================
+
+% 1.55em acomoda até 3 dígitos (ex.: "199") na fonte 12pt
+\contentsmargin{1.55em}
+
+% =============================================================================
+% 4. LEADER DOTS (seção 5.4 — pontilhado entre título e página)
+% =============================================================================
+
+\cs_new_protected:Nn \__abnt_sum_filler:
+  {
+    \bool_if:NTF \g__abnt_sum_pontilhado_bool
+      { \titlerule* [.8pc] {.} }
+      { \hfill }
+  }
+
+% =============================================================================
+% 5. COMANDOS AUXILIARES PARA MAIÚSCULAS CONDICIONAIS
+%    Respeita \g__abnt_num_uppercase_bool de abnt-numeracao.sty
+% =============================================================================
+
+\cs_new_protected:Nn \__abnt_sum_maybe_upper:n
+  {
+    \bool_if:NTF \g__abnt_num_uppercase_bool
+      { \MakeTextUppercase{#1} }
+      { #1 }
+  }
+
+% =============================================================================
+% 6. FORMATAÇÃO DAS ENTRADAS DO SUMÁRIO (seções 5.1, 5.2, 6.2)
+%
+%    Todos os níveis: margem esquerda 0pt, sem recuo progressivo (seção 5.2).
+%    Indicativo em box de largura fixa 4em (seção 5.1).
+%    Formatação espelha os títulos de seção (seção 6.2 / NBR 6024 seção 4.1.j):
+%      Primária:     MAIÚSCULAS + NEGRITO
+%      Secundária:   MAIÚSCULAS
+%      Terciária:    Negrito
+%      Quaternária:  Normal
+%      Quinária:     Itálico
+%
+%    \titlecontents{nível}[left]{above}{numbered}{numberless}{filler+page}
+%    - left: recuo da margem esquerda (0pt para todos — seção 5.2)
+%    - above: espaço vertical antes da entrada
+%    - numbered: formato para entradas com indicativo
+%    - numberless: formato para entradas sem indicativo (\chapter*)
+%    - filler+page: pontilhado e número de página
+% =============================================================================
+
+\dim_new:N \g__abnt_sum_labelwidth_dim
+\dim_gset:Nn \g__abnt_sum_labelwidth_dim { 4em }
+
+\bool_if:NTF \g__abnt_num_has_chapter_bool
+  {
+    % --- Com \chapter (report/book) ---
+
+    % Primária — \chapter: negrito + maiúsculas, espaço 6pt antes
+    \titlecontents{chapter}
+      [0pt]                                                    % left
+      {\addvspace{6pt}\normalfont\normalsize\bfseries}         % above
+      {\contentslabel{\g__abnt_sum_labelwidth_dim}%
+       \__abnt_sum_maybe_upper:n}                              % numbered
+      {\__abnt_sum_maybe_upper:n}                              % numberless
+      {\__abnt_sum_filler:\contentspage}                       % filler+page
+
+    % Secundária — \section: maiúsculas, sem negrito
+    \titlecontents{section}
+      [0pt]
+      {\normalfont\normalsize}
+      {\contentslabel{\g__abnt_sum_labelwidth_dim}%
+       \__abnt_sum_maybe_upper:n}
+      {\__abnt_sum_maybe_upper:n}
+      {\__abnt_sum_filler:\contentspage}
+
+    % Terciária — \subsection: negrito
+    \titlecontents{subsection}
+      [0pt]
+      {\normalfont\normalsize\bfseries}
+      {\contentslabel{\g__abnt_sum_labelwidth_dim}}
+      {}
+      {\__abnt_sum_filler:\contentspage}
+
+    % Quaternária — \subsubsection: normal
+    \titlecontents{subsubsection}
+      [0pt]
+      {\normalfont\normalsize}
+      {\contentslabel{\g__abnt_sum_labelwidth_dim}}
+      {}
+      {\__abnt_sum_filler:\contentspage}
+
+    % Quinária — \paragraph: itálico
+    \titlecontents{paragraph}
+      [0pt]
+      {\normalfont\normalsize\itshape}
+      {\contentslabel{\g__abnt_sum_labelwidth_dim}}
+      {}
+      {\__abnt_sum_filler:\contentspage}
+  }
+  {
+    % --- Sem \chapter (article) ---
+
+    % Primária — \section: negrito + maiúsculas, espaço 6pt antes
+    \titlecontents{section}
+      [0pt]
+      {\addvspace{6pt}\normalfont\normalsize\bfseries}
+      {\contentslabel{\g__abnt_sum_labelwidth_dim}%
+       \__abnt_sum_maybe_upper:n}
+      {\__abnt_sum_maybe_upper:n}
+      {\__abnt_sum_filler:\contentspage}
+
+    % Secundária — \subsection: maiúsculas, sem negrito
+    \titlecontents{subsection}
+      [0pt]
+      {\normalfont\normalsize}
+      {\contentslabel{\g__abnt_sum_labelwidth_dim}%
+       \__abnt_sum_maybe_upper:n}
+      {\__abnt_sum_maybe_upper:n}
+      {\__abnt_sum_filler:\contentspage}
+
+    % Terciária — \subsubsection: negrito
+    \titlecontents{subsubsection}
+      [0pt]
+      {\normalfont\normalsize\bfseries}
+      {\contentslabel{\g__abnt_sum_labelwidth_dim}}
+      {}
+      {\__abnt_sum_filler:\contentspage}
+
+    % Quaternária — \paragraph: normal
+    \titlecontents{paragraph}
+      [0pt]
+      {\normalfont\normalsize}
+      {\contentslabel{\g__abnt_sum_labelwidth_dim}}
+      {}
+      {\__abnt_sum_filler:\contentspage}
+
+    % Quinária — \subparagraph: itálico
+    \titlecontents{subparagraph}
+      [0pt]
+      {\normalfont\normalsize\itshape}
+      {\contentslabel{\g__abnt_sum_labelwidth_dim}}
+      {}
+      {\__abnt_sum_filler:\contentspage}
+  }
+
+% =============================================================================
+% 7. TÍTULO DO SUMÁRIO (seção 6.1)
+%    "SUMÁRIO" centralizado, mesmo tipo de fonte das seções primárias.
+% =============================================================================
+
+\exp_args:NNV \renewcommand \contentsname \g__abnt_sum_titulo_tl
+
+% =============================================================================
+% 8. COMANDO \imprimirsumario (seções 4.1.b, 6.1)
+%    Imprime o sumário com formatação ABNT.
+%    - clearpage (seção 4.1.b: inicia no anverso de uma folha)
+%    - título via \chapter* ou \section* (formatação de abnt-numeracao)
+%    - bookmark PDF se hyperref estiver carregado (seção 5.7)
+%    - conteúdo do .toc
+% =============================================================================
+
+\NewDocumentCommand{\imprimirsumario}{}{
+  \clearpage
+  \bool_if:NTF \g__abnt_num_has_chapter_bool
+    {
+      \chapter*{\tl_use:N \g__abnt_sum_titulo_tl}
+    }
+    {
+      \section*{\tl_use:N \g__abnt_sum_titulo_tl}
+    }
+  % Bookmark PDF (seção 5.7)
+  \cs_if_exist:NT \pdfbookmark
+    {
+      \pdfbookmark[0]{\tl_use:N \g__abnt_sum_titulo_tl}{sumario}
+    }
+  \@starttoc{toc}
+  \clearpage
+}
 
 % =============================================================================
 % FIM DO ARQUIVO

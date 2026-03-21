@@ -15,3 +15,7 @@ Quando o usuário solicitar que você faça perguntas:
 - Faça perguntas para obter decisões chave sobre o assunto e esclarecer detalhes.
 - Faça até 3 perguntas por rodada. O questionamento pode durar várias rodadas.
 - Escolha perguntas que produzam o máximo de decisão/esclarecimento sobre o assunto minimizando o trabalho do usuário ("maximize steering per user input").
+
+## Preservação da primeira seção do README
+
+- Não altere nem proponha mudanças à primeira seção do README.md.

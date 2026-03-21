@@ -1,0 +1,115 @@
+% =============================================================================
+% abnt-resumo.sty
+% Resumo e abstract — ABNT NBR 6028:2021
+%
+% Licença: LPPL 1.3c
+% Versão:  1.0.0
+%
+% Dependências:
+%   abnt-numeracao — formatação de títulos (títulos sem indicativo)
+%
+% Rastreabilidade à norma:
+%   Seção 4.1.1  → resumo ressalta conteúdo do texto
+%   Seção 4.1.2  → parágrafo único, sem enumeração de tópicos
+%   Seção 4.1.4  → verbo na terceira pessoa (orientação ao usuário)
+%   Seção 4.1.7  → palavras-chave: antecedidas de "Palavras-chave:",
+%                  separadas por ponto e vírgula, finalizadas por ponto
+%   Seção 4.1.8  → extensão: 150–500 palavras (trabalhos acadêmicos)
+%   NBR 14724 4.2.1.7 → resumo na língua vernácula
+%   NBR 14724 4.2.1.8 → resumo em língua estrangeira
+%
+% Limitações documentadas:
+%   Contagem de palavras → não verificada automaticamente pelo LaTeX
+%   Tipo de resumo (informativo/indicativo) → responsabilidade do usuário
+% =============================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesExplPackage{abnt-resumo}{2025/03/21}{1.0.0}
+  {Resumo~e~abstract~\textemdash~NBR~6028:2021}
+
+\RequirePackage{l3keys2e}
+\RequirePackage{abnt-numeracao}  % garante títulos sem indicativo
+
+% =============================================================================
+% 1. OPÇÕES DO PACOTE
+% =============================================================================
+
+\tl_new:N \g__abnt_res_titulo_resumo_tl
+\tl_gset:Nn \g__abnt_res_titulo_resumo_tl { RESUMO }
+
+\tl_new:N \g__abnt_res_titulo_abstract_tl
+\tl_gset:Nn \g__abnt_res_titulo_abstract_tl { ABSTRACT }
+
+\tl_new:N \g__abnt_res_label_palavras_tl
+\tl_gset:Nn \g__abnt_res_label_palavras_tl { Palavras-chave }
+
+\tl_new:N \g__abnt_res_label_keywords_tl
+\tl_gset:Nn \g__abnt_res_label_keywords_tl { Keywords }
+
+\keys_define:nn { abnt-resumo }
+  {
+    titulo-resumo .tl_gset:N   = \g__abnt_res_titulo_resumo_tl,
+    titulo-resumo .initial:n   = { RESUMO },
+    titulo-abstract .tl_gset:N = \g__abnt_res_titulo_abstract_tl,
+    titulo-abstract .initial:n = { ABSTRACT },
+  }
+
+\ProcessKeysOptions { abnt-resumo }
+
+% =============================================================================
+% 2. DETECÇÃO DE \chapter
+% =============================================================================
+
+\bool_new:N \g__abnt_res_has_chapter_bool
+\cs_if_exist:NTF \chapter
+  { \bool_gset_true:N \g__abnt_res_has_chapter_bool }
+  { \bool_gset_false:N \g__abnt_res_has_chapter_bool }
+
+% =============================================================================
+% 3. COMANDO INTERNO: imprimir bloco de resumo
+%    Gera título + texto + palavras-chave em uma página.
+%    #1 = título ("RESUMO" ou "ABSTRACT")
+%    #2 = texto do resumo
+%    #3 = label das palavras-chave ("Palavras-chave" ou "Keywords")
+%    #4 = lista de palavras-chave
+% =============================================================================
+
+\cs_new_protected:Nn \__abnt_res_bloco:nnnn
+  {
+    \clearpage
+    \bool_if:NTF \g__abnt_res_has_chapter_bool
+      { \chapter*{#1} }
+      { \section*{#1} }
+    % Texto do resumo — parágrafo único (seção 4.1.2)
+    \noindent #2
+    % Palavras-chave (seção 4.1.7)
+    \par\vspace{12pt}
+    \noindent\textbf{#3:}~#4.
+    \clearpage
+  }
+
+% =============================================================================
+% 4. COMANDOS PÚBLICOS
+% =============================================================================
+
+% \imprimirresumo{texto do resumo}{palavra1; palavra2; palavra3}
+\NewDocumentCommand{\imprimirresumo}{ m m }{
+  \__abnt_res_bloco:nnnn
+    { \tl_use:N \g__abnt_res_titulo_resumo_tl }
+    { #1 }
+    { \tl_use:N \g__abnt_res_label_palavras_tl }
+    { #2 }
+}
+
+% \imprimirabstract{abstract text}{keyword1; keyword2; keyword3}
+\NewDocumentCommand{\imprimirabstract}{ m m }{
+  \__abnt_res_bloco:nnnn
+    { \tl_use:N \g__abnt_res_titulo_abstract_tl }
+    { #1 }
+    { \tl_use:N \g__abnt_res_label_keywords_tl }
+    { #2 }
+}
+
+% =============================================================================
+% FIM DO ARQUIVO
+% =============================================================================

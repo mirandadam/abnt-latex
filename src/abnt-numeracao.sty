@@ -3,18 +3,300 @@
 % Numeração progressiva das seções — ABNT NBR 6024:2012
 %
 % Licença: LPPL 1.3c
-% Versão:  0.1.0 (stub)
+% Versão:  1.0.0
+%
+% Dependências:
+%   titlesec  — formatação de títulos de seção
+%   textcase  — \MakeTextUppercase (protege \ref, \cite, \label em maiúsculas)
+%   enumitem  — customização de listas para alíneas e subalíneas
+%
+% Rastreabilidade à norma:
+%   Seção 4.1.a    → algarismos arábicos
+%   Seção 4.1.b    → limitar à seção quinária (secnumdepth = 5)
+%   Seção 4.1.c    → título após indicativo, separado por espaço, texto em outra linha
+%   Seção 4.1.d    → sem ponto/hífen/travessão entre indicativo e título
+%   Seção 4.1.g    → numeração progressiva com ponto entre níveis, sem ponto final
+%   Seção 4.1.h    → títulos sem indicativo: centralizados, mesmo destaque das primárias
+%   Seção 4.1.i    → títulos longos: segunda linha sob a primeira letra do título
+%   Seção 4.1.j    → destaque tipográfico hierárquico
+%   Seção 4.2      → alíneas: a), b), c), ..., recuo, minúscula
+%   Seção 4.3      → subalíneas: travessão, recuo extra
+%   14724 5.2.2    → primárias em nova página, espaço de 1,5 antes/depois
+%   14724 5.2.3    → títulos sem indicativo: centralizados
+%
+% Limitações documentadas:
+%   Pontuação de alíneas   → responsabilidade do usuário (automatizar é frágil)
+%   Limite de alíneas      → 52 itens (a–z + aa–zz), erro acima disso
+%   Maiúsculas + comandos  → textcase protege a maioria; opção maiusculas=false
+%                            como fallback
 % =============================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesExplPackage{abnt-numeracao}{2025/03/21}{0.1.0}
+\ProvidesExplPackage{abnt-numeracao}{2025/03/21}{1.0.0}
   {Numeração~progressiva~\textemdash~NBR~6024:2012}
 
-% Configuração básica de numeração progressiva conforme NBR 6024.
-% Seções primárias em maiúsculas e negrito; secundárias em maiúsculas;
-% terciárias em negrito; quaternárias e quintas normais.
+\RequirePackage{l3keys2e}
 
-% TODO: Implementar formatação dos títulos de seção conforme a norma.
+% =============================================================================
+% 1. OPÇÕES DO PACOTE
+% =============================================================================
+
+\bool_new:N \g__abnt_num_uppercase_bool
+\bool_gset_true:N \g__abnt_num_uppercase_bool
+
+\keys_define:nn { abnt-numeracao }
+  {
+    maiusculas .bool_gset:N = \g__abnt_num_uppercase_bool,
+    maiusculas .default:n = true,
+    maiusculas .initial:n = true,
+  }
+
+\ProcessKeysOptions { abnt-numeracao }
+
+% =============================================================================
+% 2. DEPENDÊNCIAS
+% =============================================================================
+
+\RequirePackage{titlesec}   % formatação de títulos de seção
+\RequirePackage{textcase}   % \MakeTextUppercase — protege comandos frágeis
+\RequirePackage{enumitem}   % customização de listas (alíneas, subalíneas)
+
+% =============================================================================
+% 3. PROFUNDIDADE DE NUMERAÇÃO (seção 4.1.b — até quinária)
+% =============================================================================
+
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+% =============================================================================
+% 4. FORMATO DOS NÚMEROS (seções 4.1.d, 4.1.g)
+%    Sem ponto final após o número. Ponto apenas entre níveis.
+%    "1", "1.1", "1.1.1", "1.1.1.1", "1.1.1.1.1"
+% =============================================================================
+
+% Detectar se \chapter existe (report/book vs article)
+\bool_new:N \g__abnt_num_has_chapter_bool
+
+\cs_if_exist:NTF \chapter
+  { \bool_gset_true:N \g__abnt_num_has_chapter_bool }
+  { \bool_gset_false:N \g__abnt_num_has_chapter_bool }
+
+\bool_if:NTF \g__abnt_num_has_chapter_bool
+  {
+    % report/book: chapter é o nível primário
+    \renewcommand{\thechapter}{\arabic{chapter}}
+    \renewcommand{\thesection}{\thechapter.\arabic{section}}
+    \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+    \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+    \renewcommand{\theparagraph}{\thesubsubsection.\arabic{paragraph}}
+  }
+  {
+    % article: section é o nível primário
+    \renewcommand{\thesection}{\arabic{section}}
+    \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+    \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+    \renewcommand{\theparagraph}{\thesubsubsection.\arabic{paragraph}}
+    \renewcommand{\thesubparagraph}{\theparagraph.\arabic{subparagraph}}
+  }
+
+% =============================================================================
+% 5. COMANDOS AUXILIARES PARA MAIÚSCULAS CONDICIONAIS
+% =============================================================================
+
+\cs_new_protected:Nn \__abnt_num_maybe_upper:n
+  {
+    \bool_if:NTF \g__abnt_num_uppercase_bool
+      { \MakeTextUppercase{#1} }
+      { #1 }
+  }
+
+% =============================================================================
+% 6. FORMATAÇÃO DOS TÍTULOS DE SEÇÃO (seções 4.1.c, 4.1.i, 4.1.j)
+%
+%    Shape: hang — número e título na mesma linha, segunda linha do título
+%    alinhada sob a primeira letra (4.1.i).
+%
+%    Espaçamento (NBR 14724 seção 5.2.2):
+%    Com 12pt + \onehalfspacing: 1 entrelinha ≈ 18pt (12pt × 1,5).
+%    A norma pede "espaço de 1,5 entre as linhas" antes e depois.
+%
+%    Convenção de formatação (4.1.j — "hierarquicamente"):
+%      Primária:     MAIÚSCULAS + NEGRITO
+%      Secundária:   MAIÚSCULAS
+%      Terciária:    Negrito
+%      Quaternária:  Normal
+%      Quinária:     Itálico
+% =============================================================================
+
+\bool_if:NTF \g__abnt_num_has_chapter_bool
+  {
+    % --- Com \chapter (report/book) ---
+
+    % Primária — seção 4.1.j: maiúsculas + negrito
+    % NBR 14724 5.2.2: nova página, título no topo, afterskip = 18pt
+    \titleformat{\chapter}[hang]
+      {\normalfont\normalsize\bfseries}
+      {\thechapter\hspace{1ex}}
+      {0pt}
+      {\__abnt_num_maybe_upper:n}
+    \titlespacing*{\chapter}{0pt}{0pt}{18pt}
+
+    % Secundária — seção 4.1.j: maiúsculas, sem negrito
+    \titleformat{\section}[hang]
+      {\normalfont\normalsize}
+      {\thesection\hspace{1ex}}
+      {0pt}
+      {\__abnt_num_maybe_upper:n}
+    \titlespacing*{\section}{0pt}{18pt}{18pt}
+
+    % Terciária — seção 4.1.j: negrito
+    \titleformat{\subsection}[hang]
+      {\normalfont\normalsize\bfseries}
+      {\thesubsection\hspace{1ex}}
+      {0pt}
+      {}
+    \titlespacing*{\subsection}{0pt}{18pt}{18pt}
+
+    % Quaternária — seção 4.1.j: normal
+    \titleformat{\subsubsection}[hang]
+      {\normalfont\normalsize}
+      {\thesubsubsection\hspace{1ex}}
+      {0pt}
+      {}
+    \titlespacing*{\subsubsection}{0pt}{18pt}{18pt}
+
+    % Quinária — seção 4.1.j: itálico
+    \titleformat{\paragraph}[hang]
+      {\normalfont\normalsize\itshape}
+      {\theparagraph\hspace{1ex}}
+      {0pt}
+      {}
+    \titlespacing*{\paragraph}{0pt}{18pt}{18pt}
+
+    % --- Títulos sem indicativo numérico (4.1.h / 14724 5.2.3) ---
+    % Centralizados, mesmo destaque tipográfico das primárias
+    \titleformat{name=\chapter,numberless}[hang]
+      {\normalfont\normalsize\bfseries\centering}
+      {}
+      {0pt}
+      {\__abnt_num_maybe_upper:n}
+    \titlespacing*{name=\chapter,numberless}{0pt}{0pt}{18pt}
+  }
+  {
+    % --- Sem \chapter (article) ---
+
+    % Primária — \section
+    \titleformat{\section}[hang]
+      {\normalfont\normalsize\bfseries}
+      {\thesection\hspace{1ex}}
+      {0pt}
+      {\__abnt_num_maybe_upper:n}
+    \titlespacing*{\section}{0pt}{18pt}{18pt}
+
+    % Secundária — \subsection
+    \titleformat{\subsection}[hang]
+      {\normalfont\normalsize}
+      {\thesubsection\hspace{1ex}}
+      {0pt}
+      {\__abnt_num_maybe_upper:n}
+    \titlespacing*{\subsection}{0pt}{18pt}{18pt}
+
+    % Terciária — \subsubsection
+    \titleformat{\subsubsection}[hang]
+      {\normalfont\normalsize\bfseries}
+      {\thesubsubsection\hspace{1ex}}
+      {0pt}
+      {}
+    \titlespacing*{\subsubsection}{0pt}{18pt}{18pt}
+
+    % Quaternária — \paragraph
+    \titleformat{\paragraph}[hang]
+      {\normalfont\normalsize}
+      {\theparagraph\hspace{1ex}}
+      {0pt}
+      {}
+    \titlespacing*{\paragraph}{0pt}{18pt}{18pt}
+
+    % Quinária — \subparagraph
+    \titleformat{\subparagraph}[hang]
+      {\normalfont\normalsize\itshape}
+      {\thesubparagraph\hspace{1ex}}
+      {0pt}
+      {}
+    \titlespacing*{\subparagraph}{0pt}{18pt}{18pt}
+
+    % Títulos sem indicativo numérico
+    \titleformat{name=\section,numberless}[hang]
+      {\normalfont\normalsize\bfseries\centering}
+      {}
+      {0pt}
+      {\__abnt_num_maybe_upper:n}
+    \titlespacing*{name=\section,numberless}{0pt}{18pt}{18pt}
+  }
+
+% =============================================================================
+% 7. CONTADOR CUSTOMIZADO PARA ALÍNEAS (seção 4.2.c)
+%    a)–z) para 1–26, aa)–zz) para 27–52. Erro acima de 52.
+%
+%    Usa LaTeX2e para compatibilidade com \AddEnumerateCounter do enumitem.
+% =============================================================================
+
+\ExplSyntaxOff
+
+% Comando interno: recebe um número, produz a letra (ou letras dobradas)
+\newcommand{\@alinmark}[1]{%
+  \ifnum#1<1\relax
+    \PackageError{abnt-numeracao}%
+      {Numero de alinea fora do intervalo permitido (1-52)}%
+      {A NBR 6024:2012 preve letras simples (a-z) e dobradas (aa-zz).}%
+  \else\ifnum#1<27\relax
+    \@alph{#1}%
+  \else\ifnum#1<53\relax
+    \@alph{\numexpr#1-26\relax}\@alph{\numexpr#1-26\relax}%
+  \else
+    \PackageError{abnt-numeracao}%
+      {Numero de alinea fora do intervalo permitido (1-52)}%
+      {A NBR 6024:2012 preve letras simples (a-z) e dobradas (aa-zz).}%
+  \fi\fi\fi
+}
+
+% Comando público: recebe nome de contador
+\newcommand{\alinmark}[1]{\expandafter\@alinmark\expandafter{\the\value{#1}}}
+
+% Registrar com enumitem
+\AddEnumerateCounter{\alinmark}{\@alinmark}{mm}
+
+\ExplSyntaxOn
+
+% =============================================================================
+% 8. AMBIENTES DE ALÍNEA E SUBALÍNEA (seções 4.2, 4.3)
+% =============================================================================
+
+% Alínea (seção 4.2):
+%   - Label: a), b), ..., z), aa), bb), ...
+%   - Recuo em relação à margem esquerda (seção 4.2.d)
+%   - Segunda linha alinhada sob a primeira letra do texto (seção 4.2.g)
+\newlist{alineas}{enumerate}{1}
+\setlist[alineas]{
+  label   = \alinmark*),
+  leftmargin = 2\parindent,
+  topsep  = 0pt,
+  itemsep = 0pt,
+  parsep  = 0pt,
+}
+
+% Subalínea (seção 4.3):
+%   - Label: travessão seguido de espaço (seção 4.3.a)
+%   - Recuo em relação à alínea (seção 4.3.b)
+%   - Segunda linha alinhada sob a primeira letra do texto (seção 4.3.d)
+\newlist{subalineas}{enumerate}{1}
+\setlist[subalineas]{
+  label   = \textendash~,
+  leftmargin = *,
+  topsep  = 0pt,
+  itemsep = 0pt,
+  parsep  = 0pt,
+}
 
 % =============================================================================
 % FIM DO ARQUIVO
