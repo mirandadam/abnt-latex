@@ -231,6 +231,7 @@
     \tl_use:N \g__abnt_local_tl
     \par
     \tl_use:N \g__abnt_ano_tl
+    \par
 
   \group_end:
   \clearpage
@@ -297,6 +298,7 @@
     \tl_use:N \g__abnt_local_tl
     \par
     \tl_use:N \g__abnt_ano_tl
+    \par
 
   \group_end:
   \clearpage
@@ -311,10 +313,23 @@
 \NewDocumentCommand{\pretextual}{}{
   \pagestyle{empty}
   \pagenumbering{arabic}
+  % Redefinir 'plain' para não exibir número em pré-textuais.
+  % \chapter* ativa 'plain' automaticamente; sem esta redefinição,
+  % páginas de agradecimentos, resumo, sumário etc. exibem número.
+  \fancypagestyle{plain}{
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{0pt}
+  }
 }
 
 \NewDocumentCommand{\textual}{}{
   \pagestyle{fancy}
+  % Restaurar 'plain' para exibir número em páginas de abertura de capítulo
+  \fancypagestyle{plain}{
+    \fancyhf{}
+    \fancyhead[R]{\thepage}
+    \renewcommand{\headrulewidth}{0pt}
+  }
 }
 
 \AtBeginDocument{

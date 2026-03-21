@@ -3,6 +3,6 @@ __pycache__/
 *.pyc
 .claude/
 /normas/
-/tectonic*
+/referencia/
 
 # Intermediários LaTeX — regras detalhadas nos .gitignore de tests/ e templates/
