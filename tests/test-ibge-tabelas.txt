@@ -1,0 +1,281 @@
+1 TABELAS BÁSICAS
+A Tabela 1.1 apresenta dados de produção por estado.
+Tabela 1.1  Produção de casulos do bicho-da-seda, por Unidade da
+Federação  Brasil  1974
+Unidade da Federação
+
+Produção (t)
+
+Participação (%)
+
+São Paulo
+
+120,50
+
+45,30
+
+Paraná
+
+98,20
+
+36,90
+
+Minas Gerais
+
+32,80
+
+12,30
+
+Outros
+
+14,50
+
+5,50
+
+Total
+
+266,00
+
+100,00
+
+Fonte:
+
+IBGE, Diretoria de Pesquisas, Departamento de Agropecuária.
+
+1
+
+2 RODAPÉ E CHAMADAS
+A Tabela 2.1 demonstra o rodapé completo.
+Tabela 2.1  População residente, por sexo  Brasil  2022
+Região
+
+Homens(1)
+
+Mulheres
+
+Total(2)
+
+Norte
+
+9 200 000
+
+9 100 000
+
+18 300 000
+
+Nordeste
+
+27 500 000
+
+29 000 000
+
+56 500 000
+
+Sudeste
+
+42 100 000
+
+44 900 000
+
+87 000 000
+
+Sul
+
+14 800 000
+
+15 200 000
+
+30 000 000
+
+Centro-Oeste
+
+8 200 000
+
+8 300 000
+
+16 500 000
+
+IBGE, Censo Demográco 2022.
+Dados sujeitos a reticação.
+(1) Inclui nascidos vivos registrados em anos anteriores. (2) Exclusive a população
+rural de Rondônia, Acre, Amazonas, Roraima, Pará e Amapá.
+
+Fonte:
+Nota:
+
+2
+
+3 SINAIS CONVENCIONAIS
+A Tabela 3.1 demonstra os sinais convencionais da norma.
+Tabela 3.1  Demonstração dos sinais convencionais
+Indicador
+
+2020
+
+2021
+
+2022
+
+Produção A
+
+1 500,20
+
+1 620,50
+
+1 780,30
+
+Produção B
+
+
+
+42,10
+
+85,60
+
+Produção C
+
+..
+
+..
+
+10,00
+
+Produção D
+
+...
+
+320,00
+
+340,00
+
+Produção E
+
+x
+
+x
+
+5,00
+
+Arredondado+
+
+0,00
+
+0,10
+
+0,20
+
+Arredondado−
+
+−0,0
+
+−0,3
+
+0,10
+
+Dados ctícios para ns de demonstração.
+Os sinais convencionais utilizados seguem as Normas de Apresentação Tabular do IBGE.
+
+Fonte:
+Nota:
+
+3
+
+4 EXEMPLOS AUXILIARES
+4.1 APRESENTAÇÃO DE TEMPO
+A série de dados abrange o período de 19811985 (série consecutiva). Para
+anos não consecutivos, usa-se 1981/1985.
+4.2 CLASSES DE FREQUÊNCIA
+As classes de frequência podem ser expressas de três formas:
+ Inclui inferior, exclui superior: 10 a menos de 20
+ Exclui inferior, inclui superior: mais de 10 a 20
+ Inclui ambos: 10 a 20
+4.3 NOTA DE ARREDONDAMENTO
+Dados numéricos arredondados. As divergências entre a soma das parcelas e
+os totais são provenientes do critério de arredondamento.
+Tabela 4.1  Tabela sem fonte para teste de warning
+Item
+
+Valor
+
+A
+
+10
+
+4
+
+5 RODAPÉ AVULSO
+A Tabela 5.1 demonstra o uso de \abntRodape fora do ambiente tabela,
+imprimindo o rodapé de forma avulsa.
+Tabela 5.1  Dados com rodapé impresso manualmente
+Indicador
+
+Valor
+
+X
+
+42
+
+Y
+
+58
+
+Fonte:
+Nota:
+
+Elaboração própria.
+Rodapé será impresso fora do ambiente tabela.
+
+5
+
+6 FORMATOS DE CHAMADA
+6.1 CHAMADA EM COLCHETES
+
+Tabela 6.1  Tabela com chamada em colchetes
+Item[1]
+A
+
+Valor
+
+100
+
+Dados ctícios.
+(1) Nota com chamada em colchetes.
+Fonte:
+
+6.2 CHAMADA EXPONENCIAL
+
+Tabela 6.2  Tabela com chamada exponencial
+Item1
+B
+
+Valor
+
+200
+
+Dados ctícios.
+(1) Nota com chamada exponencial.
+Fonte:
+
+6
+
+7 NUMERAÇÃO SUBORDINADA
+Tabela 7.1  Tabela com numeração subordinada ao capítulo
+Categoria
+
+Total
+
+P
+
+300
+
+Q
+
+400
+
+Fonte:
+
+Dados ctícios.
+
+7
+
+

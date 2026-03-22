@@ -5,6 +5,5 @@ __pycache__/
 /normas/
 /referencia/
 /trabalho/
-/dist/
 
 # Intermediários LaTeX — regras detalhadas nos .gitignore de tests/ e templates/
