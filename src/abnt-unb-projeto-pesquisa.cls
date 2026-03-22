@@ -1,62 +1,53 @@
 % =============================================================================
-% abnt-unb-A.cls
-% Modelo institucional A (engenharia) — Universidade de Brasília (UnB)
+% abnt-unb-projeto-pesquisa.cls
+% Modelo institucional (clássico) para Projeto de Pesquisa — UnB
 %
 % Licença: LPPL 1.3c
 % Versão:  0.1.0
 %
-% Herda de abnt-trabalho-academico.cls (que fornece elementos pré-textuais,
-% textuais e pós-textuais conforme NBR 14724:2024) e adiciona:
-%   - Metadados institucionais (faculdade, departamento, curso, grau)
-%   - Logo da UnB na capa e folha de rosto
-%   - Cores institucionais (azul e verde UnB)
-%   - Fontes oficiais UnB Pro/Office (XeLaTeX/LuaLaTeX) com fallback
-%   - Capa e folha de rosto com identidade visual da UnB
+% Combina a estrutura normativa de abnt-projeto-pesquisa.cls (NBR 15287:2025)
+% com a identidade visual da UnB no estilo B (clássico):
+%   - Logo pequeno centralizado (sem faixa azul)
+%   - Hierarquia institucional em uppercase
+%   - Fontes UnB Pro/Office com fallback
+%   - Layout puramente via titlepage + vspace
+%
+% Herança: abnt-unb-projeto-pesquisa → abnt-projeto-pesquisa → abnt
+%
+% A NBR 15287 é um subconjunto da NBR 14724: não possui dedicatória,
+% agradecimentos, epígrafe, folha de aprovação nem resumos.
+% A capa é elemento opcional (diferente da NBR 14724, onde é obrigatória).
 %
 % Dependências adicionais (não carregadas pelos pais):
 %   graphicx  — inclusão do logo
 %   xcolor    — cores institucionais
-%
-% Identidade visual:
-%   Azul UnB: Pantone 654, #003366
-%   Verde UnB: Pantone 348, #006633
-%   Fontes: UnB Pro (OpenType-CFF) ou UnB Office (OpenType-TrueType)
-%   Manual: https://www.marca.unb.br/
-%
-% Nota: esta classe NÃO é normativa — é institucional. Os requisitos
-% normativos (ABNT NBR 14724, 6024, etc.) são atendidos pelas classes pai.
 % =============================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesExplClass{abnt-unb-A}{2025/03/21}{0.1.0}
-  {Modelo~institucional~A~(engenharia)~\textemdash~Universidade~de~Brasília}
+\ProvidesExplClass{abnt-unb-projeto-pesquisa}{2025/03/21}{0.1.0}
+  {Projeto~de~Pesquisa~UnB~(clássico)~\textemdash~NBR~15287:2025}
 
 % =============================================================================
 % 1. HERANÇA
 % =============================================================================
-\DeclareOption*{\PassOptionsToClass{\CurrentOption}{abnt-trabalho-academico}}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{abnt-projeto-pesquisa}}
 \ProcessOptions\relax
-\LoadClass{abnt-trabalho-academico}
+\LoadClass{abnt-projeto-pesquisa}
 
 % =============================================================================
 % 2. DEPENDÊNCIAS
 % =============================================================================
 \RequirePackage{graphicx}  % inclusão do logo (não carregado pelos pais)
 \RequirePackage{xcolor}    % cores institucionais
-\RequirePackage{tikz}      % faixa inferior da capa
 
 % =============================================================================
 % 3. CORES INSTITUCIONAIS
-%    Disponíveis para uso pelo documento, não aplicadas automaticamente.
-%    Fonte: Manual de Identidade Visual da UnB (marca.unb.br)
 % =============================================================================
 \definecolor{unb-azul}{HTML}{003366}   % Pantone 654
 \definecolor{unb-verde}{HTML}{006633}  % Pantone 348
 
 % =============================================================================
 % 4. METADADOS UnB
-%    Complementam os metadados de abnt.cls (\titulo, \autor, etc.)
-%    com informações específicas da estrutura acadêmica da UnB.
 % =============================================================================
 
 \tl_new:N \g__abnt_unb_faculdade_tl
@@ -78,15 +69,12 @@
 
 % =============================================================================
 % 5. DEFAULTS INSTITUCIONAIS
-%    O usuário pode sobrescrever com \instituicao{} e \local{}.
 % =============================================================================
 \instituicao{Universidade~de~Brasília}
 \local{Brasília}
 
 % =============================================================================
 % 6. CAMINHO DO LOGO
-%    Sem extensão — LaTeX escolhe .pdf (pdfLaTeX) ou .eps (outros)
-%    conforme a engine. O usuário pode sobrescrever com \unblogo{}.
 % =============================================================================
 \tl_new:N \g__abnt_unb_logo_tl
 \tl_gset:Nn \g__abnt_unb_logo_tl { unb_logo }
@@ -96,14 +84,6 @@
 
 % =============================================================================
 % 7. FONTES UnB (condicional por engine)
-%
-%    XeLaTeX/LuaLaTeX: tenta UnB Pro, fallback UnB Office, fallback
-%    TeX Gyre Termes (já definida por abnt.cls) com warning.
-%
-%    pdfLaTeX: mantém TeX Gyre Termes silenciosamente.
-%
-%    As fontes UnB Pro e UnB Office são OpenType e devem estar instaladas
-%    no sistema. Download: https://www.marca.unb.br/fontesunb.php
 % =============================================================================
 
 \msg_new:nnn { abnt-unb } { fonte-nao-encontrada }
@@ -142,108 +122,93 @@
 % =============================================================================
 % 8. CAPA (sobrescreve \imprimircapa de abnt.cls)
 %
-%    Layout baseado no UnBTeX:
-%      Logo/marca UnB no topo (~35% da página)
-%      Instituição + faculdade + departamento (negrito, centralizado)
-%      Título (grande, negrito, centralizado)
-%      Autor (centralizado)
-%      Faixa azul institucional na parte inferior (~25% da página)
-%        contendo: tipo de trabalho, curso, local, ano (texto branco)
+%    Layout clássico ABNT com logo UnB (mesmo estilo do modelo B):
+%      Logo UnB pequeno centralizado (~2.5cm)
+%      UNIVERSIDADE DE BRASÍLIA (uppercase)
+%      Faculdade (uppercase)
+%      Departamento (uppercase, se definido)
+%      Programa (uppercase, se definido)
+%      [vfill]
+%      AUTOR (uppercase)
+%      [vfill]
+%      TÍTULO (bold, uppercase)
+%      Subtítulo (se definido)
+%      [vfill]
+%      Tipo de trabalho (se definido)
+%      [vfill]
+%      Local
+%      Ano
 % =============================================================================
 
 % Não usa titlepage para evitar reset do contador de páginas
-% (NBR 14724 seção 5.3 — contagem sequencial).
+% (NBR 15287 seção 5.3 — contagem sequencial).
 \RenewDocumentCommand{\imprimircapa}{}{
   \clearpage
   \thispagestyle{empty}
   \group_begin:
     \centering
+    \onehalfspacing
 
-    % --- Elementos de fundo (tikz overlay) ---
-    \begin{tikzpicture}[remember~picture, overlay]
+    % Logo pequeno centralizado
+    \tl_if_empty:NF \g__abnt_unb_logo_tl
+      {
+        \includegraphics[height=2.5cm]{\tl_use:N \g__abnt_unb_logo_tl}
+        \par\vspace{0.3cm}
+      }
 
-      % Marca UnB no topo — sangra de borda a borda
-      % Escala: largura total da página, posicionado no topo
-      \tl_if_empty:NF \g__abnt_unb_logo_tl
+    % Cabeçalho institucional — uppercase
+    \MakeUppercase{\tl_use:N \g__abnt_instituicao_tl}
+    \par
+    \tl_if_empty:NF \g__abnt_unb_faculdade_tl
+      {
+        \MakeUppercase{\tl_use:N \g__abnt_unb_faculdade_tl}
+        \par
+      }
+    \tl_if_empty:NF \g__abnt_unb_departamento_tl
+      {
+        \MakeUppercase{\tl_use:N \g__abnt_unb_departamento_tl}
+        \par
+      }
+    \tl_if_empty:NF \g__abnt_unb_curso_tl
+      {
+        \MakeUppercase{\tl_use:N \g__abnt_unb_curso_tl}
+        \par
+      }
+
+    \par\vfill
+
+    % Autor
+    \MakeUppercase{\tl_use:N \g__abnt_autor_tl}
+
+    \par\vfill
+
+    % Título e subtítulo
+    {
+      \bfseries
+      \MakeUppercase{\tl_use:N \g__abnt_titulo_tl}
+      \tl_if_empty:NF \g__abnt_subtitulo_tl
         {
-          \node[anchor=north, inner~sep=0pt]
-            at (current~page.north)
-            {\includegraphics[width=\paperwidth]
-              {\tl_use:N \g__abnt_unb_logo_tl}};
+          :\par\textnormal{\tl_use:N \g__abnt_subtitulo_tl}
         }
+    }
 
-      % Faixa azul inferior
-      \fill[unb-azul]
-        (current~page.south~west) rectangle
-        ([yshift=7cm] current~page.south~east);
+    \par\vfill
 
-      % Conteúdo da faixa azul (texto branco)
-      \tl_if_empty:NF \g__abnt_unb_tipotrabalho_tl
-        {
-          \node[white, anchor=center, font=\normalsize]
-            at ([yshift=5.5cm] current~page.south)
-            {\MakeUppercase{\tl_use:N \g__abnt_unb_tipotrabalho_tl}};
-        }
-      \tl_if_empty:NF \g__abnt_unb_curso_tl
-        {
-          \node[white, anchor=center, font=\normalsize]
-            at ([yshift=4.5cm] current~page.south)
-            {\MakeUppercase{\tl_use:N \g__abnt_unb_curso_tl}};
-        }
-      \node[white, anchor=center, font=\normalsize]
-        at ([yshift=3cm] current~page.south)
-        {\tl_use:N \g__abnt_local_tl};
-      \node[white, anchor=center, font=\normalsize]
-        at ([yshift=2cm] current~page.south)
-        {\tl_use:N \g__abnt_ano_tl};
+    % Tipo de trabalho (se definido)
+    \tl_if_empty:NF \g__abnt_unb_tipotrabalho_tl
+      {
+        \tl_use:N \g__abnt_unb_tipotrabalho_tl
+        \par\vfill
+      }
 
-    \end{tikzpicture}
-
-    % --- Conteúdo da capa posicionado via tikz (posição absoluta) ---
-    \begin{tikzpicture}[remember~picture, overlay]
-
-      % Cabeçalho institucional — logo de 10.5cm, texto 1cm abaixo
-      \node[anchor=north, font=\large\bfseries, align=center]
-        at ([yshift=-11.5cm] current~page.north)
-        {
-          \tl_use:N \g__abnt_instituicao_tl
-          \tl_if_empty:NF \g__abnt_unb_faculdade_tl
-            { \\ \tl_use:N \g__abnt_unb_faculdade_tl }
-          \tl_if_empty:NF \g__abnt_unb_departamento_tl
-            { \\ \tl_use:N \g__abnt_unb_departamento_tl }
-        };
-
-      % Título e subtítulo — entre cabeçalho e faixa azul
-      % Faixa azul começa a 7cm do fundo. Centro da área livre:
-      % de ~14cm (cabeçalho) até ~22.7cm (topo da faixa) do topo
-      % = centro em ~18cm do topo = ~11.7cm do fundo
-      \node[anchor=center, align=center,
-            text~width=0.85\paperwidth]
-        at ([yshift=11.5cm] current~page.south)
-        {
-          \centering
-          {\LARGE\bfseries \tl_use:N \g__abnt_titulo_tl
-           \tl_if_empty:NF \g__abnt_subtitulo_tl
-             { : }
-          }
-          \tl_if_empty:NF \g__abnt_subtitulo_tl
-            {
-              \\ {\Large \tl_use:N \g__abnt_subtitulo_tl}
-            }
-        };
-
-      % Autor — abaixo do título
-      \node[anchor=center, font=\large]
-        at ([yshift=9cm] current~page.south)
-        { \tl_use:N \g__abnt_autor_tl };
-
-    \end{tikzpicture}
-
-    \null % página não vazia
+    % Local e ano
+    \MakeUppercase{\tl_use:N \g__abnt_local_tl}
+    \par
+    \tl_use:N \g__abnt_ano_tl
 
   \group_end:
   \clearpage
-  % Capa não é contada (NBR 14724 seção 5.3).
+  % Capa não é contada (NBR 15287 seção 5.3).
   % Contagem sequencial inicia na folha de rosto.
   \setcounter{page}{1}
 }
@@ -251,8 +216,7 @@
 % =============================================================================
 % 9. FOLHA DE ROSTO (sobrescreve \imprimirfolhaderosto de abnt.cls)
 %
-%    Adiciona cabeçalho institucional (logo + universidade + faculdade)
-%    e mantém o restante conforme NBR 14724 seção 4.2.1.1.
+%    Cabeçalho institucional discreto + layout ABNT padrão.
 % =============================================================================
 
 \RenewDocumentCommand{\imprimirfolhaderosto}{}{
@@ -262,7 +226,7 @@
     \centering
     \onehalfspacing
 
-    % Cabeçalho institucional (menor que na capa)
+    % Cabeçalho institucional discreto
     \tl_if_empty:NF \g__abnt_unb_logo_tl
       {
         \includegraphics[height=1.5cm]{\tl_use:N \g__abnt_unb_logo_tl}
@@ -294,7 +258,7 @@
     }
     \par\vspace{2cm}
 
-    % Natureza do trabalho — alinhada do meio da mancha até a margem direita
+    % Natureza do trabalho
     \begin{flushright}
       \begin{minipage}{0.5\textwidth}
         \singlespacing\small

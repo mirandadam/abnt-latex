@@ -143,8 +143,12 @@
 %      Ano
 % =============================================================================
 
+% Não usa titlepage para evitar reset do contador de páginas
+% (NBR 14724 seção 5.3 — contagem sequencial).
 \RenewDocumentCommand{\imprimircapa}{}{
-  \begin{titlepage}
+  \clearpage
+  \thispagestyle{empty}
+  \group_begin:
     \centering
     \onehalfspacing
 
@@ -207,7 +211,11 @@
     \par
     \tl_use:N \g__abnt_ano_tl
 
-  \end{titlepage}
+  \group_end:
+  \clearpage
+  % Capa não é contada (NBR 14724 seção 5.3).
+  % Contagem sequencial inicia na folha de rosto.
+  \setcounter{page}{1}
 }
 
 % =============================================================================
@@ -217,7 +225,9 @@
 % =============================================================================
 
 \RenewDocumentCommand{\imprimirfolhaderosto}{}{
-  \begin{titlepage}
+  \clearpage
+  \thispagestyle{empty}
+  \group_begin:
     \centering
     \onehalfspacing
 
@@ -286,7 +296,8 @@
     \par
     \tl_use:N \g__abnt_ano_tl
 
-  \end{titlepage}
+  \group_end:
+  \clearpage
 }
 
 % =============================================================================

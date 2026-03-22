@@ -235,6 +235,9 @@
 
   \group_end:
   \clearpage
+  % Capa não é contada (NBR 14724 seção 5.3 / NBR 15287 seção 5.3).
+  % Contagem sequencial inicia na folha de rosto.
+  \setcounter{page}{1}
 }
 
 % =============================================================================
