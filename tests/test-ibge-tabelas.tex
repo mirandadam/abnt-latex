@@ -24,6 +24,9 @@
 %   13 — Nota de arredondamento (7)
 %   14 — Compatibilidade hyperref
 %   15 — Warning sem fonte (4.10)
+%   16 — Rodapé avulso com \abntRodape (4.10)
+%   17 — Chamada em colchetes / exponencial (4.9.1)
+%   18 — Numeração subordinada a capítulos (4.1.2)
 % =============================================================================
 
 \documentclass[a4paper, 12pt]{report}
@@ -49,15 +52,15 @@ A Tabela~\ref{tab:producao} apresenta dados de produção por estado.
 \begin{tabela}{Produção de casulos do bicho-da-seda, por Unidade da
 Federação \textendash\ Brasil \textendash\ 1974}
   \label{tab:producao}
-  \ibgeFonte{IBGE, Diretoria de Pesquisas, Departamento de Agropecuária.}
-  \begin{tabelaibge}{colspec={lrr}}
+  \abntFonte{IBGE, Diretoria de Pesquisas, Departamento de Agropecuária.}
+  \begin{tabelaabnt}{colspec={lrr}}
     Unidade da Federação & Produção (t) & Participação (\%) \\
     São Paulo            & \num{120.50} & \num{45.30}       \\
     Paraná               & \num{98.20}  & \num{36.90}       \\
     Minas Gerais         & \num{32.80}  & \num{12.30}       \\
     Outros               & \num{14.50}  & \num{5.50}        \\
     Total                & \num{266.00} & \num{100.00}      \\
-  \end{tabelaibge}
+  \end{tabelaabnt}
 \end{tabela}
 
 % =====================================================================
@@ -71,19 +74,19 @@ A Tabela~\ref{tab:populacao} demonstra o rodapé completo.
 \begin{tabela}{População residente, por sexo \textendash\ Brasil
 \textendash\ 2022}
   \label{tab:populacao}
-  \ibgeFonte{IBGE, Censo Demográfico 2022.}
-  \ibgeNota{Dados sujeitos a retificação.}
-  \ibgeNotaEsp{1}{Inclui nascidos vivos registrados em anos anteriores}
-  \ibgeNotaEsp{2}{Exclusive a população rural de Rondônia, Acre, Amazonas,
+  \abntFonte{IBGE, Censo Demográfico 2022.}
+  \abntNota{Dados sujeitos a retificação.}
+  \abntNotaEsp{1}{Inclui nascidos vivos registrados em anos anteriores}
+  \abntNotaEsp{2}{Exclusive a população rural de Rondônia, Acre, Amazonas,
   Roraima, Pará e Amapá}
-  \begin{tabelaibge}{colspec={lrrr}}
-    Região     & Homens\ibgeChamada{1} & Mulheres & Total\ibgeChamada{2} \\
+  \begin{tabelaabnt}{colspec={lrrr}}
+    Região     & Homens\abntChamada{1} & Mulheres & Total\abntChamada{2} \\
     Norte      & \num{9200000}   & \num{9100000}  & \num{18300000}  \\
     Nordeste   & \num{27500000}  & \num{29000000} & \num{56500000}  \\
     Sudeste    & \num{42100000}  & \num{44900000} & \num{87000000}  \\
     Sul        & \num{14800000}  & \num{15200000} & \num{30000000}  \\
     Centro-Oeste & \num{8200000} & \num{8300000}  & \num{16500000}  \\
-  \end{tabelaibge}
+  \end{tabelaabnt}
 \end{tabela}
 
 % =====================================================================
@@ -95,19 +98,19 @@ A Tabela~\ref{tab:sinais} demonstra os sinais convencionais da norma.
 
 \begin{tabela}{Demonstração dos sinais convencionais}
   \label{tab:sinais}
-  \ibgeFonte{Dados fictícios para fins de demonstração.}
-  \ibgeNota{Os sinais convencionais utilizados seguem as Normas de
+  \abntFonte{Dados fictícios para fins de demonstração.}
+  \abntNota{Os sinais convencionais utilizados seguem as Normas de
   Apresentação Tabular do IBGE.}
-  \begin{tabelaibge}{colspec={lrrr}}
+  \begin{tabelaabnt}{colspec={lrrr}}
     Indicador     & 2020            & 2021            & 2022            \\
     Produção A    & \num{1500.20}   & \num{1620.50}   & \num{1780.30}   \\
-    Produção B    & \ibgeSinalZero  & \num{42.10}     & \num{85.60}     \\
-    Produção C    & \ibgeSinalNA    & \ibgeSinalNA    & \num{10.00}     \\
-    Produção D    & \ibgeSinalND    & \num{320.00}    & \num{340.00}    \\
-    Produção E    & \ibgeSinalOmitido & \ibgeSinalOmitido & \num{5.00}  \\
-    Arredondado+  & \ibgeSinalArrZero[2] & \num{0.10} & \num{0.20}     \\
-    Arredondado$-$ & \ibgeSinalArrZero*[1] & \num{-0.3} & \num{0.10}  \\
-  \end{tabelaibge}
+    Produção B    & \abntSinalZero  & \num{42.10}     & \num{85.60}     \\
+    Produção C    & \abntSinalNA    & \abntSinalNA    & \num{10.00}     \\
+    Produção D    & \abntSinalND    & \num{320.00}    & \num{340.00}    \\
+    Produção E    & \abntSinalOmitido & \abntSinalOmitido & \num{5.00}  \\
+    Arredondado+  & \abntSinalArrZero[2] & \num{0.10} & \num{0.20}     \\
+    Arredondado$-$ & \abntSinalArrZero*[1] & \num{-0.3} & \num{0.10}  \\
+  \end{tabelaabnt}
 \end{tabela}
 
 % =====================================================================
@@ -119,35 +122,109 @@ A Tabela~\ref{tab:sinais} demonstra os sinais convencionais da norma.
 \section{Apresentação de tempo}
 
 % Checklist 12
-A série de dados abrange o período de \ibgeSerieConsec{1981}{1985}
+A série de dados abrange o período de \abntSerieConsec{1981}{1985}
 (série consecutiva). Para anos não consecutivos, usa-se
-\ibgeSerieNConsec{1981}{1985}. Para safras agrícolas, a notação é
-\ibgeSafra{1991}{1992}.
+\abntSerieNConsec{1981}{1985}.
 
 \section{Classes de frequência}
 
 % Checklist 11
 As classes de frequência podem ser expressas de três formas:
 \begin{itemize}
-  \item Inclui inferior, exclui superior: \ibgeClasseIE{10}{20}
-  \item Exclui inferior, inclui superior: \ibgeClasseEI{10}{20}
-  \item Inclui ambos: \ibgeClasseII{10}{20}
+  \item Inclui inferior, exclui superior: \abntClasseIE{10}{20}
+  \item Exclui inferior, inclui superior: \abntClasseEI{10}{20}
+  \item Inclui ambos: \abntClasseII{10}{20}
 \end{itemize}
 
 \section{Nota de arredondamento}
 
 % Checklist 13
-\ibgeNotaArrend
+\abntNotaArrend
 
 % =====================================================================
 % Tabela sem fonte — gera warning (checklist 15)
 % =====================================================================
 \begin{tabela}{Tabela sem fonte para teste de warning}
   \label{tab:semfonte}
-  \begin{tabelaibge}{colspec={lr}}
+  \begin{tabelaabnt}{colspec={lr}}
     Item & Valor \\
     A    & \num{10} \\
-  \end{tabelaibge}
+  \end{tabelaabnt}
 \end{tabela}
+
+% =====================================================================
+% CAPÍTULO 5 — Rodapé avulso (checklist 16)
+% =====================================================================
+\chapter{Rodapé avulso}
+
+A Tabela~\ref{tab:avulso} demonstra o uso de \verb|\abntRodape| fora do
+ambiente \texttt{tabela}, imprimindo o rodapé de forma avulsa.
+
+\begin{tabela}{Dados com rodapé impresso manualmente}
+  \label{tab:avulso}
+  \abntFonte{Elaboração própria.}
+  \abntNota{Rodapé será impresso fora do ambiente tabela.}
+  \begin{tabelaabnt}{colspec={lr}}
+    Indicador & Valor \\
+    X         & \num{42} \\
+    Y         & \num{58} \\
+  \end{tabelaabnt}
+\end{tabela}
+
+% Checklist 16 — uso avulso do rodapé
+\abntRodape
+
+% =====================================================================
+% CAPÍTULO 6 — Chamada em colchetes e exponencial (checklist 17)
+% =====================================================================
+\chapter{Formatos de chamada}
+
+\section{Chamada em colchetes}
+
+\begingroup
+\ExplSyntaxOn \keys_set:nn { ibge-tabelas } { chamada=colchetes } \ExplSyntaxOff
+\begin{tabela}{Tabela com chamada em colchetes}
+  \label{tab:colchetes}
+  \abntFonte{Dados fictícios.}
+  \abntNotaEsp{1}{Nota com chamada em colchetes}
+  \begin{tabelaabnt}{colspec={lr}}
+    Item\abntChamada{1} & Valor \\
+    A                   & \num{100} \\
+  \end{tabelaabnt}
+\end{tabela}
+\endgroup
+
+\section{Chamada exponencial}
+
+\begingroup
+\ExplSyntaxOn \keys_set:nn { ibge-tabelas } { chamada=exponencial } \ExplSyntaxOff
+\begin{tabela}{Tabela com chamada exponencial}
+  \label{tab:exponencial}
+  \abntFonte{Dados fictícios.}
+  \abntNotaEsp{1}{Nota com chamada exponencial}
+  \begin{tabelaabnt}{colspec={lr}}
+    Item\abntChamada{1} & Valor \\
+    B                   & \num{200} \\
+  \end{tabelaabnt}
+\end{tabela}
+\endgroup
+
+% =====================================================================
+% CAPÍTULO 7 — Numeração subordinada (checklist 18)
+% =====================================================================
+\chapter{Numeração subordinada}
+
+\begingroup
+\ExplSyntaxOn \keys_set:nn { ibge-tabelas } { subordinar=true } \ExplSyntaxOff
+\begin{tabela}{Tabela com numeração subordinada ao capítulo}
+  \label{tab:subordinada}
+  \abntFonte{Dados fictícios.}
+  \begin{tabelaabnt}{colspec={lr}}
+    Categoria & Total \\
+    P         & \num{300} \\
+    Q         & \num{400} \\
+  \end{tabelaabnt}
+\end{tabela}
+\endgroup
 
 \end{document}

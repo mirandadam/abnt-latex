@@ -16,3 +16,5 @@
 
 # PDFs gerados (compilar localmente)
 *.pdf
+# Exceção: logo institucional incluído nos templates
+!*/unb_logo.pdf

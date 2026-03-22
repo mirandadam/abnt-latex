@@ -64,4 +64,19 @@ Texto de conclusão.
 
 \imprimirlombada
 
+% =====================================================================
+% Lombada com logomarca de imagem e cálculo automático por páginas
+% — checklist 7 (logomarca imagem), opções paginas e espessura
+% =====================================================================
+\ExplSyntaxOn
+\tl_gset:Nn \g__abnt_lomb_disposicao_tl { descendente }
+% Exercitar opções paginas e espessura: largura calculada automaticamente
+\keys_set:nn { abnt-lombada } { paginas = 200, espessura = 0.1mm }
+\ExplSyntaxOff
+
+\lombadaLogomarcaTexto{}%  limpar texto anterior
+\lombadaLogomarca{../assets/unb/unb_logo}
+
+\imprimirlombada
+
 \end{document}

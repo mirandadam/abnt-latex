@@ -235,7 +235,7 @@ A tabela a seguir resume qual pacote implementa qual norma:
     \code{abnt-sumario}   & NBR 6027:2012 & Formatação do sumário \\
     \code{abnt-resumo}    & NBR 6028:2021 & Resumo e abstract \\
     \code{abnt-indice}    & NBR 6034:2004 & Índice remissivo \\
-    \code{abnt-refs}      & NBR 6023:2018 & Referências bibliográficas \\
+    \code{abnt-refs}      & NBR 6023:2025 & Referências bibliográficas \\
     \code{abnt-citacoes}  & NBR 10520:2023 & Citações \\
     \code{ibge-tabelas}   & IBGE 1993     & Tabelas no padrão IBGE \\
     \code{abnt-quadros}   & NBR 14724:2024 & Quadros \\
@@ -303,6 +303,9 @@ A sequência dos elementos pré-textuais segue a \textcite{nbr14724}. O comando
 \imprimirabstract{Abstract text...}{keyword1; keyword2; keyword3}
 \imprimirsumario
 \end{Verbatim}
+
+\noindent\textbf{Nota:} os comandos \verb|\imprimirresumo| e
+\verb|\imprimirabstract| requerem \verb|\usepackage{abnt-resumo}| no preâmbulo.
 
 Cada comando gera o elemento em página própria. A capa e a folha de
 rosto são geradas por \verb|\imprimircapa| e \verb|\imprimirfolhaderosto|,
@@ -414,7 +417,7 @@ Texto do projeto \parencite{referencia}.
 \index{abnt-numeracao}
 O pacote \verb|abnt-numeracao| implementa a \textcite{nbr6024}, que
 regulamenta a numeração progressiva das seções de um documento. Este
-pacote é carregado automaticamente pelas duas classes do projeto.
+pacote é carregado automaticamente pelas classes do projeto.
 
 \section{Níveis de seção}\label{sec:niveis}
 
@@ -569,7 +572,7 @@ Para usar o sistema numérico, altere a opção no preâmbulo:
 \index{citação direta}
 \index{citacaodireta}
 Citações diretas com mais de três linhas devem usar o ambiente
-\verb|citacaodireta|, que aplica recuo de 4~cm, fonte menor (10pt)
+\verb|citacaodireta|, que aplica recuo de 4~cm, fonte menor (\verb|\small|)
 e espaçamento simples:
 
 \begin{Verbatim}[fontsize=\small]
@@ -1063,18 +1066,23 @@ direta, sem necessidade de consultar o texto original da norma.
   \begin{quadroabnt}{colspec={clX[l]}}
     \# & Norma & Requisito \\
     1 & NBR 6024 \S4.2 &
-      \textbf{Pontuação de alíneas.}
+      \textbf{Pontuação de alíneas e subalíneas.}
       O texto que antecede as alíneas termina com dois-pontos.
+      O texto de cada alínea deve iniciar com letra minúscula.
       Cada alínea termina com ponto e vírgula, exceto a última,
       que termina com ponto final.
       Quando há subalíneas, a alínea que as contém termina com
       dois-pontos e a última subalínea termina com ponto e vírgula
-      (ou ponto final, se for a última alínea). \\
+      (ou ponto final, se for a última alínea).
+      Subalíneas também iniciam com letra minúscula e terminam com
+      ponto e vírgula; a última subalínea termina com ponto final
+      se não houver alínea subsequente. \\
     2 & NBR 6028 \S4.1.8 &
       \textbf{Extensão do resumo.}
       O resumo de trabalho acadêmico (tese, dissertação, TCC) deve ter
       entre 150 e 500 palavras. Para artigos de periódico, entre 100
-      e 250 palavras. O \LaTeX{} não conta palavras automaticamente;
+      e 250 palavras. Para demais documentos, entre 50 e 100 palavras.
+      O \LaTeX{} não conta palavras automaticamente;
       verificar com \code{texcount} ou ferramenta similar. \\
     3 & NBR 6028 \S4.1.1--4.1.3 &
       \textbf{Tipo de resumo: informativo ou indicativo.}
@@ -1088,6 +1096,63 @@ direta, sem necessidade de consultar o texto original da norma.
       Usar voz ativa e verbos na terceira pessoa do singular
       (``apresenta'', ``analisa'', ``conclui''), evitando a
       primeira pessoa. \\
+    27 & NBR 6024 \S4.1.e &
+      \textbf{Seções sem texto próprio.}
+      Toda seção deve conter texto relacionado a ela; não se deve ter
+      seção contendo apenas subseções sem texto próprio. \\
+    28 & NBR 6024 \S4.4 &
+      \textbf{Citação de indicativos de seção no texto.}
+      Indicativos de seção devem ser citados no texto na forma ``na
+      seção~3'', ``ver~3.3'' etc. \\
+    29 & NBR 6028 \S3.3 &
+      \textbf{Restrições no resumo.}
+      Evitar no resumo símbolos, contrações e reduções que não sejam de
+      uso corrente, bem como fórmulas, equações e diagramas, a menos que
+      absolutamente necessários. \\
+    30 & NBR 6028 \S4.1.7 &
+      \textbf{Grafias das palavras-chave.}
+      Palavras-chave devem ser grafadas com iniciais em letra minúscula,
+      exceto substantivos próprios e nomes científicos. \\
+    31 & NBR 10520 \S5.2 &
+      \textbf{Sinais em citações diretas.}
+      Supressões em citações diretas são indicadas por \code{[...]},
+      interpolações e acréscimos por \code{[~]}, e ênfases por
+      sublinhado, negrito ou itálico com indicação ``grifo nosso'' ou
+      ``grifo do autor''. \\
+    32 & NBR 10520 \S7.1 &
+      \textbf{Aspas em citações diretas curtas.}
+      Citações diretas de até três linhas devem estar entre aspas duplas.
+      Aspas simples indicam citação no interior da citação. \\
+    33 & NBR 10520 \S7.1.2 &
+      \textbf{Ponto final e citação.}
+      O ponto final deve ser usado para encerrar a frase, não a
+      citação. \\
+    34 & NBR 10520 \S7.1.5 &
+      \textbf{Ênfase em citação direta.}
+      Para enfatizar trechos de citação direta, indicar ``grifo nosso''
+      ou ``grifo próprio'' como último elemento da chamada. \\
+    35 & NBR 10520 \S7.1.6 &
+      \textbf{Tradução de citação direta.}
+      Ao traduzir citação direta, indicar ``tradução nossa'' ou
+      ``tradução própria'' como último elemento da chamada. \\
+  \end{quadroabnt}
+\end{quadro}
+
+\begin{quadro}{Checklist --- resumo}
+  \label{qdr:resumo}
+  \abntFonte{Elaboração própria.}
+  \begin{quadroabnt}{colspec={clX[l]}}
+    \# & Norma & Requisito \\
+    36 & NBR 6028 \S4.1.5 &
+      \textbf{Resumo publicado separadamente.}
+      Quando o resumo não estiver contido no documento (publicado
+      separadamente), deve ser precedido pela referência bibliográfica
+      do documento. \\
+    37 & NBR 6028 \S4.2 &
+      \textbf{Resenha e recensão.}
+      A norma define requisitos para resenha e recensão. O pacote
+      \code{abnt-resumo} não oferece ambiente específico para esses
+      tipos; formatá-los manualmente. \\
   \end{quadroabnt}
 \end{quadro}
 
@@ -1121,18 +1186,49 @@ direta, sem necessidade de consultar o texto original da norma.
       como tabela com as colunas ``Folha'', ``Linha'', ``Onde se lê''
       e ``Leia-se''. \\
     8 & NBR 14724 \S4.2.1.9--12 &
-      \textbf{Listas de ilustrações, tabelas, siglas e símbolos.}
+      \textbf{Listas de ilustrações, tabelas, abreviaturas e siglas e símbolos.}
       Cada lista deve ser gerada em página separada, com título
       centralizado e sem indicativo numérico. Listas de ilustrações e
       tabelas podem ser geradas com \code{\bsl listoffigures} e
       \code{\bsl listoftables}. Listas de siglas e símbolos devem ser
       construídas manualmente em ordem alfabética. \\
-    9 & NBR 14724 \S4.2.1.1.1 &
+    9 & NBR 14724 \S4.2.1.1.2 &
       \textbf{Ficha catalográfica.}
       Deve constar no verso da folha de rosto. É elaborada pela
       biblioteca da instituição após o depósito. Inserir o PDF
       fornecido pela biblioteca usando \code{\bsl includepdf}
       do pacote \code{pdfpages}. \\
+    38 & NBR 14724 \S4.1.1.e / \S4.2.1.1.1.d &
+      \textbf{Número do volume na capa e folha de rosto.}
+      Quando houver mais de um volume, o número do volume deve constar
+      na capa e na folha de rosto. A classe não possui campo
+      \code{\bsl volume}; incluir manualmente. \\
+    39 & NBR 14724 \S5.6 / NBR 15287 \S5.6 &
+      \textbf{Siglas: nome completo na primeira ocorrência.}
+      Na primeira ocorrência no texto, a sigla deve ser indicada entre
+      parênteses, precedida do nome completo. Recomendar o pacote
+      \code{glossaries} para gerenciamento. \\
+    40 & NBR 14724 \S5.7 / NBR 15287 \S5.7 &
+      \textbf{Equações e fórmulas.}
+      Equações e fórmulas devem ser destacadas no texto e numeradas com
+      algarismos arábicos entre parênteses à direita. O ambiente
+      \code{equation} do \LaTeX{} atende a esse requisito. \\
+    41 & NBR 14724 \S5.8 / NBR 15287 \S5.8 &
+      \textbf{Fonte em ilustrações.}
+      Toda ilustração (figura, gráfico, mapa etc.) deve indicar a fonte
+      imediatamente abaixo. O projeto automatiza isso para tabelas e
+      quadros, mas para figuras a fonte deve ser incluída
+      manualmente. \\
+    42 & NBR 14724 \S5.2.1 / NBR 15287 \S5.2.1 &
+      \textbf{Formatação de notas de rodapé.}
+      Notas de rodapé devem ter espaço simples entre linhas, filete de
+      5\,cm a partir da margem esquerda, e fonte menor. Verificar se a
+      formatação padrão do \LaTeX{} atende esses requisitos. \\
+    43 & NBR 15287 \S4.2.2 &
+      \textbf{Estrutura do texto de projeto de pesquisa.}
+      O texto de projeto de pesquisa deve conter: parte introdutória
+      (tema, problema, hipóteses, objetivos, justificativa), referencial
+      teórico, metodologia, recursos e cronograma. \\
   \end{quadroabnt}
 \end{quadro}
 
@@ -1160,13 +1256,20 @@ direta, sem necessidade de consultar o texto original da norma.
       ``continua''/``conclusão'') ou rotacionadas para o formato
       paisagem (usando o ambiente \code{landscape} do pacote
       \code{pdflscape}). \\
-    13 & IBGE &
+    13 & IBGE \S8.3 &
       \textbf{Tabelas que excedem a altura da página.}
-      Tabelas longas que ocupam mais de uma página devem repetir
-      o cabeçalho em cada página e indicar ``continua'' no topo
-      e ``conclusão'' na última página. O ambiente \code{longtblr}
-      do tabularray suporta esse caso, mas não está integrado ao
-      ambiente \code{tabela} do pacote. \\
+      Tabelas longas que ocupam mais de uma página devem seguir as
+      sub-regras da IBGE \S8.3:
+      (a)~repetir o topo e o cabeçalho em cada página;
+      (b)~indicar ``continua'' na primeira página, ``continuação'' nas
+      intermediárias e ``conclusão'' na última;
+      (c)~repetir as colunas indicadoras em cada página;
+      (d)~o traço horizontal do rodapé deve aparecer somente na página
+      de conclusão;
+      (e)~o rodapé (fonte, notas) deve aparecer somente na página de
+      conclusão.
+      O ambiente \code{longtblr} do tabularray suporta esse caso, mas
+      não está integrado ao ambiente \code{tabela} do pacote. \\
     14 & IBGE \S6.1b--6.3b &
       \textbf{Notação gráfica de classes de frequência.}
       A norma prevê notação com colchetes e parênteses para indicar
@@ -1188,6 +1291,25 @@ direta, sem necessidade de consultar o texto original da norma.
       não é reconhecida pelo tabularray em versões anteriores. Para
       alinhar decimais, usar \code{\bsl num\{valor\}} dentro de colunas
       normais (\code{r} ou \code{c}). \\
+    44 & IBGE \S4.6 &
+      \textbf{Unidade de medida no cabeçalho.}
+      Toda tabela deve indicar a unidade de medida no cabeçalho ou nas
+      colunas indicadoras, entre parênteses. Constantes divisoras devem
+      preceder a unidade. \\
+    45 & IBGE \S4.8.2 &
+      \textbf{Significado de sinais convencionais.}
+      Quando a tabela contiver sinais convencionais, seus significados
+      devem ser apresentados em nota geral. \\
+    46 & IBGE \S5.5 &
+      \textbf{Período anual diferente do ano civil.}
+      Se a tabela contiver dados de período anual diferente do ano
+      civil, isso deve ser indicado no título, nota geral ou nota
+      específica. \\
+    47 & IBGE \S6.4 &
+      \textbf{Classes de distribuição de frequência.}
+      As classes inicial e final de uma distribuição de frequência devem
+      ser fechadas, evitando expressões como ``até~z'' ou ``w~ou
+      mais''. \\
   \end{quadroabnt}
 \end{quadro}
 
@@ -1197,15 +1319,33 @@ direta, sem necessidade de consultar o texto original da norma.
   \begin{quadroabnt}{colspec={clX[l]}}
     \# & Norma & Requisito \\
     17 & NBR 6034 \S6.8 &
-      \textbf{Marca ``(continuação)'' em índices longos.}
-      Quando o índice remissivo se estende por mais de uma página, cada
-      página após a primeira deve trazer a indicação ``(continuação)''
-      abaixo do título. Não implementado automaticamente. \\
+      \textbf{Marca ``(continuação)'' em cabeçalhos do índice.}
+      Quando as subdivisões de um cabeçalho do índice remissivo
+      transbordam para a página seguinte, o cabeçalho e o subcabeçalho
+      devem ser repetidos com a indicação ``(continuação)''. A marca se
+      aplica a cada cabeçalho individual cujas entradas se estendem além
+      da página, não ao título geral do índice. Não implementado
+      automaticamente. \\
     18 & NBR 6034 \S6.5 &
-      \textbf{Letras iniciais no cabeçalho corrente do índice.}
-      O cabeçalho corrente (\emph{running header}) de cada página do
-      índice deve indicar a primeira e a última letra inicial presentes
-      naquela página (ex.: ``C--F''). Não implementado. \\
+      \textbf{Letras ou entradas iniciais/finais no canto das páginas do índice.}
+      A norma recomenda imprimir no canto superior externo de cada página
+      do índice as letras iniciais ou a primeira e última entradas
+      daquela página (ex.: ``C--F'' ou ``casa--frequência'').
+      Não implementado. \\
+    48 & NBR 6034 \S6.3 &
+      \textbf{Nota explicativa em caso de ambiguidade.}
+      Se a organização do índice causar duplicidade de interpretações,
+      incluir nota explicativa no início sobre o padrão adotado e
+      exceções. \\
+    49 & NBR 6034 \S6.6 &
+      \textbf{Diferenciação gráfica em índice geral.}
+      Em índice geral (que reúne diferentes categorias), as entradas de
+      cada categoria devem ser diferenciadas graficamente. \\
+    50 & NBR 6034 \S6.12.c &
+      \textbf{Indicativo de volume no índice.}
+      Em documentos com múltiplos volumes, o indicativo no índice deve
+      incluir o número do volume ou parte antes da página (ex.:
+      ``v.~2, 36''). \\
   \end{quadroabnt}
 \end{quadro}
 
@@ -1235,6 +1375,10 @@ direta, sem necessidade de consultar o texto original da norma.
       ``3.1.1.1''. Se o documento tiver indicativos mais longos
       (cinco níveis, muitas seções), pode ser necessário aumentar
       esse valor. \\
+    51 & NBR 6027 \S4.1.c &
+      \textbf{Sumário completo em obras com múltiplos volumes.}
+      Em obras com mais de um volume, o sumário completo deve ser
+      incluído em todos os volumes. \\
   \end{quadroabnt}
 \end{quadro}
 
@@ -1243,17 +1387,23 @@ direta, sem necessidade de consultar o texto original da norma.
   \abntFonte{Elaboração própria.}
   \begin{quadroabnt}{colspec={clX[l]}}
     \# & Norma & Requisito \\
-    23 & NBR 12225 \S4.1c &
+    23 & NBR 12225 \S4.1 &
       \textbf{Disposição mista na lombada.}
-      A norma prevê três disposições: descendente (texto de cima para
-      baixo), horizontal (texto empilhado) e mista (combinação das
-      duas). O pacote implementa as duas primeiras; a disposição mista
-      não está disponível. \\
+      A norma prevê três disposições (Figura~1c): descendente (texto de
+      cima para baixo), horizontal (texto empilhado) e mista (combinação
+      das duas). O pacote implementa as duas primeiras; a disposição
+      mista não está disponível. \\
     24 & NBR 12225 \S4.3.3 &
       \textbf{Título de margem de capa.}
       Título impresso na margem lateral da capa (usado em algumas
       encadernações). Fora do escopo do pacote; se necessário,
       construir manualmente com TikZ. \\
+    52 & NBR 12225 \S4.2 &
+      \textbf{Múltiplos autores na lombada.}
+      Para múltiplos autores na lombada: na disposição horizontal,
+      imprimir um abaixo do outro; na descendente, separar por pontuação
+      ou espaços. Prenome pode ser abreviado ou omitido; para
+      instituição, usar nome por extenso ou sigla. \\
   \end{quadroabnt}
 \end{quadro}
 
@@ -1270,6 +1420,24 @@ direta, sem necessidade de consultar o texto original da norma.
       \code{citacaodireta} nesses casos. O \LaTeX{} não detecta
       automaticamente quantas linhas uma citação ocupa; cabe ao
       autor decidir quando usar o ambiente. \\
+    53 & NBR 10520 \S5.3 &
+      \textbf{Fontes não publicadas formalmente.}
+      Dados obtidos de fontes não publicadas formalmente (palestras,
+      comunicações pessoais) devem ser indicados no texto ou em
+      nota. \\
+    54 & NBR 10520 \S5.4 &
+      \textbf{Documento em fase de elaboração.}
+      Citação de documentos em fase de elaboração deve mencionar o fato,
+      com dados disponíveis em nota. \\
+    55 & NBR 10520 \S7.1.3 &
+      \textbf{Volume e/ou seção na citação.}
+      Volume e/ou seção, quando houver, devem ser indicados de forma
+      abreviada antes da página na citação. \\
+    56 & NBR 10520 \S7.1.4 &
+      \textbf{Localização em documentos não paginados.}
+      Para citações diretas de documentos não paginados, indicar a
+      localização conforme consta no documento (capítulo, artigo
+      etc.). \\
   \end{quadroabnt}
 \end{quadro}
 
@@ -1287,6 +1455,16 @@ direta, sem necessidade de consultar o texto original da norma.
       de entradas eletrônicas. Se a instituição exigir conformidade
       estrita com a edição de 2025, esses ajustes devem ser aplicados
       manualmente nas entradas \code{.bib}. \\
+    57 & NBR 6023 \S6.5 &
+      \textbf{Idioma das informações acrescidas.}
+      Informações acrescidas às referências devem seguir o idioma do
+      texto em elaboração. \\
+    58 & NBR 6023 \S6.6 &
+      \textbf{Documentos online: URL e data de acesso.}
+      Para documentos online, registrar o endereço eletrônico precedido
+      de ``Disponível em:'' e a data de acesso precedida de ``Acesso
+      em:''. Preencher os campos \code{url} e \code{urldate} no arquivo
+      \code{.bib}. \\
   \end{quadroabnt}
 \end{quadro}
 
@@ -1399,9 +1577,9 @@ por pacote ou classe.
   \code{tabela}           & \code{\{título\}} (ambiente) & Wrapper: float + caption + rodapé \\
   \code{tabelaabnt}       & \code{\{colspec=\{...\}\}} (amb.) & Tabela interna com estilo IBGE \\
   \code{\bsl abntFonte}       & \code{\{texto\}}    & Fonte no rodapé (obrigatória) \\
-  \code{\bsl ibgeFonte*}      & \code{\{texto\}}    & Fontes (plural) \\
+  \code{\bsl abntFonte*}      & \code{\{texto\}}    & Fontes (plural) \\
   \code{\bsl abntNota}        & \code{\{texto\}}    & Nota geral \\
-  \code{\bsl ibgeNota*}       & \code{\{texto\}}    & Notas (plural) \\
+  \code{\bsl abntNota*}       & \code{\{texto\}}    & Notas (plural) \\
   \code{\bsl abntNotaEsp}     & \code{\{id\}\{texto\}} & Nota específica \\
   \code{\bsl abntChamada}     & \code{\{id\}}       & Chamada remissiva no corpo \\
   \code{\bsl abntSinalZero}   & ---               & Sinal: dado = zero \\
@@ -1409,14 +1587,15 @@ por pacote ou classe.
   \code{\bsl abntSinalND}     & ---               & Sinal: não disponível \\
   \code{\bsl abntSinalOmitido} & ---              & Sinal: dado omitido \\
   \code{\bsl abntSinalArrZero} & \code{[casas]}   & Zero por arredondamento \\
-  \code{\bsl ibgeSinalArrZero*} & \code{[casas]}  & Idem, valor negativo \\
+  \code{\bsl abntSinalArrZero*} & \code{[casas]}  & Idem, valor negativo \\
   \code{\bsl abntSerieConsec} & \code{\{a1\}\{a2\}}   & Série consecutiva \\
   \code{\bsl abntSerieNConsec} & \code{\{a1\}\{a2\}}  & Série não consecutiva \\
   \code{\bsl abntClasseIE}    & \code{\{min\}\{max\}} & Classe: inclui inf., exclui sup. \\
   \code{\bsl abntClasseEI}    & \code{\{min\}\{max\}} & Classe: exclui inf., inclui sup. \\
   \code{\bsl abntClasseII}    & \code{\{min\}\{max\}} & Classe: inclui ambos \\
   \code{\bsl abntNotaArrend}  & ---               & Nota de arredondamento \\
-  \code{\bsl num}             & \code{\{número\}}   & Formatação numérica (siunitx) \\
+  \code{\bsl abntRodape}      & ---               & Imprime rodapé manualmente (uso avulso) \\
+  \code{\bsl num}             & \code{\{número\}}   & Formatação numérica (via siunitx, carregado automaticamente) \\
   opção \code{chamada}    & \code{par./colch./exp.} & Formato da chamada \\
   opção \code{subordinar} & \code{true/false} & Subordina numeração a capítulos \\
 \end{tabelaabnt}

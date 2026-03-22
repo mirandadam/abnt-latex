@@ -12,145 +12,113 @@ Após os testes, fiquei seguro de utilizar estas classes para meus próprios doc
 
 Fora desta seção, considere que tudo foi gerado pelo Claude sob minha supervisão.
 
-## Status
+## Classes
 
-Em desenvolvimento. Os dois tipos de documento contemplados são:
+| Classe                        | Documento                 | Norma          |
+| ----------------------------- | ------------------------- | -------------- |
+| `abnt-trabalho-academico.cls` | Teses, dissertações, TCCs | NBR 14724:2024 |
+| `abnt-projeto-pesquisa.cls`   | Projetos de pesquisa      | NBR 15287:2025 |
 
-- **Trabalho acadêmico** (ABNT NBR 14724:2024) — teses, dissertações, TCCs e similares
-- **Projeto de pesquisa** (ABNT NBR 15287:2025)
+Ambas herdam de `abnt.cls` (classe base com margens, capa, folha de rosto, paginação e espaçamento). O projeto inclui também variantes institucionais para a Universidade de Brasília (`abnt-unb-*.cls`).
 
-Todos os pacotes planejados estão implementados e testados:
+## Pacotes
 
-| Pacote | Norma | Versão |
+Os pacotes são modulares e podem ser usados independentemente das classes.
+
+| Pacote               | Norma                                 |
+| -------------------- | ------------------------------------- |
+| `abnt-numeracao.sty` | NBR 6024:2012 — Numeração progressiva |
+| `abnt-sumario.sty`   | NBR 6027:2012 — Sumário               |
+| `abnt-resumo.sty`    | NBR 6028:2021 — Resumo e abstract     |
+| `abnt-indice.sty`    | NBR 6034:2004 — Índice                |
+| `abnt-refs.sty`      | NBR 6023:2025 — Referências           |
+| `abnt-citacoes.sty`  | NBR 10520:2023 — Citações             |
+| `ibge-tabelas.sty`   | IBGE 1993 — Tabelas                   |
+| `abnt-quadros.sty`   | NBR 14724:2024 — Quadros              |
+| `abnt-lombada.sty`   | NBR 12225:2023 — Lombada              |
+
+Citações e referências bibliográficas são delegadas ao [`biblatex-abnt`](https://github.com/abntex/biblatex-abnt); este projeto apenas o configura com os parâmetros de cada norma.
+
+## Exemplo mínimo
+
+```latex
+\documentclass{abnt-trabalho-academico}
+\usepackage{abnt-resumo}
+\usepackage{abnt-citacoes}   % carrega abnt-refs automaticamente
+
+\addbibresource{refs.bib}
+
+\titulo{Título do Trabalho}
+\autor{Nome do Autor}
+\orientador{Nome do Orientador}
+\instituicao{Universidade}
+\local{Cidade}
+\ano{2026}
+\natureza{Dissertação apresentada ao Programa de Pós-Graduação
+  em X da Universidade Y como requisito parcial para obtenção
+  do título de Mestre em X.}
+\programa{Programa de Pós-Graduação em X}
+
+\begin{document}
+\imprimircapa
+\imprimirfolhaderosto
+\imprimirsumario
+
+\chapter{Introdução}
+Texto da introdução \cite{referencia}.
+
+\postextual
+\printbibliography
+\end{document}
+```
+
+## Templates
+
+Cada classe tem um template pronto para uso em `templates/`:
+
+| Diretório | Classe | Descrição |
 |---|---|---|
-| `abnt-numeracao.sty` | NBR 6024:2012 | 1.0.0 |
-| `abnt-sumario.sty` | NBR 6027:2012 | 1.0.0 |
-| `abnt-resumo.sty` | NBR 6028:2021 | 1.0.0 |
-| `abnt-indice.sty` | NBR 6034:2004 | 1.0.0 |
-| `abnt-refs.sty` | NBR 6023:2025 | 1.0.0 |
-| `abnt-citacoes.sty` | NBR 10520:2023 | 1.0.0 |
-| `ibge-tabelas.sty` | IBGE 1993 | 1.0.0 |
-| `abnt-lombada.sty` | NBR 12225:2023 | 1.0.0 |
+| `trabalho-academico/` | `abnt-trabalho-academico` | Trabalho acadêmico genérico |
+| `projeto-pesquisa/` | `abnt-projeto-pesquisa` | Projeto de pesquisa genérico |
+| `unb-A/` | `abnt-unb-A` | UnB — Modelo A (engenharia, capa com faixa azul) |
+| `unb-B/` | `abnt-unb-B` | UnB — Modelo B (clássico) |
+| `unb-projeto-pesquisa/` | `abnt-unb-projeto-pesquisa` | UnB — Projeto de pesquisa |
 
-## Motivação
+## Como usar
 
-O abnTeX2 é o projeto de referência para LaTeX acadêmico no Brasil, mas apresenta limitações estruturais que dificultam sua atualização:
+### Uso local
 
-- Última release em novembro de 2018, enquanto várias normas foram revisadas desde então (NBR 10520:2023, NBR 14724:2024, NBR 6023:2025)
-- Classe construída sobre `memoir`, com arquitetura que acumula décadas de dívida técnica
-- Estilos bibliográficos implementados em BibTeX, uma linguagem de pilha dos anos 1980 de difícil leitura e manutenção — situação reconhecida pela própria equipe do projeto, que aponta o `biblatex-abnt` como substituto
-
-Este projeto não é uma crítica ao abnTeX2, que cumpriu e ainda cumpre papel importante. É uma alternativa construída do zero com base nas normas atualmente vigentes e em ferramentas modernas do ecossistema LaTeX.
-
-## Arquitetura
-
-O projeto segue a separação canônica do LaTeX entre **classes** (`.cls`) e **pacotes** (`.sty`):
-
-- Uma **classe** por tipo de documento, responsável pela estrutura completa: margens, capa, folha de rosto, sumário, paginação
-- **Pacotes** modulares e independentes de classe, que podem ser usados em qualquer documento que precise daquela funcionalidade específica
-
-Toda a lógica programática interna é implementada em **`expl3`**, a camada moderna do LaTeX3, com sintaxe legível e separação clara entre interface pública e implementação.
-
-### Estrutura planejada
-
-```
-latex-abnt/
-├── src/                               # Código-fonte LaTeX
-│   ├── abnt.cls                       # Classe base (comum a todos os documentos ABNT)
-│   ├── abnt-trabalho-academico.cls    # Classe: Trabalho Acadêmico (NBR 14724:2024)
-│   ├── abnt-projeto-pesquisa.cls      # Classe: Projeto de Pesquisa (NBR 15287:2025)
-│   ├── ibge-tabelas.sty              # Pacote: tabelas (IBGE 1993)
-│   ├── abnt-refs.sty                  # Pacote: referências (NBR 6023)
-│   ├── abnt-citacoes.sty              # Pacote: citações (NBR 10520)
-│   ├── abnt-sumario.sty               # Pacote: sumário (NBR 6027)
-│   ├── abnt-numeracao.sty             # Pacote: numeração progressiva (NBR 6024)
-│   ├── abnt-indice.sty                # Pacote: índice (NBR 6034)
-│   ├── abnt-resumo.sty                # Pacote: resumo e abstract (NBR 6028)
-│   └── abnt-lombada.sty               # Pacote: lombada (NBR 12225)
-├── templates/                         # Documentos de exemplo
-│   ├── trabalho-academico/
-│   │   ├── main.tex
-│   │   └── refs.bib
-│   └── projeto-pesquisa/
-│       ├── main.tex
-│       └── refs.bib
-└── tests/                             # Testes visuais por norma
-    └── (um .tex mínimo por pacote/classe)
-```
-
-Os arquivos `.cls` e `.sty` ficam em `src/`. A compilação requer que o diretório `src/` esteja no `TEXINPUTS`:
+Clone o repositório e compile qualquer template apontando `TEXINPUTS` para `src/`:
 
 ```bash
-export TEXINPUTS=./src:
-latexmk -pdf tests/test-abnt-numeracao.tex
+git clone https://github.com/seu-usuario/latex-abnt.git
+cd latex-abnt
+
+# Compilar um template:
+TEXINPUTS=./src: latexmk -pdf templates/trabalho-academico/main.tex
 ```
 
-### Compatibilidade de engines
+Para seus próprios documentos, basta manter o caminho até `src/` no `TEXINPUTS`:
 
-O projeto suporta **pdfLaTeX** e **XeLaTeX**. A validação é feita com **TeX Live 2023** (pdfLaTeX + Biber 2.19).
+```bash
+TEXINPUTS=/caminho/para/latex-abnt/src: latexmk -pdf meu-documento.tex
+```
 
-### Dependências principais
+### Uso no Overleaf
 
-| Pacote | Função |
-|---|---|
-| `expl3` | Lógica interna de todos os módulos |
-| `imakeidx` | Geração e processamento de índices |
-| `tabularray` | Estrutura e estilo de tabelas (nativo em `expl3`) |
-| `siunitx` | Formatação de dados numéricos e unidades de medida |
-| `biblatex` + `biblatex-abnt` | Citações e referências (não reimplementado aqui) |
-| `caption` | Formatação de títulos de tabelas e figuras |
+O script `scripts/overleaf-zip.sh` gera um `.zip` pronto para upload no Overleaf, contendo o template escolhido e todos os arquivos `.cls`/`.sty` necessários:
 
-### Relação com o biblatex-abnt
+```bash
+./scripts/overleaf-zip.sh trabalho-academico
+# Criado: dist/latex-abnt-trabalho-academico.zip
+```
 
-Este projeto **não reimplementa** estilos de citação e referência bibliográfica. Para isso, adota o [`biblatex-abnt`](https://github.com/abntex/biblatex-abnt) como dependência — projeto ativo, moderno e mantido separadamente. As classes deste repositório apenas configuram o `biblatex-abnt` com os parâmetros exigidos por cada norma.
+No Overleaf: **Novo Projeto > Carregar Projeto > selecione o .zip**. Em **Menu > Compiler**, selecione **pdfLaTeX**. O Overleaf já inclui o `biblatex-abnt` na sua distribuição TeX Live.
 
-## Normas contempladas
+## Documentação
 
-### Em implementação
-
-- **ABNT NBR 14724:2024** — Trabalhos acadêmicos (teses, dissertações, TCCs)
-- **ABNT NBR 15287:2025** — Projeto de pesquisa
-
-### Relação entre as normas
-
-As duas normas compartilham a mesma estrutura geral (parte externa + parte interna com elementos pré-textuais, textuais e pós-textuais) e referenciam o mesmo conjunto de normas auxiliares, com uma diferença:
-
-| Aspecto | NBR 14724 (Trabalho acadêmico) | NBR 15287 (Projeto de pesquisa) |
-|---|---|---|
-| Capa | Obrigatória | Opcional |
-| Folha de rosto | Obrigatória | Obrigatória |
-| Folha de aprovação | Obrigatória | — |
-| Errata | Opcional | — |
-| Dedicatória | Opcional | — |
-| Agradecimentos | Opcional | — |
-| Epígrafe | Opcional | — |
-| Resumo (vernácula) | Obrigatório | — |
-| Resumo (estrangeira) | Obrigatório | — |
-| Listas (ilustrações, tabelas, siglas, símbolos) | Opcionais | Opcionais |
-| Sumário | Obrigatório | Obrigatório |
-| Referências | Obrigatórias | Obrigatórias |
-| Glossário, apêndice, anexo, índice | Opcionais | Opcionais |
-
-A NBR 14724 é a norma mais completa e exigente; a NBR 15287 é um subconjunto estrutural com elementos pré-textuais reduzidos. A arquitetura do projeto reflete isso: `abnt-trabalho-academico.cls` implementa o conjunto completo, e `abnt-projeto-pesquisa.cls` reutiliza o que for aplicável.
-
-### Referências normativas comuns
-
-Ambas as normas referenciam o seguinte conjunto (requisitos obrigatórios, não meramente informativos):
-
-- ABNT NBR 6023 — Referências
-- ABNT NBR 6024 — Numeração progressiva das seções
-- ABNT NBR 6027 — Sumário
-- ABNT NBR 6034 — Índice
-- ABNT NBR 10520 — Citações em documentos
-- ABNT NBR 12225 — Lombada
-- IBGE — Normas de Apresentação Tabular (3ª ed., 1993)
-
-A NBR 14724 adiciona:
-
-- ABNT NBR 6028 — Resumo, resenha e recensão
+O guia do usuário em `templates/guia-usuario/main.tex` é simultaneamente o manual de referência de todos os comandos e um exemplo compilável de trabalho acadêmico ABNT válido.
 
 ## Licença
 
 [LPPL 1.3c](https://www.latex-project.org/lppl/lppl-1-3c.html) — LaTeX Project Public License, versão 1.3c.
-
-Esta é a licença padrão do ecossistema LaTeX, adotada também pelo abnTeX2 e pelo biblatex-abnt. Permite uso, modificação e redistribuição, com a obrigação de renomear arquivos modificados.

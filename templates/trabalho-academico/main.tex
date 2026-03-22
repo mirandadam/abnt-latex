@@ -1,0 +1,81 @@
+% =============================================================================
+% Template: Trabalho Acadêmico (NBR 14724:2024)
+%
+% Compilação local (a partir da raiz do repositório):
+%   TEXINPUTS=./src: latexmk -pdf templates/trabalho-academico/main.tex
+% =============================================================================
+
+\documentclass{abnt-trabalho-academico}
+
+\usepackage{abnt-resumo}
+\usepackage{abnt-citacoes}   % carrega abnt-refs automaticamente
+
+\addbibresource{refs.bib}
+
+% --- Metadados (preencha com seus dados) ---
+\titulo{Título do Trabalho}
+\subtitulo{subtítulo, se houver}
+\autor{Nome Completo do Autor}
+\orientador{Prof. Dr. Nome do Orientador}
+% \coorientador{Prof. Dr. Nome do Coorientador}
+\instituicao{Nome da Instituição}
+\local{Cidade}
+\ano{2026}
+\natureza{Dissertação apresentada ao Programa de Pós-Graduação
+  em X da Universidade Y como requisito parcial para obtenção
+  do título de Mestre em X.}
+\programa{Programa de Pós-Graduação em X}
+% \area{Área de concentração}
+
+% =============================================================================
+\begin{document}
+
+% --- Pré-textuais ---
+\imprimircapa
+\imprimirfolhaderosto
+
+\dataaprovacao{1 de janeiro de 2026}
+\membrodabanca{Prof. Dr. Membro Um}{Instituição Um}
+\membrodabanca{Prof. Dr. Membro Dois}{Instituição Dois}
+\membrodabanca{Prof. Dr. Membro Três}{Instituição Três}
+\imprimirfolhadeaprovacao
+
+\imprimirdedicatoria{%
+  Dedicatória (opcional).}
+
+\imprimiragradecimentos{%
+  Agradecimentos (opcional).}
+
+\imprimirepigrafe{%
+  ``Citação inspiradora'' (opcional).}
+
+\imprimirresumo{%
+  Resumo em português. Deve conter entre 150 e 500 palavras para trabalhos
+  acadêmicos, conforme NBR 6028:2021.%
+}{Palavra-chave 1. Palavra-chave 2. Palavra-chave 3}
+
+\imprimirabstract{%
+  Abstract in English. Should contain between 150 and 500 words.%
+}{Keyword 1. Keyword 2. Keyword 3}
+
+\imprimirsumario
+
+% --- Textuais ---
+\chapter{Introdução}
+
+Este é um template para trabalhos acadêmicos conforme a
+ABNT NBR 14724:2024 \cite{eco1977}.
+
+\chapter{Desenvolvimento}
+
+Texto do desenvolvimento \cite{medeiros2019}.
+
+\chapter{Conclusão}
+
+Texto da conclusão.
+
+% --- Pós-textuais ---
+\postextual
+\printbibliography
+
+\end{document}

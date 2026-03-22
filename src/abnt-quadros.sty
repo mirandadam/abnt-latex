@@ -1,6 +1,6 @@
 % =============================================================================
 % abnt-quadros.sty
-% Quadros — ABNT NBR 14724:2024 seções 5.9, 5.10
+% Quadros — ABNT NBR 14724:2024 seção 5.8
 %
 % Licença: LPPL 1.3c
 % Versão:  1.0.0
@@ -12,10 +12,10 @@
 %   l3keys2e    — processamento de opções
 %
 % Rastreabilidade à norma:
-%   NBR 14724:2024 seção 5.9   → quadros: bordas fechadas em todos os lados
-%   NBR 14724:2024 seção 5.10  → numeração independente das tabelas
+%   NBR 14724:2024 seção 5.8   → quadros: bordas fechadas em todos os lados
+%   NBR 14724:2024 seção 5.8   → numeração independente das tabelas
 %   NBR 14724:2024 seção 5.8   → título no topo: "Quadro N — Título"
-%   NBR 14724:2024 seção 5.10  → fonte obrigatória abaixo do quadro
+%   NBR 14724:2024 seção 5.8   → fonte obrigatória abaixo do quadro
 %
 % Diferença entre tabela e quadro:
 %   Tabela (IBGE): dados numéricos/estatísticos, sem bordas verticais laterais
@@ -53,7 +53,7 @@
 \RequirePackage{ibge-tabelas}  % reutiliza \abntFonte, \abntNota, \abntNotaEsp
 
 % =============================================================================
-% 3. NUMERAÇÃO E TÍTULO (seções 5.8, 5.10)
+% 3. NUMERAÇÃO E TÍTULO (seção 5.8)
 %    "Quadro 1 — Título" no topo do quadro.
 %    Numeração independente das tabelas.
 % =============================================================================
@@ -70,7 +70,7 @@
 }
 \ExplSyntaxOn
 
-% Subordinação a capítulos (seção 5.10)
+% Subordinação a capítulos (seção 5.8)
 \bool_if:NT \g__abnt_qdr_subordinar_bool
   {
     \cs_if_exist:NT \chapter
@@ -82,7 +82,7 @@
   }
 
 % =============================================================================
-% 4. AMBIENTE quadroabnt (seção 5.9)
+% 4. AMBIENTE quadroabnt (seção 5.8)
 %    Ambiente interno tabularray com bordas em todos os lados.
 % =============================================================================
 

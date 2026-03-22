@@ -13,12 +13,19 @@
 %   abnt-refs  — carrega biblatex-abnt e configura referências
 %
 % Rastreabilidade à norma:
-%   Seção 6.1    → sistema autor-data (padrão)
-%   Seção 6.2    → sistema numérico (opção sistema=numerico)
-%   Seção 7.1.1  → citação direta longa: recuo 4cm, fonte menor,
-%                  espaço simples, sem aspas
-%   Seção 7.3    → citação de citação (apud) — via biblatex-abnt
-%   Seção 8.1    → expressões latinas — automáticas via biblatex-abnt
+%   Seção 6.1        → sistema autor-data (padrão)
+%   Seção 6.1.1–6.1.8 → regras detalhadas do sistema autor-data → delegadas ao biblatex-abnt
+%   Seção 6.2        → sistema numérico (opção sistema=numerico)
+%   Seção 6.2.1–6.2.4 → regras do sistema numérico → delegadas ao biblatex-abnt
+%                       (nota: §6.2.2 proíbe uso simultâneo de notas de rodapé)
+%   Seção 7.1        → citação direta curta com aspas duplas → responsabilidade do autor
+%   Seção 7.1.1      → citação direta longa: recuo 4cm, fonte menor,
+%                       espaço simples, sem aspas
+%   Seção 7.2        → citação indireta, página opcional → delegada ao biblatex-abnt
+%   Seção 7.3        → citação de citação (apud) — via biblatex-abnt
+%   Seção 8          → requisitos gerais de notas de rodapé → delegados à classe base
+%   Seção 8.1        → expressões latinas — automáticas via biblatex-abnt
+%   Seção 8.2        → notas explicativas → \footnote padrão do LaTeX
 %
 % Limitações documentadas:
 %   Citação direta longa — detecção automática de "> 3 linhas" não é

@@ -107,6 +107,32 @@ A amostra foi composta por trinta participantes selecionados por conveniência.
 Foram utilizados dois instrumentos principais.
 
 % =====================================================================
+% CAPÍTULO 4 — Exercita: maiusculas=false (fallback para comandos
+% frágeis em títulos). O teste principal usa maiusculas=true (padrão).
+% Aqui desativamos maiúsculas automáticas via \keys_set:nn para
+% demonstrar que títulos primários e secundários ficam sem caixa alta.
+% =====================================================================
+\ExplSyntaxOn
+\keys_set:nn { abnt-numeracao } { maiusculas = false }
+\ExplSyntaxOff
+
+\chapter{Resultados sem maiúsculas automáticas}
+
+Este capítulo demonstra o comportamento com \texttt{maiusculas=false}. O título
+da seção primária aparece em negrito, mas sem conversão automática para caixa
+alta. Isso é útil quando o título contém comandos que não são compatíveis com
+\verb|\MakeTextUppercase|.
+
+\section{Discussão dos achados parciais}
+
+A seção secundária também aparece sem maiúsculas automáticas.
+
+% Restaurar maiúsculas para o restante do documento
+\ExplSyntaxOn
+\keys_set:nn { abnt-numeracao } { maiusculas = true }
+\ExplSyntaxOff
+
+% =====================================================================
 % Título sem indicativo numérico, centralizado
 % Exercita: checklist item 6 (seção 4.1.h / 14724 5.2.3)
 % =====================================================================

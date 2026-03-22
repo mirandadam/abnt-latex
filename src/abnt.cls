@@ -18,6 +18,7 @@
 % Rastreabilidade às normas:
 %   NBR 14724:2024 seção 5.1  → papel A4, fonte 12pt, margens 3/2/3/2 cm
 %   NBR 14724:2024 seção 5.2  → espaçamento 1,5 entre linhas
+%   NBR 14724:2024 seção 5.2.1 → notas de rodapé (filete, alinhamento, espaçamento)
 %   NBR 14724:2024 seção 5.3  → paginação em arábico, canto superior direito
 %   NBR 14724:2024 seção 4.1.1 / NBR 15287:2025 seção 4.1.1  → capa
 %   NBR 14724:2024 seção 4.2.1.1 / NBR 15287:2025 seção 4.2.1.1 → folha de rosto
@@ -122,13 +123,53 @@
 \setlength{\parskip}{0pt}
 
 % =============================================================================
-% 8. IDIOMA
+% 8. NOTAS DE RODAPÉ (NBR 14724 seção 5.2.1 / NBR 15287 seção 5.2.1)
+%    a) espaço simples entre linhas
+%    b) filete de 5 cm a partir da margem esquerda
+%    c) segunda linha alinha com a primeira letra do texto (não o número)
+%    d) fonte menor que a do texto
+%    e) sem espaço entre notas consecutivas
+% =============================================================================
+
+% seção 5.2.1 → filete (linha separadora) de 5 cm, espessura 0.4pt
+\cs_set:Npn \footnoterule
+  {
+    \kern -3pt
+    \hrule width~5cm~height~0.4pt
+    \kern 2.6pt
+  }
+
+% seção 5.2.1 → segunda linha alinha com primeira letra do texto;
+%               número como expoente; fonte menor (footnotesize)
+\cs_set:Npn \@makefntext #1
+  {
+    \setlength { \@tempdima } { 1.5em }
+    \noindent
+    \hb@xt@ \@tempdima { \hss \@makefnmark }
+    \parindent \@tempdima
+    #1
+  }
+
+% seção 5.2.1 → espaço simples nas notas + sem espaço extra entre notas
+% footnotesep = altura do strut em footnotesize → notas coladas sem espaço extra
+\begingroup
+  \footnotesize
+  \dim_gset:Nn \footnotesep { \dimexpr \ht \strutbox \relax }
+\endgroup
+\cs_new_eq:NN \__abnt_orig_footnotetext:n \@footnotetext
+\cs_set:Npn \@footnotetext #1
+  {
+    \__abnt_orig_footnotetext:n { \begin{singlespace} #1 \end{singlespace} }
+  }
+
+% =============================================================================
+% 9. IDIOMA
 % =============================================================================
 \RequirePackage[brazil]{babel}
 \frenchspacing  % espaçamento uniforme após pontos — padrão para português
 
 % =============================================================================
-% 9. HYPERREF — links internos e metadados PDF
+% 10. HYPERREF — links internos e metadados PDF
 %
 %    O hyperref é carregado no final do preâmbulo (via \AddToHook) para
 %    evitar conflitos de ordem com pacotes do usuário.
@@ -151,7 +192,7 @@
 }
 
 % =============================================================================
-% 10. METADADOS DO DOCUMENTO
+% 11. METADADOS DO DOCUMENTO
 %     Variáveis e comandos públicos comuns a todas as classes ABNT.
 % =============================================================================
 \tl_new:N \g__abnt_titulo_tl
@@ -190,7 +231,7 @@
   { \tl_gset:Nn \g__abnt_area_tl {#1} }
 
 % =============================================================================
-% 11. CAPA (NBR 14724 seção 4.1.1 / NBR 15287 seção 4.1.1)
+% 12. CAPA (NBR 14724 seção 4.1.1 / NBR 15287 seção 4.1.1)
 %     Ordem dos elementos:
 %       a) nome da instituição (opcional)
 %       b) nome do autor
@@ -241,7 +282,7 @@
 }
 
 % =============================================================================
-% 12. FOLHA DE ROSTO (NBR 14724 seção 4.2.1.1.1 / NBR 15287 seção 4.2.1.1)
+% 13. FOLHA DE ROSTO (NBR 14724 seção 4.2.1.1.1 / NBR 15287 seção 4.2.1.1)
 %     Ordem dos elementos:
 %       a) nome do autor
 %       b) título e subtítulo
@@ -308,7 +349,7 @@
 }
 
 % =============================================================================
-% 13. PAGINAÇÃO PRÉ-TEXTUAL / TEXTUAL (NBR 14724 seção 5.3)
+% 14. PAGINAÇÃO PRÉ-TEXTUAL / TEXTUAL (NBR 14724 seção 5.3)
 %     Pré-textuais: contadas mas não numeradas.
 %     Textuais: numeração em arábico a partir da primeira página.
 %     \pagenumbering{arabic} inicia a contagem em 1.

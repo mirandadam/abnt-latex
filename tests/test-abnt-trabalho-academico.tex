@@ -1,0 +1,177 @@
+% =============================================================================
+% test-abnt-trabalho-academico.tex
+% Documento de teste para abnt-trabalho-academico.cls
+%
+% Demonstra o fluxo completo de um trabalho acadêmico conforme
+% NBR 14724:2024, incluindo elementos pré-textuais, textuais e
+% pós-textuais.
+%
+% Compilação:
+%   cd tests && TEXINPUTS=../src: latexmk -pdf -shell-escape -interaction=nonstopmode test-abnt-trabalho-academico.tex
+%
+% Checklist:
+%   1  — \dataaprovacao define data de aprovação na folha de aprovação
+%   2  — \membrodabanca com 3 membros gera 3 linhas de assinatura
+%   3  — \imprimirfolhadeaprovacao gera folha com autor, título e natureza
+%   4  — \imprimirdedicatoria gera dedicatória alinhada à direita, parte inferior
+%   5  — \imprimiragradecimentos gera página com título "AGRADECIMENTOS"
+%   6  — \imprimirepigrafe gera epígrafe alinhada à direita, parte inferior
+%   7  — \imprimirresumo gera resumo com palavras-chave
+%   8  — \imprimirabstract gera abstract com keywords
+%   9  — \postextual mantém paginação contínua
+%   10 — Fluxo completo: pretextual → textual → postextual
+%   11 — Sumário gerado automaticamente (abnt-sumario carregado)
+%   12 — Numeração progressiva (abnt-numeracao carregado)
+%   13 — Herança de abnt.cls (capa e folha de rosto)
+% =============================================================================
+
+\documentclass{abnt-trabalho-academico}
+\usepackage{abnt-resumo}
+
+% Metadados
+\titulo{Redes neurais convolucionais aplicadas à classificação de imagens médicas}
+\subtitulo{detecção de tumores em radiografias torácicas}
+\autor{Carlos Eduardo Mendes}
+\orientador{Profa. Dra. Fernanda Oliveira}
+\coorientador{Prof. Dr. Ricardo Almeida}
+\instituicao{Universidade Estadual de Campinas}
+\local{Campinas}
+\ano{2025}
+\natureza{Tese apresentada ao Instituto de Computação da
+Universidade Estadual de Campinas como requisito parcial
+para obtenção do título de Doutor em Ciência da Computação.}
+\programa{Programa de Pós-Graduação em Ciência da Computação}
+\area{Inteligência Artificial}
+
+% Banca examinadora (checklist 1, 2)
+\dataaprovacao{20 de junho de 2025}
+\membrodabanca{Profa. Dra. Fernanda Oliveira (Orientadora)}
+  {Doutora em Ciência da Computação \textendash\ Universidade Estadual de Campinas}
+\membrodabanca{Prof. Dr. Marcos Vinícius Costa}
+  {Doutor em Engenharia Elétrica \textendash\ Universidade de São Paulo}
+\membrodabanca{Profa. Dra. Juliana Rocha}
+  {Doutora em Informática Médica \textendash\ Universidade Federal do Rio Grande do Sul}
+
+\begin{document}
+
+% =====================================================================
+% PRÉ-TEXTUAIS (checklist 10, 13)
+% =====================================================================
+\pretextual
+
+% Capa (herdada de abnt.cls — checklist 13)
+\imprimircapa
+
+% Folha de rosto (herdada de abnt.cls — checklist 13)
+\imprimirfolhaderosto
+
+% Folha de aprovação (checklist 1, 2, 3)
+\imprimirfolhadeaprovacao
+
+% Dedicatória (checklist 4)
+\imprimirdedicatoria{%
+  Aos meus pais, pelo apoio incondicional durante todos os anos
+  de formação acadêmica.
+}
+
+% Agradecimentos (checklist 5)
+\imprimiragradecimentos{%
+  Agradeço à minha orientadora, Profa. Dra. Fernanda Oliveira, pela
+  orientação cuidadosa e pelas discussões que enriqueceram este trabalho.
+
+  Ao Prof. Dr. Ricardo Almeida, coorientador, pelas contribuições na
+  área de processamento de imagens médicas.
+
+  Ao CNPq, pelo financiamento da bolsa de doutorado.
+}
+
+% Epígrafe (checklist 6)
+\imprimirepigrafe{%
+  ``A imaginação é mais importante que o conhecimento.'' \\[0.5cm]
+  \textit{Albert Einstein}
+}
+
+% Resumo (checklist 7)
+\imprimirresumo{%
+  Este trabalho investiga a aplicação de redes neurais convolucionais
+  para classificação automática de imagens médicas, com foco na detecção
+  de tumores em radiografias torácicas. A metodologia proposta combina
+  técnicas de aumento de dados com arquiteturas profundas para melhorar
+  a acurácia da classificação. Os experimentos foram conduzidos em um
+  conjunto de dados com mais de dez mil imagens anotadas por
+  especialistas. Os resultados demonstram que o modelo proposto atinge
+  acurácia superior a noventa e cinco por cento, superando abordagens
+  tradicionais baseadas em características extraídas manualmente.
+}{redes neurais convolucionais; imagens médicas; radiografia torácica;
+  aprendizado profundo; classificação de imagens}
+
+% Abstract (checklist 8)
+\imprimirabstract{%
+  This work investigates the application of convolutional neural networks
+  for automatic classification of medical images, focusing on tumor
+  detection in chest radiographs. The proposed methodology combines data
+  augmentation techniques with deep architectures to improve
+  classification accuracy. Experiments were conducted on a dataset of
+  over ten thousand images annotated by specialists. Results demonstrate
+  that the proposed model achieves accuracy above ninety-five percent,
+  outperforming traditional approaches based on manually extracted
+  features.
+}{convolutional neural networks; medical imaging; chest radiography;
+  deep learning; image classification}
+
+% Sumário (checklist 11)
+\imprimirsumario
+
+% =====================================================================
+% ELEMENTOS TEXTUAIS (checklist 10, 12)
+% =====================================================================
+\textual
+
+\chapter{Introdução}
+
+A detecção precoce de tumores é fundamental para o tratamento eficaz de
+diversas doenças. Este trabalho propõe uma abordagem baseada em redes
+neurais convolucionais.
+
+\section{Objetivos}
+
+Os objetivos deste trabalho são apresentados a seguir.
+
+\subsection{Objetivo geral}
+
+Desenvolver um modelo de classificação automática de radiografias torácicas.
+
+\subsection{Objetivos específicos}
+
+Os objetivos específicos incluem a avaliação de diferentes arquiteturas.
+
+\chapter{Fundamentação teórica}
+
+Esta seção apresenta os conceitos fundamentais necessários para a
+compreensão do trabalho.
+
+\chapter{Metodologia}
+
+A metodologia adotada é descrita nesta seção.
+
+\chapter{Resultados e discussão}
+
+Os resultados obtidos são apresentados e discutidos nesta seção.
+
+\chapter{Conclusão}
+
+O trabalho atingiu os objetivos propostos e abre caminho para pesquisas
+futuras na área de diagnóstico assistido por computador.
+
+% =====================================================================
+% PÓS-TEXTUAIS (checklist 9, 10)
+% =====================================================================
+\postextual
+
+\chapter*{Referências}
+\addcontentsline{toc}{chapter}{REFERÊNCIAS}
+
+LECUN, Y.; BENGIO, Y.; HINTON, G. \textbf{Deep learning}. Nature,
+v.~521, n.~7553, p.~436--444, 2015.
+
+\end{document}

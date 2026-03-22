@@ -1,0 +1,94 @@
+% =============================================================================
+% test-abnt.tex
+% Documento de teste para abnt.cls (classe base)
+%
+% Demonstra os comandos públicos da classe base conforme NBR 14724:2024
+% e NBR 15287:2025.
+%
+% Compilação:
+%   cd tests && TEXINPUTS=../src: latexmk -pdf -shell-escape -interaction=nonstopmode test-abnt.tex
+%
+% Checklist:
+%   1  — \titulo e \subtitulo preenchem metadados
+%   2  — \autor preenche nome do autor
+%   3  — \orientador e \coorientador preenchem orientação
+%   4  — \instituicao, \local, \ano preenchem dados institucionais
+%   5  — \natureza, \programa, \area preenchem natureza do trabalho
+%   6  — \imprimircapa gera capa com título em negrito maiúsculas
+%   7  — Subtítulo na capa sem negrito, precedido de dois pontos
+%   8  — \imprimirfolhaderosto gera folha de rosto com natureza recuada
+%   9  — Coorientador aparece na folha de rosto quando definido
+%   10 — \pretextual suprime numeração de página
+%   11 — \textual restaura numeração de página
+%   12 — Cenário sem subtítulo e sem coorientador (segundo par capa+folha)
+%   13 — Capa sem subtítulo não exibe dois pontos
+%   14 — Folha de rosto sem coorientador não exibe linha de coorientador
+% =============================================================================
+
+\documentclass{abnt}
+
+% Metadados — cenário completo (checklist 1–5, 7, 9)
+\titulo{Análise de algoritmos de ordenação em grandes volumes de dados}
+\subtitulo{um estudo comparativo}
+\autor{Maria Clara Santos}
+\orientador{Prof. Dr. João Pereira}
+\coorientador{Profa. Dra. Ana Beatriz Lima}
+\instituicao{Universidade Federal de Minas Gerais}
+\local{Belo Horizonte}
+\ano{2025}
+\natureza{Dissertação apresentada ao Programa de Pós-Graduação em
+Ciência da Computação da Universidade Federal de Minas Gerais,
+como requisito parcial para obtenção do título de Mestre em
+Ciência da Computação.}
+\programa{Programa de Pós-Graduação em Ciência da Computação}
+\area{Algoritmos e Estruturas de Dados}
+
+\begin{document}
+
+% =====================================================================
+% PRÉ-TEXTUAIS (checklist 10)
+% =====================================================================
+\pretextual
+
+% Capa com subtítulo e coorientador (checklist 6, 7)
+\imprimircapa
+
+% Folha de rosto com subtítulo e coorientador (checklist 8, 9)
+\imprimirfolhaderosto
+
+% =====================================================================
+% CENÁRIO SEM SUBTÍTULO E SEM COORIENTADOR (checklist 12, 13, 14)
+% =====================================================================
+% Redefinir metadados para cenário mínimo
+\titulo{Estudo sobre estruturas de dados probabilísticas}
+\subtitulo{}
+\coorientador{}
+
+% Segunda capa — sem subtítulo (checklist 13)
+\imprimircapa
+
+% Segunda folha de rosto — sem coorientador (checklist 14)
+\imprimirfolhaderosto
+
+% =====================================================================
+% ELEMENTOS TEXTUAIS (checklist 11)
+% =====================================================================
+\textual
+
+\chapter{Introdução}
+
+Este trabalho apresenta uma análise comparativa de algoritmos de ordenação
+aplicados a grandes volumes de dados. A motivação principal reside na
+necessidade de avaliar o desempenho prático em cenários reais.
+
+\chapter{Revisão bibliográfica}
+
+A literatura sobre algoritmos de ordenação é extensa e abrange desde os
+métodos clássicos até abordagens mais recentes baseadas em paralelismo.
+
+\chapter{Considerações finais}
+
+Os resultados obtidos confirmam a eficiência assintótica dos algoritmos
+analisados e sugerem direções para pesquisas futuras.
+
+\end{document}

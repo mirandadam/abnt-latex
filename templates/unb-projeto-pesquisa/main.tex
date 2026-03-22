@@ -1,0 +1,72 @@
+% =============================================================================
+% Template: Projeto de Pesquisa — UnB
+%
+% Capa no padrão institucional clássico (Modelo B).
+%
+% Compilação local (a partir da raiz do repositório):
+%   TEXINPUTS=./src: latexmk -pdf templates/unb-projeto-pesquisa/main.tex
+% =============================================================================
+
+\documentclass{abnt-unb-projeto-pesquisa}
+
+\usepackage{abnt-citacoes}   % carrega abnt-refs automaticamente
+
+\addbibresource{refs.bib}
+
+% --- Metadados (preencha com seus dados) ---
+\titulo{Título do Projeto de Pesquisa}
+\subtitulo{subtítulo, se houver}
+\autor{Nome Completo do Autor}
+\orientador{Prof. Dr. Nome do Orientador}
+\faculdade{Faculdade de Comunicação}
+\departamento{Departamento de Comunicação}
+\curso{Comunicação Social}
+\unblogo{unb_logo}
+\ano{2026}
+\natureza{Projeto de pesquisa apresentado à Faculdade de Comunicação
+  da Universidade de Brasília.}
+\programa{Graduação em Comunicação Social}
+
+% =============================================================================
+\begin{document}
+
+% --- Pré-textuais ---
+\imprimircapa
+\imprimirfolhaderosto
+\imprimirsumario
+
+% --- Textuais ---
+\chapter{Introdução}
+
+Contextualização e justificativa do problema de pesquisa \cite{eco1977}.
+
+\chapter{Objetivos}
+
+\section{Objetivo geral}
+
+Descrever o objetivo geral.
+
+\section{Objetivos específicos}
+
+\begin{itemize}
+  \item Objetivo específico 1
+  \item Objetivo específico 2
+  \item Objetivo específico 3
+\end{itemize}
+
+\chapter{Revisão de Literatura}
+
+Revisão da literatura pertinente \cite{medeiros2019}.
+
+\chapter{Metodologia}
+
+Descrição dos métodos e procedimentos.
+
+\chapter{Cronograma}
+
+Cronograma previsto para a execução da pesquisa.
+
+% --- Referências ---
+\printbibliography
+
+\end{document}

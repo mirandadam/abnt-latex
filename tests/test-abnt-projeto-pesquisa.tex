@@ -1,0 +1,135 @@
+% =============================================================================
+% test-abnt-projeto-pesquisa.tex
+% Documento de teste para abnt-projeto-pesquisa.cls
+%
+% Demonstra um projeto de pesquisa conforme NBR 15287:2025, incluindo
+% capa, folha de rosto, sumário, numeração progressiva, seções,
+% alíneas e subalíneas.
+%
+% Compilação:
+%   cd tests && TEXINPUTS=../src: latexmk -pdf -shell-escape -interaction=nonstopmode test-abnt-projeto-pesquisa.tex
+%
+% Checklist:
+%   1  — Capa herdada de abnt.cls
+%   2  — Folha de rosto herdada de abnt.cls
+%   3  — Sumário carregado automaticamente (abnt-sumario)
+%   4  — Numeração progressiva carregada automaticamente (abnt-numeracao)
+%   5  — Seções primárias em maiúsculas e negrito
+%   6  — Seções secundárias em maiúsculas sem negrito
+%   7  — Seções terciárias em negrito
+%   8  — Alíneas com letras minúsculas e parêntese
+%   9  — Subalíneas com travessão
+%   10 — Classe NÃO define \postextual, \imprimirdedicatoria, etc.
+%   11 — Paginação correta: pré-textuais ocultos, textuais visíveis
+% =============================================================================
+
+\documentclass{abnt-projeto-pesquisa}
+
+% Metadados
+\titulo{Impacto da inteligência artificial na produtividade agrícola brasileira}
+\autor{Lucas Gabriel Ferreira}
+\orientador{Prof. Dr. Antônio Carlos Souza}
+\instituicao{Universidade Federal de Goiás}
+\local{Goiânia}
+\ano{2025}
+\natureza{Projeto de pesquisa apresentado ao Programa de
+Pós-Graduação em Agronomia da Universidade Federal de Goiás.}
+\programa{Programa de Pós-Graduação em Agronomia}
+\area{Agricultura de Precisão}
+
+\begin{document}
+
+% =====================================================================
+% PRÉ-TEXTUAIS (checklist 1, 2, 3, 11)
+% =====================================================================
+\pretextual
+
+% Capa (checklist 1)
+\imprimircapa
+
+% Folha de rosto (checklist 2)
+\imprimirfolhaderosto
+
+% Sumário (checklist 3)
+\imprimirsumario
+
+% =====================================================================
+% ELEMENTOS TEXTUAIS (checklist 4–9, 11)
+% =====================================================================
+\textual
+
+\chapter{Introdução}
+
+A agricultura brasileira enfrenta desafios crescentes relacionados à
+produtividade e à sustentabilidade ambiental. A inteligência artificial
+surge como ferramenta promissora para otimizar processos agrícolas.
+
+\section{Contextualização}
+
+O Brasil é um dos maiores produtores agrícolas do mundo. A adoção de
+tecnologias digitais no campo tem se acelerado nos últimos anos.
+
+\subsection{Agricultura de precisão}
+
+A agricultura de precisão utiliza dados georreferenciados para a tomada
+de decisão no manejo das culturas.
+
+\chapter{Justificativa}
+
+A pesquisa se justifica pela necessidade de avaliar o impacto real das
+tecnologias de inteligência artificial na produtividade das lavouras
+brasileiras.
+
+\chapter{Objetivos}
+
+\section{Objetivo geral}
+
+Avaliar o impacto da inteligência artificial na produtividade agrícola
+em propriedades rurais do cerrado brasileiro.
+
+\section{Objetivos específicos}
+
+Os objetivos específicos deste projeto são:
+
+% Alíneas (checklist 8)
+\begin{alineas}
+  \item mapear as tecnologias de inteligência artificial adotadas
+    nas propriedades selecionadas;
+  \item comparar indicadores de produtividade antes e depois da
+    adoção das tecnologias;
+  \item identificar fatores que influenciam a adoção, incluindo:
+    % Subalíneas (checklist 9)
+    \begin{subalineas}
+      \item custo de implementação;
+      \item disponibilidade de conectividade;
+      \item nível de capacitação técnica dos produtores.
+    \end{subalineas}
+\end{alineas}
+
+\chapter{Metodologia}
+
+A pesquisa adotará abordagem mista, combinando análise quantitativa de
+dados de produtividade com entrevistas qualitativas junto aos produtores
+rurais.
+
+\section{Área de estudo}
+
+O estudo será conduzido em propriedades rurais localizadas no estado de
+Goiás, com foco na produção de soja e milho.
+
+\section{Coleta de dados}
+
+Os dados serão coletados por meio de sensores de campo, imagens de
+satélite e questionários aplicados aos produtores.
+
+\chapter{Cronograma}
+
+O projeto será executado em vinte e quatro meses, divididos em quatro
+etapas principais.
+
+\chapter{Referências}
+
+EMBRAPA. \textbf{Agricultura digital no Brasil}: tendências,
+desafios e oportunidades. Brasília, 2023.
+
+\end{document}

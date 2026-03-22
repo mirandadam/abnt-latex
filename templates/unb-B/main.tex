@@ -1,0 +1,81 @@
+% =============================================================================
+% Template: Trabalho Acadêmico — UnB Modelo B (clássico)
+%
+% Capa com logo pequeno e layout tipográfico tradicional.
+%
+% Compilação local (a partir da raiz do repositório):
+%   TEXINPUTS=./src: latexmk -pdf templates/unb-B/main.tex
+% =============================================================================
+
+\documentclass{abnt-unb-B}
+
+\usepackage{abnt-resumo}
+\usepackage{abnt-citacoes}   % carrega abnt-refs automaticamente
+
+\addbibresource{refs.bib}
+
+% --- Metadados (preencha com seus dados) ---
+\titulo{Título do Trabalho}
+\subtitulo{subtítulo, se houver}
+\autor{Nome Completo do Autor}
+\orientador{Prof. Dr. Nome do Orientador}
+% \coorientador{Prof. Dr. Nome do Coorientador}
+\faculdade{Instituto de Ciência Política}
+\departamento{Departamento de Ciência Política}
+\curso{Ciência Política}
+\grau{Bacharel em Ciência Política}
+\tipotrabalho{Monografia}
+\unblogo{unb_logo}
+\ano{2026}
+\natureza{Monografia apresentada ao Instituto de Ciência Política
+  da Universidade de Brasília como requisito parcial para obtenção
+  do grau de Bacharel em Ciência Política.}
+\programa{Graduação em Ciência Política}
+
+% =============================================================================
+\begin{document}
+
+% --- Pré-textuais ---
+\imprimircapa
+\imprimirfolhaderosto
+
+\dataaprovacao{1 de janeiro de 2026}
+\membrodabanca{Prof. Dr. Membro Um}{IPOL/UnB}
+\membrodabanca{Prof. Dr. Membro Dois}{IPOL/UnB}
+\membrodabanca{Prof. Dr. Membro Três}{IPOL/UnB}
+\imprimirfolhadeaprovacao
+
+\imprimirdedicatoria{%
+  Dedicatória (opcional).}
+
+\imprimiragradecimentos{%
+  Agradecimentos (opcional).}
+
+\imprimirresumo{%
+  Resumo em português.%
+}{Palavra-chave 1. Palavra-chave 2. Palavra-chave 3}
+
+\imprimirabstract{%
+  Abstract in English.%
+}{Keyword 1. Keyword 2. Keyword 3}
+
+\imprimirsumario
+
+% --- Textuais ---
+\chapter{Introdução}
+
+Texto da introdução \cite{eco1977}.
+
+\chapter{Desenvolvimento}
+
+Texto do desenvolvimento \cite{medeiros2019}.
+
+\chapter{Conclusão}
+
+Texto da conclusão.
+
+% --- Pós-textuais ---
+\postextual
+\printbibliography
+
+\end{document}

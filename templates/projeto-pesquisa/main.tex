@@ -1,0 +1,68 @@
+% =============================================================================
+% Template: Projeto de Pesquisa (NBR 15287:2025)
+%
+% Compilação local (a partir da raiz do repositório):
+%   TEXINPUTS=./src: latexmk -pdf templates/projeto-pesquisa/main.tex
+% =============================================================================
+
+\documentclass{abnt-projeto-pesquisa}
+
+\usepackage{abnt-citacoes}   % carrega abnt-refs automaticamente
+
+\addbibresource{refs.bib}
+
+% --- Metadados (preencha com seus dados) ---
+\titulo{Título do Projeto de Pesquisa}
+\subtitulo{subtítulo, se houver}
+\autor{Nome Completo do Autor}
+\orientador{Prof. Dr. Nome do Orientador}
+\instituicao{Nome da Instituição}
+\local{Cidade}
+\ano{2026}
+\natureza{Projeto de pesquisa apresentado ao Programa de Pós-Graduação
+  em X da Universidade Y.}
+\programa{Programa de Pós-Graduação em X}
+
+% =============================================================================
+\begin{document}
+
+% --- Pré-textuais ---
+\imprimircapa
+\imprimirfolhaderosto
+\imprimirsumario
+
+% --- Textuais ---
+\chapter{Introdução}
+
+Contextualização e justificativa do problema de pesquisa \cite{eco1977}.
+
+\chapter{Objetivos}
+
+\section{Objetivo geral}
+
+Descrever o objetivo geral.
+
+\section{Objetivos específicos}
+
+\begin{itemize}
+  \item Objetivo específico 1
+  \item Objetivo específico 2
+  \item Objetivo específico 3
+\end{itemize}
+
+\chapter{Revisão de Literatura}
+
+Revisão da literatura pertinente \cite{medeiros2019}.
+
+\chapter{Metodologia}
+
+Descrição dos métodos e procedimentos.
+
+\chapter{Cronograma}
+
+Cronograma previsto para a execução da pesquisa.
+
+% --- Referências ---
+\printbibliography
+
+\end{document}
